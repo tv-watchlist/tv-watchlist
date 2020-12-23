@@ -13,6 +13,7 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
    
     o route - Yes, CSS 
 4) ng generate application webextension
+5) ng generate library common
 
 ## Development server
 
