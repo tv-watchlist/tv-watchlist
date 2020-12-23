@@ -2,6 +2,18 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
+## Steps
+
+Taken from https://angular.io/guide/file-structure#multiple-projects
+1) ng new tv-watchlist --createApplication="false"
+
+    o strict = Yes
+2) cd tv-watchlist
+3) ng generate application pwa
+   
+    o route - Yes, CSS 
+4) ng generate application webextension
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
