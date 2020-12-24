@@ -6,10 +6,13 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { ShowBannerCardComponent } from './show-banner-card/show-banner-card.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ShowBannerCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -17,7 +20,9 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [],
+  providers: [
+      DatePipe,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

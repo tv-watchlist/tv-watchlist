@@ -8,7 +8,7 @@
       "schematics": {},
       "root": "projects/pwa",
       "sourceRoot": "projects/pwa/src",
-      "prefix": "app",
+      "prefix": "tvq",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
@@ -131,7 +131,7 @@
       "schematics": {},
       "root": "projects/webextension",
       "sourceRoot": "projects/webextension/src",
-      "prefix": "app",
+      "prefix": "tvq",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",

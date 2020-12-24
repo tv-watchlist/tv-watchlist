@@ -1,32 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { IMyTvQ, IMyTvQShow, IMyTvQShowEpisode } from './model';
+import { ShowService } from './show.service';
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'tvq-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  constructor(private httpClient: HttpClient) { }
-  show_list: any;
-  EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
-  ngOnInit(): void {
-    this.httpClient.get('./tv-watchlist-2020-12-23.json').subscribe((json: any) => {
-      this.show_list = json.show_list.filter((o:any) => this.GetShowStatus(o)===0);
-      console.log('json',json);
-    });
-  }
+    constructor(
+        private showSvc: ShowService,
+        private cdRef: ChangeDetectorRef) {
+    }
 
-  GetShowStatus(show: any) {
-		if ((show.status||'').match(this.EndedRegex)) {
-			return -1; //Completed
-		}
-		var episode = show.next_episode || show.last_episode;
+    showList: IMyTvQShow[] = [];
 
-		//console.log(show, episode);
-		var now = new Date().getTime();
-		if (!!episode && !!episode.local_showtime && episode.local_showtime > now )
-			return 0; //Running
-		else
-			return 1; //TBA
-	}
+    ngOnInit(): void {
+        this.showSvc.getMyTvQJson().subscribe(json => {
+            this.showList = json.show_list;
+            this.cdRef.markForCheck();
+            console.log('json', json);
+        });
+    }
 }
