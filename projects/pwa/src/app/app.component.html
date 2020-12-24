@@ -1,4 +1,44 @@
-<div class="m-4">
-  <h1 class="mb-4 text-5xl text-red-500">Testing Tailwindcss</h1>
-  <button class="btn-blue">Test</button>
+<div class="m-2">
+  <h2 class="mb-3 text-2xl">TV Watchlist</h2>
+  <div *ngFor="let show of show_list"
+    class="flex flex-wrap p-2 mb-2 text-white border rounded-md shadow-md" [ngClass]="{
+        'bg-red-500': GetShowStatus(show) === -1,
+        'bg-green-500': GetShowStatus(show) === 0,
+        'bg-blue-500': GetShowStatus(show) === 1}">
+    <div class="inline-flex justify-between w-full">
+        <span [innerHTML]="show.name" class="font-bold"></span>
+        <span class="my-auto text-xs truncate" *ngIf="show.next_episode" [innerHTML]="show.next_episode.local_showtime | date:'(EEE h:mm a, MMM d, y)'"></span>
+    </div>
+    <div class="w-full mb-2">
+        60.(5x9) What Happened and What's Going On
+    </div>
+    <div class="flex justify-between w-full gap-1">
+        <span class="px-1 my-auto truncate border border-white">
+            60.(5x9) What Happened and What's Going On
+        </span>
+        <button class="inline-flex justify-center w-1/12 text-white" title="Watched">
+            <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+        </button>
+        <button class="inline-flex justify-center w-1/12 text-white" title="External">
+            <svg class="w-7 h-7"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+            </svg>
+        </button>
+    </div>
+    <div class="flex justify-around w-full gap-4 text-sm">
+        <div class="inline-flex w-11/12 gap-4 my-auto">
+            <span>The CW</span>
+            <span>Unseen: 155</span>
+            <span>Next: 19 Day(s)</span>
+        </div>
+        <button class="inline-flex justify-center w-1/12 text-white" title="More">
+            <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+        </button>
+    </div>
+  </div>
 </div>
