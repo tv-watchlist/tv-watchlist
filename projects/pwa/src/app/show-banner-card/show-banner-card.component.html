@@ -47,7 +47,7 @@
             <li class="my-auto" [innerHTML]="show.channel.name"></li>
             <li class="my-auto" *ngIf="show.unseen_count">Unseen: {{show.unseen_count}}</li>
             <li class="my-auto" *ngIf="!!getNextEpisodeDays() && getShowStatus() > -1">Next: {{getNextEpisodeDays()}}</li>
-            <button class="inline-flex justify-center text-white" title="More" [routerLink]="['/show-detail/',show.show_id]">
+            <button class="inline-flex justify-center text-white" title="More" (click)="goToShowDetails(show)">
                 <svg class="h-6 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
                   </svg>

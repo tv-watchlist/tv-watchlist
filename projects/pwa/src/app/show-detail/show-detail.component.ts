@@ -11,14 +11,9 @@ import { NavigationService } from '../navigation.service';
 })
 export class ShowDetailComponent implements OnInit {
     constructor(
-        private navSvc: NavigationService,
         private cdRef: ChangeDetectorRef,
         ) { }
 
     ngOnInit(): void {
-    }
-
-    back(): void {
-        this.navSvc.back();
     }
 }

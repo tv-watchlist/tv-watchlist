@@ -15,10 +15,13 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
     o route - Yes, CSS 
 4) ng generate application webextension
 5) ng generate library common
+6) ng add @angular/pwa --project pwa
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+To test pwa use `ng build --prod` then `npx http-server -p 8080 -c-1 dist/pwa`
 
 ## Code scaffolding
 

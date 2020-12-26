@@ -1,8 +1,9 @@
 import { trigger, transition, style, query, animateChild, animate, group } from '@angular/animations';
 
+const optional = { optional: true };
+
 // https://fireship.io/lessons/angular-router-animations/
 const slideTo = (direction: string) => {
-    const optional = { optional: true };
     return [
         query(':enter, :leave', [
             style({
@@ -21,7 +22,7 @@ const slideTo = (direction: string) => {
             ], optional),
             query(':enter', [
                 animate('600ms ease', style({ [direction]: '0%' }))
-            ])
+            ], optional)
         ]),
         // Normalize the page style... Might not be necessary
 
@@ -37,4 +38,20 @@ export const slider =
         transition('* => isRight', slideTo('right')),
         transition('isRight => *', slideTo('left')),
         transition('isLeft => *', slideTo('right'))
+    ]);
+
+export const routeSlider =
+    trigger('routeSlide', [
+        transition('* => *', [
+            group([
+                query(':enter', [
+                    style({transform: 'translateX(100%)'}),
+                    animate('0.4s ease-in-out', style({transform: 'translateX(0%)'}))
+                ], optional),
+                query(':leave', [
+                    style({transform: 'translateX(0%)'}),
+                    animate('0.4s ease-in-out', style({transform: 'translateX(-100%)'}))
+                ], optional),
+            ])
+        ]),
     ]);
