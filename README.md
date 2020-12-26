@@ -5,6 +5,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Steps
 
 Taken from https://angular.io/guide/file-structure#multiple-projects
+0) Using Node 14.15.3 (includes npm 6.14.9) 
 1) ng new tv-watchlist --createApplication="false"
 
     o strict = Yes
