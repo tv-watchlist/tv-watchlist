@@ -1,4 +1,8 @@
-<div class="m-2">
-    <h2 class="mb-3 text-2xl">TV Watchlist</h2>
-    <tvq-show-banner-card [show]="show" *ngFor="let show of showList"></tvq-show-banner-card>
+<div class="flex flex-col h-screen gap-2">
+    <header class="fixed top-0 left-0 right-0 z-10 px-2 bg-white border-b h-9">
+        <h2 class="text-2xl">TV Watchlist</h2>
+    </header>
+    <main class="relative flex-1 pt-10 mx-2">
+        <router-outlet #outlet="outlet"></router-outlet>
+    </main>
 </div>

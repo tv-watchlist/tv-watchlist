@@ -6,7 +6,7 @@ import { EpisodeService, ShowService } from '../show.service';
 @Component({
     selector: 'tvq-show-banner-card',
     templateUrl: 'show-banner-card.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ShowBannerCardComponent implements OnInit {
@@ -22,7 +22,7 @@ export class ShowBannerCardComponent implements OnInit {
         if (!this.show) {
             throw (new Error('The required input [show] was not provided'));
         }
-        this.cdRef.markForCheck();
+        // this.cdRef.markForCheck();
     }
 
     getShowStatus(): -1 | 0 | 1 {
