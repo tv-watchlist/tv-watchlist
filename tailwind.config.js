@@ -14,6 +14,12 @@ module.exports = {
         extend: {
             colors: {
                 orange: colors.orange
+            },
+            spacing: {
+                iT: "env(safe-area-inset-top)",
+            },
+            screens: {
+                standalone: {raw: "(display-mode: standalone)"}
             }
         },
     },

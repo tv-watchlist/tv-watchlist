@@ -14,3 +14,7 @@
         display: inline-flex;
     }
   }
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
