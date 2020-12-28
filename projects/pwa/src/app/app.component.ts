@@ -19,10 +19,16 @@ import { ShowService } from './services/show.service';
 export class AppComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private appElement: ElementRef,
         private navSvc: NavigationService,
         private showSvc: ShowService,
         private cdRef: ChangeDetectorRef) {
+        const path = localStorage.getItem('path');
+        if (path) {
+            localStorage.removeItem('path');
+            this.router.navigate([path]);
+        }
     }
 
     private subscriptions: Subscription[] = [];
