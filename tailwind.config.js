@@ -16,7 +16,9 @@ module.exports = {
                 orange: colors.orange
             },
             spacing: {
-                iT: "env(safe-area-inset-top)",
+                "safe-top": "env(safe-area-inset-top)",
+                "safe-top-1": "calc(env(safe-area-inset-top) + 2.5rem)",
+                "safe-top-2": "calc(env(safe-area-inset-top) + 3rem)"
             },
             screens: {
                 standalone: {raw: "(display-mode: standalone)"}

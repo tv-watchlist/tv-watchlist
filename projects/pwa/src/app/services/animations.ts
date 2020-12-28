@@ -18,10 +18,10 @@ const slideTo = (direction: string) => {
         ]),
         group([
             query(':leave', [
-                animate('600ms ease', style({ [direction]: '100%' }))
+                animate('400ms ease-in-out', style({ [direction]: '100%' }))
             ], optional),
             query(':enter', [
-                animate('600ms ease', style({ [direction]: '0%' }))
+                animate('400ms ease-in-out', style({ [direction]: '0%' }))
             ], optional)
         ]),
         // Normalize the page style... Might not be necessary
