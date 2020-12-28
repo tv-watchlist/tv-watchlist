@@ -23,6 +23,7 @@
             "assets": [
               "projects/pwa/src/favicon.ico",
               "projects/pwa/src/404.html",
+              "projects/pwa/src/README.md",
               "projects/pwa/src/apple-touch-icon-precomposed.png",
               "projects/pwa/src/apple-touch-icon.png",
               "projects/pwa/src/apple-touch-icon-120x120-precomposed.png",
