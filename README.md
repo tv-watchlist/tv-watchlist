@@ -16,6 +16,8 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 4) ng generate application webextension
 5) ng generate library common
 6) ng add @angular/pwa --project pwa
+7) cd projects/pwa 
+8) npx pwa-asset-generator src/assets/myTvQ.png src/assets/icons -m src/manifest.webmanifest --padding "calc(50vh - 25%) calc(50vw - 25%)" -b "#F97316" -q 100 -i src/asset-generator-changes.html --favicon
 
 ## Development server
 
