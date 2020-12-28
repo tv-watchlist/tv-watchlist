@@ -1,18 +1,20 @@
-<div class="flex flex-col h-screen gap-2">
-    <header class="fixed top-0 left-0 right-0 z-10 flex justify-between px-2 bg-white border-b h-9">
-        <button class="mt-1" (click)="back()">
-            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-              </svg>
-        </button>
-        <h2 class="text-2xl">TV Watchlist</h2>
-        <button class="mt-1">
-            <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-              </svg>
-        </button>
-    </header>
-    <main class="relative flex-1 m-2 mt-10" [@routeAnimations]="prepareRoute(outlet)">
-        <router-outlet #outlet="outlet" (activate)="onActivate($event)"></router-outlet>
-    </main>
+<div class="container">
+    <div class="flex flex-col h-screen gap-2">
+        <header class="fixed top-0 left-0 right-0 z-10 flex justify-between px-2 bg-white border-b h-9">
+            <button class="mt-1" tvqBackButton [class.invisible]="isHome">
+                <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+            </button>
+            <h2 class="mt-1 text-2xl">TV Watchlist</h2>
+            <button class="mt-1">
+                <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                  </svg>
+            </button>
+        </header>
+        <main class="relative flex-1 m-2 mt-10" [@routeAnimations]="prepareRoute(outlet)">
+            <router-outlet #outlet="outlet" (activate)="onActivate($event)"></router-outlet>
+        </main>
+    </div>
 </div>

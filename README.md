@@ -21,7 +21,7 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-To test pwa use `ng build --prod` then `npx http-server -p 8080 -c-1 dist/pwa`
+To test pwa use `npm run build:prod` then `npm run run:pwa`
 
 ## Code scaffolding
 

@@ -7,11 +7,11 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
-import { ShowBannerCardComponent } from './show-banner-card/show-banner-card.component';
+import { ShowBannerCardComponent } from './layouts/show-banner-card/show-banner-card.component';
 import { DatePipe } from '@angular/common';
-import { HomeComponent } from './home/home.component';
-import { ShowDetailComponent } from './show-detail/show-detail.component';
-import { BackButtonDirective } from './back-button.directive';
+import { HomeComponent } from './pages/home/home.component';
+import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
+import { BackButtonDirective } from './widgets/back-button.directive';
 
 @NgModule({
     declarations: [

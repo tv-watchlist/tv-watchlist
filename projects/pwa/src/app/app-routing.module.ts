@@ -1,10 +1,9 @@
 import { ViewportScroller } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, RouteReuseStrategy, Router, Scroll } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { CustomReuseStrategy } from './cache-route-reuse.strategy';
-import { HomeComponent } from './home/home.component';
-import { ShowDetailComponent } from './show-detail/show-detail.component';
+import { Routes, RouterModule, Router } from '@angular/router';
+import { CustomReuseStrategy } from './services/cache-route-reuse.strategy';
+import { HomeComponent } from './pages/home/home.component';
+import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
