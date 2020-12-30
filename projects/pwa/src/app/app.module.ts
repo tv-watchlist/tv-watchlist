@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,12 +8,13 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { ShowBannerCardComponent } from './layouts/show-banner-card/show-banner-card.component';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { BackButtonDirective } from './widgets/back-button.directive';
 import { EpisodeComponent } from './layouts/episode/episode.component';
 import { FormsModule } from '@angular/forms';
+import { DefaultImageDirective } from './widgets/default-img.directive';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { FormsModule } from '@angular/forms';
         HomeComponent,
         ShowDetailComponent,
         BackButtonDirective,
+        DefaultImageDirective,
         EpisodeComponent,
     ],
     imports: [
@@ -35,6 +37,7 @@ import { FormsModule } from '@angular/forms';
     providers: [
         DatePipe
     ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

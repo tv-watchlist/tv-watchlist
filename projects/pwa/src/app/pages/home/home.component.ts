@@ -14,11 +14,10 @@ export class HomeComponent implements OnInit {
         private cdRef: ChangeDetectorRef) {
         }
 
-    showList: IMyTvQShow[] = [];
+    showIdList: string[] = [];
 
     ngOnInit(): void {
-        this.showList = this.showSvc.uiShowIdOrder.filter(o => !!this.showSvc.shows.has(o))
-            .map(o => this.showSvc.shows.get(o) as IMyTvQShow);
+        this.showIdList = this.showSvc.uiShowIdOrder.filter(o => !!this.showSvc.shows.has(o));
         this.cdRef.markForCheck();
     }
 }

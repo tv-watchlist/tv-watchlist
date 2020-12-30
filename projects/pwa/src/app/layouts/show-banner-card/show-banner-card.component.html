@@ -1,40 +1,42 @@
 <div class="relative flex flex-wrap mb-2 border rounded-md shadow-md"
             [ngClass]="{
-        'bg-red-500': getShowStatus() === -1,
-        'bg-green-500': getShowStatus() === 0,
-        'bg-blue-500': getShowStatus() === 1}"
+        'bg-red-500': model.status === -1,
+        'bg-green-500': model.status === 0,
+        'bg-blue-500': model.status === 1}"
     >
-    <img *ngIf="show.image?.banner?.length" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="show.image.banner[0]" alt="">
-    <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!show.image?.banner?.length}">
+    <img *ngIf="!!model.banner" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="model.banner" alt="">
+    <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!model.banner}">
         <div class="flex justify-between w-full">
             <span>
-                <span [innerHTML]="show.name" class="mr-2 font-bold"></span>
-                <span [innerHTML]="getShowPremiered()" class="text-sm"></span>
+                <span [innerHTML]="model.name" class="mr-2 font-bold"></span>
+                <span [innerHTML]="model.premiered" class="text-sm"></span>
             </span>
             <span class="px-1 my-auto text-xs" [ngClass]="{
-                'bg-red-500': getShowStatus() === -1,
-                'bg-green-500': getShowStatus() === 0,
-                'bg-blue-500': getShowStatus() === 1}">
-                <span class="truncate" *ngIf="show.next_episode"
-                [innerHTML]="(show.next_episode.local_showtime | date:'EEE h:mm a, MMM d, y') || 'n/a'"></span>
-                <span *ngIf="!show.next_episode">{{getShowStatus() === -1 ? 'Completed':'TBA'}}</span>
+                'bg-red-500': model.status === -1,
+                'bg-green-500': model.status === 0,
+                'bg-blue-500': model.status === 1}">
+                <ng-container [ngSwitch]="model.status">
+                    <span class="truncate" *ngSwitchCase="0">{{model.currentEpisodeDateFormatted}}</span>
+                    <span *ngSwitchCase="1">TBA</span>
+                    <span *ngSwitchDefault>Completed</span>
+                </ng-container>
             </span>
         </div>
-        <div class="flex justify-between w-full" [ngClass]="{'mb-2':expand}">
-            <span class="w-full" *ngIf="show.next_episode" [innerHTML]="getEpisodeNextName(show.next_episode)"></span>
-            <ng-container *ngIf="!show.next_episode">
-                <span class="truncate" [innerHTML]="getEpisodeNextName(show.last_episode)"></span>
-                <span class="px-1 my-auto text-xs text-right" [innerHTML]="(show.last_episode.local_showtime | date:'MMM d, y') || 'n/a'" *ngIf="!show.next_episode"></span>
+        <div class="flex justify-between w-full" [ngClass]="{'mb-2':model.expand}">
+            <span *ngIf="model.status === 0" class="w-full" [innerHTML]="model.currentEpisodeName"></span>
+            <ng-container *ngIf="model.status !== 0">
+                <span class="truncate" [innerHTML]="model.currentEpisodeName"></span>
+                <span class="px-1 my-auto text-xs text-right" [innerHTML]="model.currentEpisodeDateFormatted"></span>
             </ng-container>
         </div>
-        <div class="flex justify-center" *ngIf="!expand">
-            <button class="outline-none" (click)="expand = !expand">
+        <div class="flex justify-center" *ngIf="!model.expand">
+            <button class="outline-none" (click)="model.expand = !model.expand">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
         </div>
-        <ng-container *ngIf="expand">
+        <ng-container *ngIf="model.expand">
             <div class="flex justify-between w-full gap-1 mb-2">
-                <span class="flex justify-between w-10/12 px-1 my-auto truncate border border-white rounded cursor-pointer" (click)="goToShowDetails(show)">
+                <span class="flex justify-between w-10/12 px-1 my-auto truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
                     <span class="truncate">Episode Placeholder</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
@@ -63,12 +65,11 @@
             </div>
             <div class="flex justify-between w-full text-sm">
                 <div class="w-11/12">
-                    <span class="my-auto mr-4" [innerHTML]="show.channel.name"></span>
-                    <span class="my-auto mr-4" *ngIf="show.unseen_count">Unseen: {{show.unseen_count}}</span>
-                    <span class="my-auto mr-4" *ngIf="!!getNextEpisodeDays() && getShowStatus() > -1">Next: {{getNextEpisodeDays()}}</span>
+                    <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
+                    <span class="my-auto mr-4" *ngIf="model.unseenEpisodes">Unseen: {{model.unseenEpisodes}}</span>
+                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.currentEpisodeIn}}</span>
                 </div>
             </div>
         </ng-container>
-
     </div>
 </div>

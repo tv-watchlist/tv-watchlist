@@ -1,8 +1,25 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IMyTvQ, IMyTvQShow, IMyTvQShowEpisode } from '../../services/model';
 import { EpisodeService, ShowService } from '../../services/show.service';
+
+export interface UiShowModel {
+    id: string;
+    name: string;
+    premiered: string;
+    channel: string;
+    status: number;
+    banner: string;
+    currentEpisodeName: string;
+    currentEpisodeDateFormatted: string;
+    currentEpisodeIn: string;
+    nextEpisodeName: string;
+    unseenEpisodes: number;
+    totalEpisodes: number;
+    expand: boolean;
+}
 
 @Component({
     selector: 'tvq-show-banner-card',
@@ -15,43 +32,55 @@ export class ShowBannerCardComponent implements OnInit {
         private showSvc: ShowService,
         private episodeSvc: EpisodeService,
         private router: Router,
+        private datePipe: DatePipe,
         private cdRef: ChangeDetectorRef,
         ) { }
 
-    @Input() public show!: IMyTvQShow;
-    expand = false;
+    @Input() public showId!: string;
+
+    model!: UiShowModel;
+
     ngOnInit(): void {
-        if (!this.show) {
+        if (!this.showId) {
             throw (new Error('The required input [show] was not provided'));
         }
+        const show = this.showSvc.shows.get(this.showId);
+        if (!!show) {
+            const currentEpisode = show.next_episode || show.last_episode;
+            const status = this.showSvc.getShowStatus(show);
+            this.model = {
+                id: show.show_id,
+                name: show.name,
+                premiered: !!show.premiered ? show.premiered.substring(0, 4) : '',
+                banner: show.image?.banner[0] || '',
+                channel: show.channel.name || '',
+                status,
+                currentEpisodeName: this.episodeSvc.getEpisodeName(currentEpisode),
+                currentEpisodeDateFormatted: this.getFormattedTime(currentEpisode.local_showtime, status),
+                currentEpisodeIn: this.episodeSvc.getNextEpisodeDays(currentEpisode),
+                nextEpisodeName: 'Episode Placeholder',
+                unseenEpisodes: show.unseen_count,
+                totalEpisodes: show.total_episodes,
+                expand: false,
+            };
+        }
+
         this.cdRef.markForCheck();
     }
 
-    getShowStatus(): -1 | 0 | 1 {
-        return this.showSvc.getShowStatus(this.show);
+    getFormattedTime(localShowtime: number, status: number): string {
+        switch (status) {
+            case 0:
+                return this.datePipe.transform(localShowtime, 'EEE h:mm a, MMM d, y') || 'n/a';
+                case -1:
+                case 1:
+            default:
+                return this.datePipe.transform(localShowtime, 'MMM d, y') || 'n/a';
+        }
     }
 
-    getEpisodeNextName(episode: IMyTvQShowEpisode): string {
-        return this.episodeSvc.getEpisodeName(episode);
-    }
-
-    getNextEpisodeDays(): string {
-        const episode = this.show.next_episode || this.show.last_episode;
-        return this.episodeSvc.getNextEpisodeDays(episode);
-    }
-
-    getShowPremiered(): string {
-        return !!this.show.premiered ? this.show.premiered.substring(0, 4) : '';
-    }
-
-    goToShowDetails(show: IMyTvQShow): void {
-        this.forceRecalculateStyle();
+    goToShowDetails(): void {
+        this.router.navigate(['/show-detail/', this.showId]);
         this.cdRef.detectChanges();
-        this.cdRef.detectChanges();
-        this.router.navigate(['/show-detail/', show.show_id]);
-    }
-
-    private forceRecalculateStyle(): number {
-        return window.scrollY; // force reflow for animation
     }
 }
