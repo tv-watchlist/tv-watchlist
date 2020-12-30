@@ -1,20 +1,9 @@
 import { ChangeDetectorRef, SimpleChange } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { IMyTvQShow, IMyTvQShowEpisode } from '../../services/model';
+import { IMyTvQShow, IMyTvQShowEpisode, UiEpisodeModel } from '../../services/model';
 import { EpisodeService, ShowService } from '../../services/show.service';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
-
-interface UiEpisodeModel {
-    id: string;
-    image: string;
-    episodeName: string;
-    dateFormatted: string;
-    summary: string;
-    isUnaired: boolean;
-    seen: boolean;
-    expand: boolean;
-}
 
 @Component({
     selector: 'tvq-show-detail',
@@ -31,6 +20,7 @@ export class ShowDetailComponent implements OnInit {
     ) { }
 
     show!: IMyTvQShow;
+    showDetails = false;
     episodeList: {[season: number]: UiEpisodeModel[]} = {};
     seasonNumList: any[] = [];
     openSeason!: number;
@@ -39,6 +29,7 @@ export class ShowDetailComponent implements OnInit {
     private toggleViewState: {[state: string]: boolean} = {};
     seasonOrderAsc = true;
     episodeOrderAsc = true;
+    selectedSeasonNum = 1;
     ngOnInit(): void {
         this.activatedRoute.params.subscribe((p) => {
             this.show = this.showSvc.shows.get(p.showId) as IMyTvQShow;
@@ -86,9 +77,9 @@ export class ShowDetailComponent implements OnInit {
                         }
                         // Sat 1:25 PM, Jul 23rd, 2016
                         if (isUnairedFlagSet) {
-                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, '(EEE hh:mm a, MMM dd, y)') || '(n/a)';
+                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, 'EEE hh:mm a, MMM dd, y') || 'n/a';
                         } else {
-                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, '(MMM dd, y)') || '(n/a)';
+                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, 'MMM dd, y') || 'n/a';
                         }
                     } else {
                         uiModel.dateFormatted = '(n/a)';
@@ -144,7 +135,7 @@ export class ShowDetailComponent implements OnInit {
         this.toggleViewState[field + val] = state;
     }
 
-    getToggleState(field: string, val: string): boolean {
+    getToggleState(field: string, val: string|number): boolean {
         return this.toggleViewState[field + val];
     }
 

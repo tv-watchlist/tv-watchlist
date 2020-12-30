@@ -113,3 +113,14 @@ export interface IMyTvQShowEpisode
     api_source: string;
     api_id: {[key: string]: string|number};
 }
+
+export interface UiEpisodeModel {
+    id: string;
+    image: string;
+    episodeName: string;
+    dateFormatted: string;
+    summary: string;
+    isUnaired: boolean;
+    seen: boolean;
+    expand: boolean;
+}

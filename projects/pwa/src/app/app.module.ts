@@ -12,6 +12,8 @@ import { DatePipe } from '@angular/common';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { BackButtonDirective } from './widgets/back-button.directive';
+import { EpisodeComponent } from './layouts/episode/episode.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -20,10 +22,12 @@ import { BackButtonDirective } from './widgets/back-button.directive';
         HomeComponent,
         ShowDetailComponent,
         BackButtonDirective,
+        EpisodeComponent,
     ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        FormsModule,
         AppRoutingModule,
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

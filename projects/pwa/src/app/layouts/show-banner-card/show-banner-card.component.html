@@ -1,25 +1,30 @@
-<div class="flex flex-wrap mb-2 bg-no-repeat bg-cover border rounded-md shadow-md"
+<div class="relative flex flex-wrap mb-2 border rounded-md shadow-md"
             [ngClass]="{
         'bg-red-500': getShowStatus() === -1,
         'bg-green-500': getShowStatus() === 0,
         'bg-blue-500': getShowStatus() === 1}"
-        [style.background-image]="show.image?.banner?.length ? ('url(' + show.image.banner[0] + ')') : ''"
     >
-    <div class="w-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!show.image?.banner?.length}">
+    <img *ngIf="show.image?.banner?.length" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="show.image.banner[0]" alt="">
+    <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!show.image?.banner?.length}">
         <div class="flex justify-between w-full">
             <span>
                 <span [innerHTML]="show.name" class="mr-2 font-bold"></span>
                 <span [innerHTML]="getShowPremiered()" class="text-sm"></span>
             </span>
-            <span class="my-auto text-xs truncate" *ngIf="show.next_episode"
-                [innerHTML]="(show.next_episode.local_showtime | date:'(EEE h:mm a, MMM d, y)') || '(n/a)'"></span>
-            <span class="my-auto text-xs" *ngIf="!show.next_episode">{{getShowStatus() === -1 ? '(Completed)':'(TBA)'}}</span>
+            <span class="px-1 my-auto text-xs" [ngClass]="{
+                'bg-red-500': getShowStatus() === -1,
+                'bg-green-500': getShowStatus() === 0,
+                'bg-blue-500': getShowStatus() === 1}">
+                <span class="truncate" *ngIf="show.next_episode"
+                [innerHTML]="(show.next_episode.local_showtime | date:'EEE h:mm a, MMM d, y') || 'n/a'"></span>
+                <span *ngIf="!show.next_episode">{{getShowStatus() === -1 ? 'Completed':'TBA'}}</span>
+            </span>
         </div>
         <div class="flex justify-between w-full" [ngClass]="{'mb-2':expand}">
             <span class="w-full" *ngIf="show.next_episode" [innerHTML]="getEpisodeNextName(show.next_episode)"></span>
             <ng-container *ngIf="!show.next_episode">
-                <span class="w-9/12 truncate" [innerHTML]="getEpisodeNextName(show.last_episode)"></span>
-                <span class="w-3/12 my-auto text-xs text-right" [innerHTML]="(show.last_episode.local_showtime | date:'(MMM d, y)') || '(n/a)'" *ngIf="!show.next_episode"></span>
+                <span class="truncate" [innerHTML]="getEpisodeNextName(show.last_episode)"></span>
+                <span class="px-1 my-auto text-xs text-right" [innerHTML]="(show.last_episode.local_showtime | date:'MMM d, y') || 'n/a'" *ngIf="!show.next_episode"></span>
             </ng-container>
         </div>
         <div class="flex justify-center" *ngIf="!expand">
@@ -29,10 +34,17 @@
         </div>
         <ng-container *ngIf="expand">
             <div class="flex justify-between w-full gap-1 mb-2">
-                <span class="w-10/12 px-1 my-auto truncate border border-white">
-                    Episode Placeholder
+                <span class="flex justify-between w-10/12 px-1 my-auto truncate border border-white rounded cursor-pointer" (click)="goToShowDetails(show)">
+                    <span class="truncate">Episode Placeholder</span>
+                    <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
+                        <!--bottom arrow-->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
                 </span>
                 <button class="inline-flex justify-center w-1/12 text-white" title="Watched">
+                    <!--Tick-->
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -40,6 +52,7 @@
                     </svg>
                 </button>
                 <button class="inline-flex justify-center w-1/12 text-white" title="External">
+                    <!--Link-->
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
@@ -54,14 +67,8 @@
                     <span class="my-auto mr-4" *ngIf="show.unseen_count">Unseen: {{show.unseen_count}}</span>
                     <span class="my-auto mr-4" *ngIf="!!getNextEpisodeDays() && getShowStatus() > -1">Next: {{getNextEpisodeDays()}}</span>
                 </div>
-                <button class="w-1/12 text-white" title="More" (click)="goToShowDetails(show)">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
             </div>
         </ng-container>
 
     </div>
-
 </div>
