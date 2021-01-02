@@ -35,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.tvSvc.initAll().subscribe(() => {
             this.isReady = true;
+            this.cdRef.detectChanges();
         });
         this.navSvc.onBack.subscribe(history => {
             this.isHome = history.url === '/home';

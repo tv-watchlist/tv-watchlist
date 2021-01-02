@@ -33,7 +33,10 @@
             "styles": [
               "projects/pwa/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+                "hammerjs"
+            ]
           },
           "configurations": {
             "production": {

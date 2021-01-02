@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { IMyTvQ, IMyTvQSetting, IMyTvQShow, IMyTvQShowEpisode } from './model';
 import { Observable, of } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import myTvQJson from '../../assets/tv-watchlist-2020-12-23.json';
+import { map, tap } from 'rxjs/operators';
+// import myTvQJson from '../../assets/tv-watchlist-2020-12-23.json';
 
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +12,7 @@ export class TvWatchlistService {
     constructor(
         private settingSvc: SettingService,
         private showSvc: ShowService,
+        private http: HttpClient,
     ) {
         this.now = new Date().getTime();
     }
@@ -18,14 +20,19 @@ export class TvWatchlistService {
     now: number;
 
     getMyTvQJson(): Observable<IMyTvQ> {
-        return of(myTvQJson);
-        // return this.httpClient.get<IMyTvQ>('./tv-watchlist-2020-12-23.json');
+        // return of(myTvQJson);
+        return this.http.get<IMyTvQ>('../../assets/tv-watchlist-2020-12-23.json');
     }
 
     initAll(): Observable<boolean> {
-        this.settingSvc.initSettings((myTvQJson as IMyTvQ).settings);
-        this.showSvc.initShowList(this.settingSvc.showsOrder, (myTvQJson as IMyTvQ).show_list);
-        return of(true);
+        return this.getMyTvQJson().pipe(
+            tap(myTvQJson => {
+                console.log('getMyTvQJson test data', myTvQJson);
+                this.settingSvc.initSettings((myTvQJson as IMyTvQ).settings);
+                this.showSvc.initShowList(this.settingSvc.showsOrder, (myTvQJson as IMyTvQ).show_list);
+            }),
+            map(() => true)
+        );
     }
 }
 
