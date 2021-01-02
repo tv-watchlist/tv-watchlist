@@ -78,15 +78,22 @@ export interface IMyTvQShow {
     };
     unseen_count: number;
     total_episodes: number;
-    first_episode: IMyTvQShowEpisode;
-    previous_episode: IMyTvQShowEpisode;
-    next_episode: IMyTvQShowEpisode;
-    last_episode: IMyTvQShowEpisode;
+    first_episode: {episode_id: string, local_showtime: number};
+    previous_episode: {episode_id: string, local_showtime: number};
+    next_episode: {episode_id: string, local_showtime: number};
+    last_episode: {episode_id: string, local_showtime: number};
+    unseen_episode: {episode_id: string, local_showtime: number};
     episode_list: {[episodeId: string]: IMyTvQShowEpisode};
 }
-
+// tvmaze5027_0024_0001_0024S02:
+// tvmaze5027_0024_0002_0024S01:
+// tvmaze5027_0025_0001_0001S03:
+// newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4);
+// Special newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4) + "S"+nsr.ZeroPad(special_counter, 2)
 export interface IMyTvQShowEpisode
 {
+    // {show_id}_{season}_{number}_{counter}
+    // {show_id}_{season}_{number}_{counter}
     episode_id: string;
     show_id: string;
     local_showtime: number;
@@ -112,6 +119,22 @@ export interface IMyTvQShowEpisode
     next_id: string;
     api_source: string;
     api_id: {[key: string]: string|number};
+}
+
+export interface UiShowModel {
+    id: string;
+    name: string;
+    premiered: string;
+    channel: string;
+    status: number;
+    banner: string;
+    currentEpisodeName: string;
+    currentEpisodeDateFormatted: string;
+    currentEpisodeIn: string;
+    nextEpisodeName: string;
+    unseenEpisodes: number;
+    totalEpisodes: number;
+    expand: boolean;
 }
 
 export interface UiEpisodeModel {

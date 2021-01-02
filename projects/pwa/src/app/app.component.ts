@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { pairwise } from 'rxjs/operators';
-import { slider } from './services/animations';
+import { routeSliderStatePlusMinus } from './services/animations';
 import { NavigationService } from './services/navigation.service';
-import { ShowService } from './services/show.service';
+import { ShowService, TvWatchlistService } from './services/show.service';
 
 @Component({
     selector: 'tvq-root',
@@ -12,17 +11,15 @@ import { ShowService } from './services/show.service';
     styleUrls: ['./app.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        slider
-        // animation triggers go here
+        routeSliderStatePlusMinus,
     ]
 })
 export class AppComponent implements OnInit, OnDestroy {
     constructor(
-        private route: ActivatedRoute,
+        private activatedRoute: ActivatedRoute,
         private router: Router,
-        private appElement: ElementRef,
+        private tvSvc: TvWatchlistService,
         private navSvc: NavigationService,
-        private showSvc: ShowService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {
@@ -30,16 +27,29 @@ export class AppComponent implements OnInit, OnDestroy {
             this.router.navigate([path]);
         }
     }
-
     private subscriptions: Subscription[] = [];
     private scrollTop = 0;
     isHome = false;
+    isReady = false;
+    test = false;
     ngOnInit(): void {
+        this.tvSvc.initAll().subscribe(() => {
+            this.isReady = true;
+        });
         this.navSvc.onBack.subscribe(history => {
             this.isHome = history.url === '/home';
             console.log('pop history', history);
             this.scrollTop = history.position ? history.position[1] : 0;
         });
+        // this.routeTrigger$ = this.router.events.pipe(
+        //     filter(event => event instanceof NavigationEnd),
+        //     map(() => this.activatedRoute.firstChild),
+        //     switchMap(route => route && route.data || of(null)),
+        //     map(d => !!d ? d.index : 0),
+        //     tap(d => {
+        //         console.log('routeTrigger', d);
+        //     })
+        // );
     }
 
     onActivate(ev: any): void {
@@ -53,7 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     prepareRoute(outlet: RouterOutlet): any {
-        return outlet?.activatedRouteData?.animation;
+        return outlet?.activatedRouteData?.index;
     }
 
     ngOnDestroy(): void {

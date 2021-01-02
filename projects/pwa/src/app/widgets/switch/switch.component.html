@@ -1,0 +1,4 @@
+<label [ngClass]="{'bg-green-500': state}" class="relative items-center inline-block w-12 h-6 transition border rounded-full cursor-pointer border-grey">
+    <input type="checkbox" class="invisible" [(ngModel)]="state" (ngModelChange)="stateChange.emit(state)">
+    <span [ngClass]="{'translate-x-6':state}" class="absolute left-0 inline-block w-6 h-6 transition transform bg-white rounded-full shadow -top-px border-grey"></span>
+</label>

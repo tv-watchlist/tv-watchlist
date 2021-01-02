@@ -1,6 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +15,18 @@ import { BackButtonDirective } from './widgets/back-button.directive';
 import { EpisodeComponent } from './layouts/episode/episode.component';
 import { FormsModule } from '@angular/forms';
 import { DefaultImageDirective } from './widgets/default-img.directive';
+import { SwitchComponent } from './widgets/switch/switch.component';
+import { ToastComponent } from './widgets/toast/toast.component';
+
+@Injectable()
+export class HammerConfig extends HammerGestureConfig {
+//   overrides = {
+//       // I will only use the swap gesture so
+//       // I will deactivate the others to avoid overlaps
+//       pinch: { enable: false },
+//       rotate: { enable: false }
+//   };
+}
 
 @NgModule({
     declarations: [
@@ -25,9 +37,12 @@ import { DefaultImageDirective } from './widgets/default-img.directive';
         BackButtonDirective,
         DefaultImageDirective,
         EpisodeComponent,
+        SwitchComponent,
+        ToastComponent,
     ],
     imports: [
         BrowserModule,
+        HammerModule,
         BrowserAnimationsModule,
         FormsModule,
         AppRoutingModule,
@@ -35,7 +50,11 @@ import { DefaultImageDirective } from './widgets/default-img.directive';
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [
-        DatePipe
+        DatePipe,
+        // {
+        //     provide: HAMMER_GESTURE_CONFIG,
+        //     useClass: HammerConfig
+        //   }
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     bootstrap: [AppComponent]

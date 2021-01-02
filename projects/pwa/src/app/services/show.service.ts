@@ -5,38 +5,76 @@ import { Observable, of } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import myTvQJson from '../../assets/tv-watchlist-2020-12-23.json';
 
-@Injectable({providedIn: 'root'})
-export class ShowService {
-    constructor(private httpClient: HttpClient) {
-        this.initAll();
+
+@Injectable({ providedIn: 'root' })
+export class TvWatchlistService {
+    constructor(
+        private settingSvc: SettingService,
+        private showSvc: ShowService,
+    ) {
+        this.now = new Date().getTime();
     }
-    EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
-    shows: Map<string, IMyTvQShow> = new Map();
-    uiShowIdOrder: string[] = [];
-    settings!: IMyTvQSetting;
+
+    now: number;
+
     getMyTvQJson(): Observable<IMyTvQ> {
         return of(myTvQJson);
         // return this.httpClient.get<IMyTvQ>('./tv-watchlist-2020-12-23.json');
     }
 
-    initAll(): void {
-        const showList = (myTvQJson as IMyTvQ).show_list;
-        this.settings = (myTvQJson as IMyTvQ).settings;
+    initAll(): Observable<boolean> {
+        this.settingSvc.initSettings((myTvQJson as IMyTvQ).settings);
+        this.showSvc.initShowList(this.settingSvc.showsOrder, (myTvQJson as IMyTvQ).show_list);
+        return of(true);
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class SettingService {
+    private settings!: IMyTvQSetting;
+
+    initSettings(settings: IMyTvQSetting): void {
+        this.settings = settings;
+    }
+
+    getSettings(): IMyTvQSetting {
+        return this.settings;
+    }
+
+    get showsOrder(): string {
+        return this.settings.shows_order;
+    }
+
+    getTimezoneOffset(country?: string): number | undefined {
+        const timezoneOffset = this.settings.timezone_offset || {};
+        return !!country ? +timezoneOffset[country] : undefined;
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ShowService {
+    constructor(private commonSvc: CommonService) {
+    }
+
+    private EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
+
+    shows: Map<string, IMyTvQShow> = new Map();
+    showIdOrder: string[] = [];
+
+    initShowList(showsOrder: string, showList: IMyTvQShow[]): void {
         showList.forEach(o => {
             this.shows.set(o.show_id, o);
         });
-        const showsOrder = this.settings.shows_order;
-        const now = new Date().getTime();
         if (showsOrder === 'showname') {
             // http://www.javascriptkit.com/javatutors/arraysort2.shtml
-            if (showList.length){
+            if (showList.length) {
                 showList.sort((a, b) => {
                     const x = a.name.toLowerCase();
                     const y = b.name.toLowerCase();
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
                 });
             }
-            this.uiShowIdOrder = showList.map(o => o.show_id);
+            this.showIdOrder = showList.map(o => o.show_id);
         }
         else { // unseen or default airdate
             // get future shows
@@ -57,8 +95,8 @@ export class ShowService {
 
             // sort by desc
             tbaShowList.sort((a, b) => {
-                const x = (b.previous_episode || b.last_episode || {local_showtime: null}).local_showtime;
-                const y = (a.previous_episode || a.last_episode || {local_showtime: null}).local_showtime;
+                const x = (b.previous_episode || b.last_episode || { local_showtime: null }).local_showtime;
+                const y = (a.previous_episode || a.last_episode || { local_showtime: null }).local_showtime;
                 return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             });
 
@@ -70,8 +108,8 @@ export class ShowService {
             });
             // sort by desc
             endedShowList.sort((a, b) => {
-                const x = (b.last_episode || {local_showtime: null}).local_showtime;
-                const y = (a.last_episode || {local_showtime: null}).local_showtime;
+                const x = (b.last_episode || { local_showtime: null }).local_showtime;
+                const y = (a.last_episode || { local_showtime: null }).local_showtime;
                 return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             });
 
@@ -79,7 +117,7 @@ export class ShowService {
 
             let newShowList = futureShowList.concat(tbaEnded);
 
-            if ( showsOrder === 'unseen' ) {
+            if (showsOrder === 'unseen') {
                 const showListUnseen = newShowList.filter((item) => {
                     return item.unseen_count > 0;
                 });
@@ -93,8 +131,26 @@ export class ShowService {
                 });
                 newShowList = showListUnseen.concat(showListSeen);
             }
-            this.uiShowIdOrder = newShowList.map(o => o.show_id);
+            this.showIdOrder = newShowList.map(o => o.show_id);
         }
+    }
+
+    getShow(showId: string): IMyTvQShow | undefined {
+        return this.shows.get(showId);
+    }
+
+    getShowByEpisodeId(episodeId: string): IMyTvQShow | undefined {
+        const showId = episodeId.split('_')[0];
+        return this.shows.get(showId);
+    }
+
+    getEpisodeList(showId: string): { [episodeId: string]: IMyTvQShowEpisode } {
+        return this.shows.get(showId)?.episode_list || {};
+    }
+
+    getEpisode(episodeId: string): IMyTvQShowEpisode | undefined {
+        const list = this.getShowByEpisodeId(episodeId)?.episode_list;
+        return list && list[episodeId];
     }
 
     getShowStatus(show: IMyTvQShow): -1 | 0 | 1 {
@@ -114,14 +170,24 @@ export class ShowService {
     }
 }
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class EpisodeService {
     constructor(
+        private commonSvc: CommonService,
         private datePipe: DatePipe,
-        ){
+    ) {
+    }
 
+    // episodes: Map<string, IMyTvQShow> = new Map();
+    createEpisodeId(episode: IMyTvQShowEpisode): string {
+        if (episode.special) {
+            return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_S${this.commonSvc.zeroPad(episode.number, 4)}`;
+        } else {
+            return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_${this.commonSvc.zeroPad(episode.number, 4)}`;
         }
-    getEpisodeName(episode: IMyTvQShowEpisode): string {
+    }
+
+    getEpisodeName(episode?: IMyTvQShowEpisode): string {
         if (!!episode) {
             return episode.special ? `[Special ${episode.counter}] ${episode.name}` :
                 `${episode.counter}.(${episode.season}x${episode.number}) ${episode.name}`;
@@ -130,13 +196,12 @@ export class EpisodeService {
         }
     }
 
-    getNextEpisodeDays(episode: IMyTvQShowEpisode): string {
+    getNextEpisodeDays(episode?: IMyTvQShowEpisode): string {
         if (!episode) {
             return 'TBA';
         }
-        return this.getDaysBetweenToEnglish(new Date(), new Date(episode.local_showtime));
+        return this.commonSvc.getDaysBetweenToEnglish(new Date(), new Date(episode.local_showtime));
     }
-
 
     getFormattedTime(episode: IMyTvQShowEpisode): string | null {
         return this.datePipe.transform(episode.local_showtime, '(EEE h:mm a, MMM d, y)') || '(n/a)';
@@ -144,6 +209,27 @@ export class EpisodeService {
 
     getFormattedDate(episode: IMyTvQShowEpisode): string | null {
         return this.datePipe.transform(episode.local_showtime, '(MMM d, y)') || '(n/a)';
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class CommonService {
+    constructor() {
+        this.now = new Date().getTime();
+    }
+    private now: number;
+
+    get time(): number {
+        return this.now;
+    }
+
+    zeroPad(num: number, places: number): string {
+        if (!num) { num = 0; }
+        return Array(Math.max(places - String(num).length + 1, 0)).join('0') + num;
+    }
+
+    sortFunction(x: any, y: any): number {
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     }
 
     getDaysBetween(first: Date, second: Date): number {

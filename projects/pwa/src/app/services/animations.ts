@@ -3,7 +3,11 @@ import { trigger, transition, style, query, animateChild, animate, group } from 
 const optional = { optional: true };
 
 // https://fireship.io/lessons/angular-router-animations/
-const slideTo = (direction: string) => {
+const slideXTo = (direction: string) => {
+    // make sure parent or [@triggerName] element is relative
+    // look for child which is toggled in dom and set initial style of absolute and direction 0.
+    // on dom add (or :enter) set initial direction -100%
+    // and on dom remove (or :leave) set direction 100% and new :enter to 0%
     return [
         query(':enter, :leave', [
             style({
@@ -15,7 +19,7 @@ const slideTo = (direction: string) => {
         ], optional),
         query(':enter', [
             style({ [direction]: '-100%' })
-        ]),
+        ], optional),
         group([
             query(':leave', [
                 animate('400ms ease-in-out', style({ [direction]: '100%' }))
@@ -25,33 +29,22 @@ const slideTo = (direction: string) => {
             ], optional)
         ]),
         // Normalize the page style... Might not be necessary
-
         // Required only if you have child animations on the page
-        // query(':leave', animateChild()),
-        // query(':enter', animateChild()),
+        query(':leave', animateChild(), optional),
+        query(':enter', animateChild(), optional),
     ];
 };
 
-export const slider =
-    trigger('routeAnimations', [
-        transition('* => isLeft', slideTo('left')),
-        transition('* => isRight', slideTo('right')),
-        transition('isRight => *', slideTo('left')),
-        transition('isLeft => *', slideTo('right'))
+export const routerSliderStateLnR =
+    trigger('routerSliderStateLnR', [
+        transition('* => isLeft', slideXTo('left')),
+        transition('* => isRight', slideXTo('right')),
+        transition('isRight => *', slideXTo('left')),
+        transition('isLeft => *', slideXTo('right')),
     ]);
 
-export const routeSlide =
-    trigger('routeSlide', [
-      transition('* <=> *', [
-        group([
-          query(':enter', [
-            style({transform: 'translateX({{offsetEnter}}%)'}),
-            animate('0.4s ease-in-out', style({transform: 'translateX(0%)'}))
-          ], {optional: true}),
-          query(':leave', [
-            style({transform: 'translateX(0%)'}),
-            animate('0.4s ease-in-out', style({transform: 'translateX({{offsetLeave}}%)'}))
-          ], {optional: true}),
-        ])
-      ]),
+export const routeSliderStatePlusMinus =
+    trigger('routeSliderStatePlusMinus', [
+        transition(':increment', slideXTo('right')),
+        transition(':decrement', slideXTo('left'))
     ]);

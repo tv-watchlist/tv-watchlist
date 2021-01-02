@@ -21,12 +21,16 @@ module.exports = {
                 "safe-top-2": "calc(env(safe-area-inset-top) + 3rem)"
             },
             screens: {
-                standalone: {raw: "(display-mode: standalone)"}
+                standalone: {
+                    raw: "(display-mode: standalone)"
+                }
             }
         },
     },
     variants: {
-        extend: {},
+        extend: {
+            backgroundColor: ["checked-sibling"],
+        },
     },
     plugins: [
         require('@tailwindcss/typography'),
@@ -35,13 +39,29 @@ module.exports = {
             addComponents,
             theme
         }) => {
-            addComponents({
+            const container = {
                 // https://dev.to/bourhaouta/tailwind-container-the-right-way-5g77
                 ".container": {
                     "@apply mx-auto": {},
                     maxWidth: theme("screens.sm"),
                 },
-            });
+            };
+            addComponents(container);
         },
+        ({
+            addVariant,
+            e,
+            postcss
+        }) => {
+            addVariant("checked-sibling", ({
+                container,
+                separator
+            }) => {
+                container.walkRules((rule) => {
+                    rule.selector = `:checked + .checked-sibling\\:${rule.selector.slice(1)}`;
+                    // rule.selector = `.${e(`:checked + .checked-sibling${separator}${rule.selector.slice(1)}`)}`
+                });
+            });
+        }
     ],
 };

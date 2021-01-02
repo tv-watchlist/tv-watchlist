@@ -4,11 +4,13 @@ import { Routes, RouterModule, Router } from '@angular/router';
 import { CustomReuseStrategy } from './services/cache-route-reuse.strategy';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
+import { SettingComponent } from './pages/setting/setting.component';
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
-    { path: 'home', component: HomeComponent, data: { animation: 'isLeft', reuseRoute: true } },
-    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { animation: 'isRight' } },
+    { path: 'home', component: HomeComponent, data: { animation: 'isLeft', reuseRoute: true, index: 0 } },
+    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { animation: 'isRight', index: 1 } },
+    { path: 'setting', component: SettingComponent, data: { animation: 'isRight', index: 2 } },
 ];
 
 @NgModule({

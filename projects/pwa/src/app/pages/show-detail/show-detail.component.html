@@ -67,10 +67,10 @@
     </div>
 </div>
 <div class="flex flex-wrap mb-2 text-gray-800 ">
-    <div class="w-full mb-2" *ngFor="let episode of episodeList[selectedSeasonNum]">
+    <div class="w-full mb-2" *ngFor="let episodeId of episodeList[selectedSeasonNum]">
         <tvq-episode
-        [episode]="episode"
-        [highLightNextEpisodeId]="highLightNextEpisode" ></tvq-episode>
+        [episodeId]="episodeId"
+        [highLightNextEpisodeId]="highLightNextEpisodeId" ></tvq-episode>
     </div>
 </div>
 

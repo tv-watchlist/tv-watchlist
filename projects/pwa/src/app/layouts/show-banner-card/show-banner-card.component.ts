@@ -2,31 +2,14 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IMyTvQ, IMyTvQShow, IMyTvQShowEpisode } from '../../services/model';
+import { IMyTvQ, IMyTvQShow, IMyTvQShowEpisode, UiShowModel } from '../../services/model';
 import { EpisodeService, ShowService } from '../../services/show.service';
-
-export interface UiShowModel {
-    id: string;
-    name: string;
-    premiered: string;
-    channel: string;
-    status: number;
-    banner: string;
-    currentEpisodeName: string;
-    currentEpisodeDateFormatted: string;
-    currentEpisodeIn: string;
-    nextEpisodeName: string;
-    unseenEpisodes: number;
-    totalEpisodes: number;
-    expand: boolean;
-}
 
 @Component({
     selector: 'tvq-show-banner-card',
     templateUrl: 'show-banner-card.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ShowBannerCardComponent implements OnInit {
     constructor(
         private showSvc: ShowService,
@@ -44,9 +27,10 @@ export class ShowBannerCardComponent implements OnInit {
         if (!this.showId) {
             throw (new Error('The required input [show] was not provided'));
         }
-        const show = this.showSvc.shows.get(this.showId);
+        const show = this.showSvc.getShow(this.showId);
         if (!!show) {
             const currentEpisode = show.next_episode || show.last_episode;
+            const episode = this.showSvc.getEpisode(currentEpisode.episode_id);
             const status = this.showSvc.getShowStatus(show);
             this.model = {
                 id: show.show_id,
@@ -55,9 +39,9 @@ export class ShowBannerCardComponent implements OnInit {
                 banner: show.image?.banner[0] || '',
                 channel: show.channel.name || '',
                 status,
-                currentEpisodeName: this.episodeSvc.getEpisodeName(currentEpisode),
-                currentEpisodeDateFormatted: this.getFormattedTime(currentEpisode.local_showtime, status),
-                currentEpisodeIn: this.episodeSvc.getNextEpisodeDays(currentEpisode),
+                currentEpisodeName: this.episodeSvc.getEpisodeName(episode),
+                currentEpisodeDateFormatted: this.getFormattedTime(status, episode?.local_showtime),
+                currentEpisodeIn: this.episodeSvc.getNextEpisodeDays(episode),
                 nextEpisodeName: 'Episode Placeholder',
                 unseenEpisodes: show.unseen_count,
                 totalEpisodes: show.total_episodes,
@@ -68,7 +52,7 @@ export class ShowBannerCardComponent implements OnInit {
         this.cdRef.markForCheck();
     }
 
-    getFormattedTime(localShowtime: number, status: number): string {
+    getFormattedTime(status: number, localShowtime?: number): string {
         switch (status) {
             case 0:
                 return this.datePipe.transform(localShowtime, 'EEE h:mm a, MMM d, y') || 'n/a';

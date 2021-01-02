@@ -21,10 +21,10 @@ export class ShowDetailComponent implements OnInit {
 
     show!: IMyTvQShow;
     showDetails = false;
-    episodeList: {[season: number]: UiEpisodeModel[]} = {};
+    episodeList: {[season: number]: string[]} = {};
     seasonNumList: any[] = [];
     openSeason!: number;
-    highLightNextEpisode!: string;
+    highLightNextEpisodeId!: string;
     totalEpisodes = 0;
     private toggleViewState: {[state: string]: boolean} = {};
     seasonOrderAsc = true;
@@ -32,61 +32,29 @@ export class ShowDetailComponent implements OnInit {
     selectedSeasonNum = 1;
     ngOnInit(): void {
         this.activatedRoute.params.subscribe((p) => {
-            this.show = this.showSvc.shows.get(p.showId) as IMyTvQShow;
+            this.show = this.showSvc.getShow(p.showId) as IMyTvQShow;
             const today = new Date().getTime();
             this.seasonNumList.length = 0;
             this.clearObj(this.episodeList);
             const season = 0;
             let isUnairedFlagSet = false;
             this.openSeason = 0;
-            this.highLightNextEpisode = '';
+            this.highLightNextEpisodeId = '';
             this.totalEpisodes = 0;
-            const globalSettings = this.showSvc.settings;
-            console.log('globalSettings', globalSettings);
-            const timezoneOffset = globalSettings.timezone_offset || {};
 
-            const episodeList: {[season: number]: UiEpisodeModel[]} = {};
+            const episodeList: {[season: number]: string[]} = {};
             for (const episodeId in this.show.episode_list) {
                 if (Object.prototype.hasOwnProperty.call(this.show.episode_list, episodeId)) {
                     const episode = this.show.episode_list[episodeId];
-                    const uiModel: UiEpisodeModel = {
-                        id: episode.episode_id,
-                        episodeName: this.episodeSvc.getEpisodeName(episode),
-                        dateFormatted: '',
-                        summary: episode.summary,
-                        isUnaired: false,
-                        image: Array.isArray(episode.image?.poster) ? episode.image?.poster[0] : episode.image?.poster ,
-                        seen: episode.seen,
-                        expand: false,
-                    };
+
                     if (!isUnairedFlagSet && episode.local_showtime > today) {
                         this.openSeason = episode.season;
-                        this.highLightNextEpisode = episode.episode_id;
+                        this.highLightNextEpisodeId = episode.episode_id;
                     }
                     if (episode.local_showtime > today) {
                         // this.episodeList.push({"type":"label", "text":`**UNAIRED**`});
                         isUnairedFlagSet = true;
-                        uiModel.isUnaired = true;
                     }
-
-                    if (episode.local_showtime) {
-                        const offsetNextDate = new Date(episode.local_showtime);
-                        if (this.show?.channel?.country && timezoneOffset[this.show.channel.country.name]) {
-                            offsetNextDate.setMinutes(offsetNextDate.getMinutes() +
-                                (60 * Number(timezoneOffset[this.show.channel.country.name])));
-                        }
-                        // Sat 1:25 PM, Jul 23rd, 2016
-                        if (isUnairedFlagSet) {
-                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, 'EEE hh:mm a, MMM dd, y') || 'n/a';
-                        } else {
-                            uiModel.dateFormatted = this.datePipe.transform(offsetNextDate, 'MMM dd, y') || 'n/a';
-                        }
-                    } else {
-                        uiModel.dateFormatted = '(n/a)';
-                    }
-
-                    uiModel.summary = episode.summary;
-
 
                     if (!episodeList[episode.season]) {
                         episodeList[episode.season] = [];
@@ -97,7 +65,7 @@ export class ShowDetailComponent implements OnInit {
                     }
                     this.toggleViewState['buttonEpisode' + episode.episode_id] = false;
 
-                    episodeList[episode.season].push(uiModel);
+                    episodeList[episode.season].push(episode.episode_id);
                 }
             }
 
