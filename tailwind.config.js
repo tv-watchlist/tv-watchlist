@@ -18,7 +18,8 @@ module.exports = {
             spacing: {
                 "safe-top": "env(safe-area-inset-top)",
                 "safe-top-1": "calc(env(safe-area-inset-top) + 2.5rem)",
-                "safe-top-2": "calc(env(safe-area-inset-top) + 3rem)"
+                "safe-top-2": "calc(env(safe-area-inset-top) + 3rem)",
+                "safe-bottom": "env(safe-area-inset-bottom)",
             },
             screens: {
                 standalone: {
