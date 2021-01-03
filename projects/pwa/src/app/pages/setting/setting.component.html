@@ -1,1 +1,31 @@
-<h1 class="text-2xl text-red-500">Settings</h1>
+<h1 class="text-lg text-gray-700">Settings</h1>
+<ul class="flex flex-col -mx-1 bg-white">
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span class="my-auto text-sm">Hide Seen TBA/Complete Shows</span>
+        <tvq-switch [(state)]="settingSvc.hideTba"></tvq-switch>
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span>Hide Seen Episodes</span>
+        <tvq-switch [(state)]="settingSvc.hideSeen"></tvq-switch>
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span>Shows Order</span>
+        <span class="my-auto text-sm text-gray-500" (click)="menu1.openMenu()">
+            {{settingSvc.showsOrder}}
+            <svg class="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </span>
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span>Default Episodes</span>
+        <span class="my-auto text-sm text-gray-500" (click)="menu2.openMenu()">
+            {{settingSvc.DefaultEpisodes}}
+            <svg class="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </span>
+    </li>
+</ul>
+<tvq-options-menu #menu1 (action)="settingSvc.showsOrder=$event" [default]="settingSvc.showsOrder" [options]="['airdate','name']"></tvq-options-menu>
+<tvq-options-menu #menu2 (action)="settingSvc.DefaultEpisodes=$event" [default]="settingSvc.DefaultEpisodes" [options]="['bookmarked','latest']"></tvq-options-menu>

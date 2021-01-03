@@ -17,6 +17,10 @@ import { FormsModule } from '@angular/forms';
 import { DefaultImageDirective } from './widgets/default-img.directive';
 import { SwitchComponent } from './widgets/switch/switch.component';
 import { ToastComponent } from './widgets/toast/toast.component';
+import { OptionsMenuComponent } from './widgets/options-menu/options-menu.component';
+import { SettingComponent } from './pages/setting/setting.component';
+import { NavigationComponent } from './widgets/navigation/navigation.component';
+import { AboutComponent } from './pages/about/about.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -39,6 +43,10 @@ export class HammerConfig extends HammerGestureConfig {
         EpisodeComponent,
         SwitchComponent,
         ToastComponent,
+        SettingComponent,
+        OptionsMenuComponent,
+        NavigationComponent,
+        AboutComponent,
     ],
     imports: [
         BrowserModule,

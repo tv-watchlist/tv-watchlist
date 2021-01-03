@@ -5,12 +5,14 @@ import { CustomReuseStrategy } from './services/cache-route-reuse.strategy';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { SettingComponent } from './pages/setting/setting.component';
+import { AboutComponent } from './pages/about/about.component';
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
-    { path: 'home', component: HomeComponent, data: { animation: 'isLeft', reuseRoute: true, index: 0 } },
-    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { animation: 'isRight', index: 1 } },
-    { path: 'setting', component: SettingComponent, data: { animation: 'isRight', index: 2 } },
+    { path: 'home', component: HomeComponent, data: { reuseRoute: true, index: 0 } },
+    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { index: 1 } },
+    { path: 'setting', component: SettingComponent, data: { index: 2 } },
+    { path: 'about', component: AboutComponent, data: { index: 3 } },
 ];
 
 @NgModule({

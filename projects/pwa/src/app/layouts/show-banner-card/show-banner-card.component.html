@@ -16,28 +16,28 @@
                 'bg-green-500': model.status === 0,
                 'bg-blue-500': model.status === 1}">
                 <ng-container [ngSwitch]="model.status">
-                    <span class="truncate" *ngSwitchCase="0">{{model.currentEpisodeDateFormatted}}</span>
+                    <span class="truncate" *ngSwitchCase="0">{{model.latestEpisodeDateFormatted}}</span>
                     <span *ngSwitchCase="1">TBA</span>
                     <span *ngSwitchDefault>Completed</span>
                 </ng-container>
             </span>
         </div>
         <div class="flex justify-between w-full" [ngClass]="{'mb-2':model.expand}">
-            <span *ngIf="model.status === 0" class="w-full" [innerHTML]="model.currentEpisodeName"></span>
+            <span *ngIf="model.status === 0" class="w-full" [innerHTML]="model.latestEpisodeName"></span>
             <ng-container *ngIf="model.status !== 0">
-                <span class="w-9/12 truncate" [ngClass]="{'w-9/12':model.currentEpisodeDateFormatted.length > 3, 'w-11/12':model.currentEpisodeDateFormatted.length <= 3}" [innerHTML]="model.currentEpisodeName"></span>
-                <span class="px-1 my-auto text-xs text-right" [innerHTML]="model.currentEpisodeDateFormatted"></span>
+                <span class="w-9/12 truncate" [ngClass]="{'w-9/12':model.latestEpisodeDateFormatted.length > 3, 'w-11/12':model.latestEpisodeDateFormatted.length <= 3}" [innerHTML]="model.latestEpisodeName"></span>
+                <span class="px-1 my-auto text-xs text-right" [innerHTML]="model.latestEpisodeDateFormatted"></span>
             </ng-container>
         </div>
         <div class="flex justify-center" *ngIf="!model.expand">
-            <button class="outline-none" (click)="model.expand = !model.expand">
+            <button class="focus:outline-none" (click)="model.expand = !model.expand">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
         </div>
         <ng-container *ngIf="model.expand">
             <div class="flex justify-between w-full gap-1 mb-2">
                 <span class="flex justify-between w-10/12 px-1 my-auto text-sm truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
-                    <span class="truncate">Episode Placeholder</span>
+                    <span class="truncate">{{model.nextEpisodeName || '**All Seen**'}}</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +45,7 @@
                         </svg>
                     </button>
                 </span>
-                <button class="inline-flex justify-center w-1/12 text-white" title="Watched">
+                <button (click)="markAsSeen()" [class.invisible]="model.unseenEpisodes===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
                     <!--Tick-->
                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
@@ -53,21 +53,12 @@
                             clip-rule="evenodd" />
                     </svg>
                 </button>
-                <button class="inline-flex justify-center w-1/12 text-white" title="External">
-                    <!--Link-->
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path
-                            d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                        <path
-                            d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                    </svg>
-                </button>
             </div>
             <div class="flex justify-between w-full text-sm">
                 <div class="w-11/12">
                     <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
                     <span class="my-auto mr-4" *ngIf="model.unseenEpisodes">Unseen: {{model.unseenEpisodes}}</span>
-                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.currentEpisodeIn}}</span>
+                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.latestEpisodeIn}}</span>
                 </div>
             </div>
         </ng-container>

@@ -23,6 +23,9 @@ export interface IMyTvQSetting {
     ui: IMyTvQUiSetting;
     update_time: number;
     timezone_offset: {[country: string]: number};
+    hide_tba: boolean;
+    hide_seen: boolean;
+    default_episodes: string;
 }
 
 export interface IMyTvQUiSetting
@@ -78,11 +81,10 @@ export interface IMyTvQShow {
     };
     unseen_count: number;
     total_episodes: number;
-    first_episode: {episode_id: string, local_showtime: number};
-    previous_episode: {episode_id: string, local_showtime: number};
-    next_episode: {episode_id: string, local_showtime: number};
-    last_episode: {episode_id: string, local_showtime: number};
-    unseen_episode: {episode_id: string, local_showtime: number};
+    first_episode: IMyTvQShowEpisode;
+    previous_episode: IMyTvQShowEpisode;
+    next_episode: IMyTvQShowEpisode;
+    last_episode: IMyTvQShowEpisode;
     episode_list: {[episodeId: string]: IMyTvQShowEpisode};
 }
 // tvmaze5027_0024_0001_0024S02:
@@ -128,9 +130,9 @@ export interface UiShowModel {
     channel: string;
     status: number;
     banner: string;
-    currentEpisodeName: string;
-    currentEpisodeDateFormatted: string;
-    currentEpisodeIn: string;
+    latestEpisodeName: string;
+    latestEpisodeDateFormatted: string;
+    latestEpisodeIn: string;
     nextEpisodeName: string;
     unseenEpisodes: number;
     totalEpisodes: number;
@@ -146,4 +148,5 @@ export interface UiEpisodeModel {
     isUnaired: boolean;
     seen: boolean;
     expand: boolean;
+    url: string;
 }

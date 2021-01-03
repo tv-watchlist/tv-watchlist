@@ -6,6 +6,12 @@ import { DatePipe } from '@angular/common';
 import { map, tap } from 'rxjs/operators';
 // import myTvQJson from '../../assets/tv-watchlist-2020-12-23.json';
 
+export interface IMyTvQShowImportantEpisodes {
+    first: IMyTvQShowEpisode | undefined;
+    last: IMyTvQShowEpisode| undefined;
+    next: IMyTvQShowEpisode| undefined;
+    latest: IMyTvQShowEpisode| undefined;
+}
 
 @Injectable({ providedIn: 'root' })
 export class TvWatchlistService {
@@ -49,12 +55,44 @@ export class SettingService {
     }
 
     get showsOrder(): string {
-        return this.settings.shows_order;
+        return this.settings.shows_order || 'airdate';
+    }
+
+    set showsOrder(val: string) {
+        this.settings.shows_order = val;
+    }
+
+    get DefaultEpisodes(): string {
+        return this.settings.default_episodes || 'bookmarked';
+    }
+
+    set DefaultEpisodes(val: string) {
+        this.settings.default_episodes = val;
+    }
+
+    get hideTba(): boolean {
+        return this.settings.hide_tba || false;
+    }
+
+    set hideTba(val: boolean) {
+        this.settings.hide_tba = val;
+    }
+
+    get hideSeen(): boolean {
+        return this.settings.hide_seen || false;
+    }
+
+    set hideSeen(val: boolean) {
+        this.settings.hide_seen = val;
+    }
+
+    get defaultCountry(): string {
+        return this.settings.default_country || 'US';
     }
 
     getTimezoneOffset(country?: string): number | undefined {
         const timezoneOffset = this.settings.timezone_offset || {};
-        return !!country ? +timezoneOffset[country] : undefined;
+        return +timezoneOffset[country || this.defaultCountry];
     }
 }
 
@@ -146,6 +184,34 @@ export class ShowService {
         return this.shows.get(showId);
     }
 
+    getImportantEpisodes(showId: string): IMyTvQShowImportantEpisodes {
+        const show = this.getShow(showId);
+        if (!!show) {
+            let next;
+            for (const episodeId in show.episode_list) {
+                if (Object.prototype.hasOwnProperty.call(show.episode_list, episodeId)) {
+                    const episode = show.episode_list[episodeId];
+                    if (!next && !episode.seen) {
+                        next = episode;
+                    }
+                }
+            }
+            return {
+                first: show?.first_episode,
+                last: show?.last_episode,
+                next,
+                latest: show?.next_episode
+            };
+        }
+
+        return {
+            first: undefined,
+            last: undefined,
+            next: undefined,
+            latest: undefined,
+        };
+    }
+
     getShowByEpisodeId(episodeId: string): IMyTvQShow | undefined {
         const showId = episodeId.split('_')[0];
         return this.shows.get(showId);
@@ -155,9 +221,12 @@ export class ShowService {
         return this.shows.get(showId)?.episode_list || {};
     }
 
-    getEpisode(episodeId: string): IMyTvQShowEpisode | undefined {
-        const list = this.getShowByEpisodeId(episodeId)?.episode_list;
-        return list && list[episodeId];
+    getEpisode(episodeId?: string): IMyTvQShowEpisode | undefined {
+        if (!!episodeId) {
+            const list = this.getShowByEpisodeId(episodeId)?.episode_list;
+            return list && list[episodeId];
+        }
+        return undefined;
     }
 
     getShowStatus(show: IMyTvQShow): -1 | 0 | 1 {
@@ -199,7 +268,7 @@ export class EpisodeService {
             return episode.special ? `[Special ${episode.counter}] ${episode.name}` :
                 `${episode.counter}.(${episode.season}x${episode.number}) ${episode.name}`;
         } else {
-            return 'TBA';
+            return '';
         }
     }
 
@@ -228,6 +297,23 @@ export class CommonService {
 
     get time(): number {
         return this.now;
+    }
+
+    clearObj(object: any): void {
+        for (const key in object) {
+            if (Object.prototype.hasOwnProperty.call(object, key)) {
+                delete object[key];
+            }
+        }
+    }
+
+    getKeys(obj: any): string[] {
+        if (obj) {
+            return Object.keys(obj);
+        }
+        else {
+            return [];
+        }
     }
 
     zeroPad(num: number, places: number): string {

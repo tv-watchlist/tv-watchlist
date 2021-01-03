@@ -1,9 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UiEpisodeModel } from '../../services/model';
 import { ShowService, EpisodeService, SettingService } from '../../services/show.service';
-
 
 @Component({
     selector: 'tvq-episode',
@@ -38,13 +37,14 @@ export class EpisodeComponent implements OnInit {
 
         this.model = {
             id: episode.episode_id,
-            episodeName: this.episodeSvc.getEpisodeName(episode),
+            episodeName: this.episodeSvc.getEpisodeName(episode) || 'TBA',
             dateFormatted: '',
             summary: episode.summary,
             isUnaired: episode.local_showtime > this.today,
             image: Array.isArray(episode.image?.poster) ? episode.image?.poster[0] : episode.image?.poster ,
             seen: episode.seen,
             expand: false,
+            url: episode.url,
         };
 
         if (episode.local_showtime) {
@@ -65,5 +65,14 @@ export class EpisodeComponent implements OnInit {
 
 
         this.cdRef.markForCheck();
+    }
+
+    expand(): void {
+        this.model.expand = !this.model.expand;
+    }
+
+    goToUrl(): void {
+        // this.document.location.href = this.model.url;
+        window.open(this.model.url, '_blank');
     }
 }

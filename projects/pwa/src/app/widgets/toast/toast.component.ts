@@ -4,9 +4,9 @@ import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeave
 @Component({
     selector: 'tvq-toast',
     templateUrl: 'toast.component.html',
-    animations: [slideInUpOnEnterAnimation({ duration: 200 }),
-    slideOutDownOnLeaveAnimation({ duration: 200 }),
-    fadeOutOnLeaveAnimation({ duration: 200 })]
+    animations: [slideInUpOnEnterAnimation({ duration: 400 }),
+    slideOutDownOnLeaveAnimation({ duration: 400 }),
+    fadeOutOnLeaveAnimation({ duration: 400 })]
 })
 export class ToastComponent implements OnInit {
     constructor() { }

@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="flex flex-col h-screen gap-2 bg-gray-100">
+    <div class="flex flex-col min-h-screen gap-2 bg-gray-100">
         <header class="fixed top-0 left-0 right-0 z-10 flex justify-between px-2 text-white bg-orange-500 h-11 standalone:pt-safe-top standalone:h-safe-top-1">
             <button class="mt-1 focus:outline-none" tvqBackButton [class.invisible]="isHome">
                 <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -7,14 +7,15 @@
                   </svg>
             </button>
             <h2 class="mt-1 text-2xl cursor-pointer focus:outline-none" [routerLink]="['/home']">TV Watchlist</h2>
-            <button class="focus:outline-none" [routerLink]="['/setting']">
+            <button class="focus:outline-none" (click)="nav.openMenu()">
                 <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
                   </svg>
             </button>
         </header>
+        <tvq-navigation #nav></tvq-navigation>
         <main *ngIf="isReady; else showLoader" [@routeSliderStatePlusMinus]="prepareRoute(outlet)"
-            class="relative flex-1 mx-2 mt-12 mb-2 standalone:mt-safe-top-2">
+            class="relative flex-1 mx-2 mt-12 mb-2 standalone:mt-safe-top-2 ">
             <router-outlet #outlet="outlet" (activate)="onActivate($event)" ></router-outlet>
         </main>
         <ng-template #showLoader>
