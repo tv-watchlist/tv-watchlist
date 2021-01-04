@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { UiEpisodeModel } from '../../services/model';
 import { ShowService, EpisodeService, SettingService } from '../../services/show.service';
@@ -23,7 +23,9 @@ export class EpisodeComponent implements OnInit {
 
     private today: number;
     @Input() public episodeId!: string;
-    @Input() public highLightNextEpisodeId = '';
+    @Input() public latestEpisodeId = '';
+    @Output() public seenToggled = new EventEmitter<boolean>();
+
     model!: UiEpisodeModel;
     ngOnInit(): void {
         if (!this.episodeId) {
@@ -71,8 +73,17 @@ export class EpisodeComponent implements OnInit {
         this.model.expand = !this.model.expand;
     }
 
-    goToUrl(): void {
+    toggleSeen(): void {
+        this.model.seen = !this.model.seen;
+        const episode = this.showSvc.getEpisode(this.episodeId);
+        if (!!episode) {
+            episode.seen = this.model.seen;
+            this.seenToggled.emit(episode.seen);
+        }
+    }
+
+    goToUrl(url: string): void {
         // this.document.location.href = this.model.url;
-        window.open(this.model.url, '_blank');
+        window.open(url, '_blank');
     }
 }

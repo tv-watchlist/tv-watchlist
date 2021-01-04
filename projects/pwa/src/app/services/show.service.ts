@@ -98,7 +98,11 @@ export class SettingService {
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {
-    constructor(private commonSvc: CommonService) {
+
+    constructor(
+        private settingSvc: SettingService,
+        private commonSvc: CommonService,
+        ) {
     }
 
     private EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
@@ -119,7 +123,6 @@ export class ShowService {
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
                 });
             }
-            this.showIdOrder = showList.map(o => o.show_id);
         }
         else { // unseen or default airdate
             // get future shows
@@ -177,6 +180,12 @@ export class ShowService {
                 newShowList = showListUnseen.concat(showListSeen);
             }
             this.showIdOrder = newShowList.map(o => o.show_id);
+        }
+
+        if (this.settingSvc.hideTba) {
+            this.showIdOrder = this.showIdOrder.map(o => this.shows.get(o))
+                .filter(o => !!o && (o.unseen_count > 0 || !!o.next_episode))
+                .map(o => (!!o && o.show_id) as string);
         }
     }
 
@@ -243,6 +252,11 @@ export class ShowService {
         else {
             return 1; // TBA
         }
+    }
+
+    removeShow(showId: string): void {
+        this.shows.delete(showId);
+        this.showIdOrder.splice(this.showIdOrder.findIndex(o => o === showId), 1);
     }
 }
 
