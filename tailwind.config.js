@@ -1,20 +1,17 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-    purge: [
+    content: [
         './projects/**/*.html',
         './projects/**/*.ts',
         './projects/**/*.css'
     ],
-    darkMode: false, // or 'media' or 'class'
-    corePlugins: {
-        container: false,
-    },
+    safelist: [],
     theme: {
         extend: {
-            colors: {
-                orange: colors.orange
-            },
+            // colors: {
+            //     orange: colors.orange
+            // },
             spacing: {
                 "safe-top": "env(safe-area-inset-top)",
                 "safe-top-1": "calc(env(safe-area-inset-top) + 2.5rem)",
@@ -28,10 +25,8 @@ module.exports = {
             }
         },
     },
-    variants: {
-        extend: {
-            backgroundColor: ["checked-sibling"],
-        },
+    corePlugins: {
+        container: false,
     },
     plugins: [
         require('@tailwindcss/typography'),
