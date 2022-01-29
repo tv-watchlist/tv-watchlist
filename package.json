@@ -30,7 +30,6 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^10.0.1",
     "@angular-devkit/build-angular": "~12.2.15",
     "@angular/cli": "~12.2.15",
     "@angular/compiler-cli": "~12.2.16",
@@ -49,8 +48,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^12.2.6",
-    "ngx-build-plus": "^10.1.1",
-    "ngx-tailwind": "^1.1.0",
     "postcss": "^8.4.5",
     "postcss-import": "^14.0.0",
     "postcss-loader": "^4.1.0",
