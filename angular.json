@@ -22,7 +22,6 @@
             "main": "projects/pwa/src/main.ts",
             "polyfills": "projects/pwa/src/polyfills.ts",
             "tsConfig": "projects/pwa/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/pwa/src/404.html",
               "projects/pwa/src/README.md",
@@ -39,7 +38,13 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
                 "hammerjs"
-            ]
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -71,7 +76,8 @@
               "serviceWorker": true,
               "ngswConfigPath": "projects/pwa/ngsw-config.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "ngx-build-plus:dev-server",
@@ -152,7 +158,6 @@
             "main": "projects/webextension/src/main.ts",
             "polyfills": "projects/webextension/src/polyfills.ts",
             "tsConfig": "projects/webextension/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/webextension/src/favicon.ico",
               "projects/webextension/src/assets"
@@ -160,7 +165,13 @@
             "styles": [
               "projects/webextension/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -190,7 +201,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
