@@ -1,4 +1,3 @@
-import { BuiltinMethod } from "@angular/compiler";
 
 export interface IMyTvQ {
     data_structure_version: number;
