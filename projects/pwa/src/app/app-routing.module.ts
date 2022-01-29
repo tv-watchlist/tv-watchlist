@@ -6,13 +6,15 @@ import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { AboutComponent } from './pages/about/about.component';
+import { SearchComponent } from './pages/search/search.component';
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
     { path: 'home', component: HomeComponent, data: { reuseRoute: true, index: 0 } },
     { path: 'show-detail/:showId', component: ShowDetailComponent, data: { index: 1 } },
-    { path: 'setting', component: SettingComponent, data: { index: 2 } },
-    { path: 'about', component: AboutComponent, data: { index: 3 } },
+    { path: 'search', component: SearchComponent, data: { index: 2 } },
+    { path: 'setting', component: SettingComponent, data: { index: 3 } },
+    { path: 'about', component: AboutComponent, data: { index: 4 } },
 ];
 
 @NgModule({

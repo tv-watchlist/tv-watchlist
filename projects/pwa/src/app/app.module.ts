@@ -21,6 +21,7 @@ import { OptionsMenuComponent } from './widgets/options-menu/options-menu.compon
 import { SettingComponent } from './pages/setting/setting.component';
 import { NavigationComponent } from './widgets/navigation/navigation.component';
 import { AboutComponent } from './pages/about/about.component';
+import { SearchComponent } from './pages/search/search.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -47,6 +48,7 @@ export class HammerConfig extends HammerGestureConfig {
         OptionsMenuComponent,
         NavigationComponent,
         AboutComponent,
+        SearchComponent,
     ],
     imports: [
         BrowserModule,
