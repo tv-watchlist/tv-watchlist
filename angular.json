@@ -5,15 +5,18 @@
   "projects": {
     "pwa": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "root": "projects/pwa",
       "sourceRoot": "projects/pwa/src",
       "prefix": "tvq",
       "architect": {
         "build": {
-          "builder": "ngx-build-plus:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "extraWebpackConfig": "webpack.config.js",
             "outputPath": "dist/pwa",
             "index": "projects/pwa/src/index.html",
             "main": "projects/pwa/src/main.ts",
