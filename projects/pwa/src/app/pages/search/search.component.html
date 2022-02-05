@@ -13,13 +13,14 @@
   </div>
 
 <div class="flex mb-2"  *ngFor="let search of searchList$ | async" >
-    <div class="relative flex-none w-2/12 h-[147px] mr-2">
-        <img tvqDefault *ngIf="!!search.show.image?.medium" [src]="search.show.image.medium" alt="" class="absolute inset-0 object-cover w-full h-full border" />
+    <div class="relative flex-none w-3/12 mr-2">
+        <img tvqDefault *ngIf="!!search.show.image?.medium" [src]="search.show.image.medium" alt="" class="relative inset-0 object-cover w-full border" />
     </div>
     <div class="w-8/12">
-        <h3 class="font-bold">{{search.show.name}}</h3>
+        <h3 class="inline font-bold">{{search.show.name}}</h3> <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
         <div *ngIf="search.show.network">{{search.show.network.name}}, {{search.show.network.country?.name}}</div>
         <div *ngIf="search.show.webChannel">{{search.show.webChannel.name}}, {{search.show.webChannel.country?.name}}</div>
+        <span>{{search.show.premiered}} {{search.show.schedule.days[0]}} {{search.show.schedule.time}} </span>
         <div class="text-sm" [innerHTML]="search.show.summary"></div>
     </div>
 </div>

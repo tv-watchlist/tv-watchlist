@@ -1,8 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { slideInLeftOnEnterAnimation, slideInRightOnEnterAnimation, slideOutLeftOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { IMyTvQShow } from '../../services/model';
-import { ShowService } from '../../services/show.service';
+import { ShowService } from "../../services/show.service";
 
 @Component({
     selector: 'tvq-home',

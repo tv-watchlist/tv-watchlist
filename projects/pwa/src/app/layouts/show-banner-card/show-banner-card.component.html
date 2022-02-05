@@ -45,7 +45,7 @@
                         </svg>
                     </button>
                 </span>
-                <button (click)="markAsSeen()" [class.invisible]="model.unseenEpisodes===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
+                <button (click)="markAsSeen()" [class.invisible]="model.unseenCount===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
                     <!--Tick-->
                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
@@ -57,7 +57,7 @@
             <div class="flex justify-between w-full text-sm">
                 <div class="w-11/12">
                     <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
-                    <span class="my-auto mr-4" *ngIf="model.unseenEpisodes">Unseen: {{model.unseenEpisodes}}</span>
+                    <span class="my-auto mr-4" *ngIf="model.unseenCount">Unseen: {{model.unseenCount}}</span>
                     <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.latestEpisodeIn}}</span>
                 </div>
             </div>

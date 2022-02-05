@@ -2,8 +2,11 @@
     <div class="relative w-4/12">
         <img src="assets/myTvQ.png" alt="" class="relative inset-0 object-cover w-full">
     </div>
-    <div class="my-auto">
-        <h1 class="ml-4 text-4xl text-gray-500">TV Watchlist</h1>
+    <div class="w-8/12 my-auto ml-4">
+        <h1 class="mb-2 text-3xl text-gray-500">TV Watchlist <span class="text-base">v3.0</span></h1>
+        <p class="text-sm">Serverless, Progressive Web App (offline capable).
+            Uses third party APIs to fetch data and save locally in IndexedDb.
+            No User account needed. Bookmark app to home screen to not lose any data</p>
     </div>
 </div>
 <ul class="flex flex-col text-lg text-center text-gray-700">
@@ -13,8 +16,12 @@
         </svg>
     </li>
     <li class="text-2xl">Author</li>
-    <li class="mb-4">Surya Nyayapati</li>
-    <li class="text-2xl">Tools</li>
+    <li>Surya Nyayapati</li>
+    <li class="mt-4 text-2xl">API / Data</li>
+    <li class="focus:outline-none" (click)="goToUrl('https://www.tvmaze.com/')">TvMaze</li>
+    <li class="focus:outline-none" (click)="goToUrl('https://fanart.tv/')">Fanart TV</li>
+    <li class="focus:outline-none" (click)="goToUrl('https://thetvdb.com/')">TVDB</li>
+    <li class="mt-4 text-2xl">Tools</li>
     <li class="focus:outline-none" (click)="goToUrl('https://angular.io/')">Angular 13</li>
     <li class="focus:outline-none" (click)="goToUrl('https://tailwindcss.com/')">Tailwindcss 3</li>
     <li class="focus:outline-none" (click)="goToUrl('https://heroicons.dev/')">Heroicons</li>

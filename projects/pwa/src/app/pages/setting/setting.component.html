@@ -1,5 +1,5 @@
-<h1 class="text-lg text-gray-700">Settings</h1>
-<ul class="flex flex-col -mx-1 bg-white">
+<h4 class="text-lg text-gray-700">Settings</h4>
+<ul class="flex flex-col mb-4 -mx-1 bg-white">
     <li class="flex justify-between px-4 py-2 border-b">
         <span class="my-auto text-sm">Hide Seen TBA/Complete Shows</span>
         <tvq-switch [(state)]="settingSvc.hideTba"></tvq-switch>
@@ -25,6 +25,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         </span>
+    </li>
+</ul>
+
+<ul class="flex flex-col -mx-1 bg-white">
+    <li class="flex justify-between px-4 py-2 border-b">
+        <input type="file" class="w-full" accept="application/JSON, .txt" (change)="handleFileInput($event)">
     </li>
 </ul>
 <tvq-options-menu #menu1 (action)="settingSvc.showsOrder=$event" [default]="settingSvc.showsOrder" [options]="['airdate','name']"></tvq-options-menu>

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { routeSliderStatePlusMinus } from './services/animations';
 import { NavigationService } from './services/navigation.service';
-import { ShowService, TvWatchlistService } from './services/show.service';
+import { TvWatchlistService } from './services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-root',

@@ -1,11 +1,11 @@
 
-export interface IMyTvQ {
+export interface IMyTvQFlatV5 {
     data_structure_version: number;
-    settings: IMyTvQSetting;
-    show_list: IMyTvQShow[];
+    settings: IMyTvQSettingFlatV5;
+    show_list: IMyTvQShowFlatV5[];
 }
 
-export interface IMyTvQSetting {
+export interface IMyTvQSettingFlatV5 {
     advanced_css_hack: number;
     animate_icon: number;
     badge_flag: string;
@@ -19,29 +19,28 @@ export interface IMyTvQSetting {
     custom_shows_order: string[];
     shows_order: string;
     shows_update_frequency: number;
-    ui: IMyTvQUiSetting;
+    ui: IMyTvQUiSettingFlatV5;
     update_time: number;
-    timezone_offset: {[country: string]: number};
+    timezone_offset: { [country: string]: number };
     hide_tba: boolean;
     hide_seen: boolean;
     default_episodes: string;
 }
 
-export interface IMyTvQUiSetting
-{
-    runningUnseen: IMyTvQUiSettingCss;
-    runningSeen: IMyTvQUiSettingCss;
-    tbaUnseen: IMyTvQUiSettingCss;
-    tbaSeen: IMyTvQUiSettingCss;
-    completedUnseen: IMyTvQUiSettingCss;
-    completedSeen: IMyTvQUiSettingCss;
+export interface IMyTvQUiSettingFlatV5 {
+    runningUnseen: IMyTvQUiSettingCssFlatV5;
+    runningSeen: IMyTvQUiSettingCssFlatV5;
+    tbaUnseen: IMyTvQUiSettingCssFlatV5;
+    tbaSeen: IMyTvQUiSettingCssFlatV5;
+    completedUnseen: IMyTvQUiSettingCssFlatV5;
+    completedSeen: IMyTvQUiSettingCssFlatV5;
 }
 
-export interface IMyTvQUiSettingCss {
+export interface IMyTvQUiSettingCssFlatV5 {
     cssText: string;
 }
 
-export interface IMyTvQShow {
+export interface IMyTvQShowFlatV5 {
     show_id: string;
     next_update_time: number;
     name: string;
@@ -73,26 +72,26 @@ export interface IMyTvQShow {
         }
     };
     api_source: string;
-    api_id: {[key: string]: string|number};
+    api_id: { [key: string]: string | number };
     image: {
         banner: string[];
         poster: string[];
     };
     unseen_count: number;
     total_episodes: number;
-    first_episode: IMyTvQShowEpisode;
-    previous_episode: IMyTvQShowEpisode;
-    next_episode: IMyTvQShowEpisode;
-    last_episode: IMyTvQShowEpisode;
-    episode_list: {[episodeId: string]: IMyTvQShowEpisode};
+    first_episode: IMyTvQShowEpisodeFlatV5;
+    previous_episode: IMyTvQShowEpisodeFlatV5;
+    next_episode: IMyTvQShowEpisodeFlatV5;
+    last_episode: IMyTvQShowEpisodeFlatV5;
+    episode_list: { [episodeId: string]: IMyTvQShowEpisodeFlatV5 };
 }
+
 // tvmaze5027_0024_0001_0024S02:
 // tvmaze5027_0024_0002_0024S01:
 // tvmaze5027_0025_0001_0001S03:
 // newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4);
 // Special newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4) + "S"+nsr.ZeroPad(special_counter, 2)
-export interface IMyTvQShowEpisode
-{
+export interface IMyTvQShowEpisodeFlatV5 {
     // {show_id}_{season}_{number}_{counter}
     // {show_id}_{season}_{number}_{counter}
     episode_id: string;
@@ -100,7 +99,7 @@ export interface IMyTvQShowEpisode
     local_showtime: number;
     name: string;
     url: string;
-    iso8601: string|Date;
+    iso8601: string | Date;
     production_code: string;
     runtime: number;
     season: number;
@@ -119,33 +118,6 @@ export interface IMyTvQShowEpisode
     previous_id: string;
     next_id: string;
     api_source: string;
-    api_id: {[key: string]: string|number};
+    api_id: { [key: string]: string | number };
 }
 
-export interface UiShowModel {
-    id: string;
-    name: string;
-    premiered: string;
-    channel: string;
-    status: number;
-    banner: string;
-    latestEpisodeName: string;
-    latestEpisodeDateFormatted: string;
-    latestEpisodeIn: string;
-    nextEpisodeName: string;
-    unseenEpisodes: number;
-    totalEpisodes: number;
-    expand: boolean;
-}
-
-export interface UiEpisodeModel {
-    id: string;
-    image: string;
-    episodeName: string;
-    dateFormatted: string;
-    summary: string;
-    isUnaired: boolean;
-    seen: boolean;
-    expand: boolean;
-    url: string;
-}

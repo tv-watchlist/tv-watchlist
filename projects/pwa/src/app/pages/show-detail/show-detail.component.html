@@ -1,8 +1,8 @@
-<div *ngIf="!!show;else showElseTmpl">
+<div *ngIf="!!showModel;else showElseTmpl">
     <div class="flex justify-between">
         <div>
-            <span [innerHTML]="show.name" class="mr-2 text-2xl font-bold"></span>
-            <span [innerHTML]="show.premiered | date:'MMM dd, y' || 'n/a'" class="text-sm"></span>
+            <span [innerHTML]="showModel.name" class="mr-2 text-2xl font-bold"></span>
+            <span [innerHTML]="showModel.premiered | date:'MMM dd, y' || 'n/a'" class="text-sm"></span>
         </div>
         <button (click)="showDetails=!showDetails" class="ml-2 focus:outline-none">
             <!-- Info -->
@@ -11,41 +11,41 @@
     </div>
     <div *ngIf="showDetails" class="flex mb-2">
         <div class="relative flex-none w-4/12 mr-2">
-            <img [src]="show.image.poster[0]" alt="" class="relative inset-0 object-cover w-full" />
+            <img [src]="showModel.poster" alt="" class="relative inset-0 object-cover w-full" />
         </div>
         <ul class="flex flex-col w-8/12">
-            <li *ngIf="!!show.status">
+            <li *ngIf="!!showModel.status">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">status:</span>
-                <span [innerHTML]="show.status"></span>
+                <span [innerHTML]="showModel.status"></span>
             </li>
-            <li *ngIf="!!show.channel">
+            <li *ngIf="!!showModel.channel">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
-                <span [innerHTML]="show.channel?.name"></span>
+                <span [innerHTML]="showModel.channel"></span>
             </li>
-            <li *ngIf="!!show.language">
+            <li *ngIf="!!showModel.language">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">language:</span>
-                <span [innerHTML]="show.language"></span>
+                <span [innerHTML]="showModel.language"></span>
             </li>
-            <li *ngIf="!!show.genres">
+            <li *ngIf="!!showModel.genres">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">genres:</span>
-                <span [innerHTML]="show.genres.join(', ')"></span>
+                <span [innerHTML]="showModel.genres.join(', ')"></span>
             </li>
-            <li *ngIf="!!show.runtime">
+            <li *ngIf="!!showModel.runtime">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">runtime:</span>
-                <span [innerHTML]="show.runtime + ' Mins'"></span>
+                <span [innerHTML]="showModel.runtime + ' Mins'"></span>
             </li>
-            <li *ngIf="!!show.content_rating">
+            <li *ngIf="!!showModel.contentRating">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">content rating:</span>
-                <span [innerHTML]="show.content_rating"></span>
+                <span [innerHTML]="showModel.contentRating"></span>
             </li>
             <li>
                 <span class="mr-2 font-semibold text-gray-400 uppercase">Unseen:</span>
-                <span>{{show.unseen_count}} / {{show.total_episodes}}</span>
+                <span>{{showModel.unseenCount}} / {{showModel.totalEpisodes}}</span>
             </li>
         </ul>
     </div>
-    <div class="w-full mt-2 text-sm" *ngIf="showDetails && !!show.summary">
-        <div class="block mb-1" [innerHTML]="show.summary"></div>
+    <div class="w-full mt-2 text-sm" *ngIf="showDetails && !!showModel.summary">
+        <div class="block mb-1" [innerHTML]="showModel.summary"></div>
         <div class="flex justify-around mb-1">
             <button (click)="goToUrl()" class="inline-flex justify-center my-auto text-blue-500 focus:outline-none" title="External">
                 <!--Link-->
