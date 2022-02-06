@@ -108,56 +108,28 @@ export class ShowService {
                 url: e.url,
                 runtime: e.runtime,
                 summary: e.summary,
-
+                showType: e.show_type,
+                language: e.language,
+                genres: e.genres,
+                cast: e.cast,
+                contentRating:e.content_rating,
+                premiered: e.premiered,
+                unseenCount: e.unseen_count,
+                totalEpisodes: e.total_episodes,
+                totalSeasons: 0, // TODO:
+                nextUpdateTime: e.next_update_time,
+                schedule: e.schedule,
+                userRating:e.user_rating,
+                status: e.status,
+                channel: {name: e.channel.name, country: e.channel.country},
+                image: e.image,
                 apiSource: e.api_source,
                 apiId: e.api_id
-            };
+            } as IMyTvQDbShow;
             return show;
         });
         await this.webDb.putList('shows', list);
-        /*
-        showId: string;
-    nextUpdateTime: number;
-    name: string;
-    url: string;
-    showType: string;
-    language: string;
-    genres: string[];
-    status: string;
-    runtime: number;
-    premiered: string;
-    summary: string;
-    cast: string[];
-    schedule: {
-        time: string;
-        days: string[];
-    };
-    userRating: {
-        average: number;
-        count: number
-    };
-    contentRating: string;
-    channel: {
-        id: number;
-        name: string;
-        country: {
-            name: string;
-            code: string;
-            timezone: string;
-        }
-    };
-    apiSource: string;
-    apiId: {[key: string]: string|number};
-    image: {
-        banner: string[];
-        poster: string[];
-    };
-    unseenCount: number;
-    totalEpisodes: number;
-    totalSeasons: number;
-        */
     }
-
 
     getShowModel(showId: string) {
         const show = this.getShow(showId);

@@ -112,7 +112,7 @@ export interface IMyTvQShowEpisodeFlatV5 {
     summary: string;
     image: {
         banner: string[];
-        poster: string | string[];
+        poster: string[];
     };
     seen: boolean;
     previous_id: string;

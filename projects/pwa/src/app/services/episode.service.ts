@@ -18,7 +18,9 @@ export class EpisodeService {
     }
 
     public async saveAll(episodes: IMyTvQShowEpisodeFlatV5[]) {
-        const list = episodes.map(e => {
+        const list = episodes.map((e,i,a) => {
+            const previousId = (i-1 >= 0) ? a[i-1].episode_id: '';
+            const nextId = i+1 < a.length ? a[i+1].episode_id: '';
             const episode: IMyTvQDbEpisode = {
                 episodeId: e.episode_id,
                 showId: e.show_id,
@@ -32,10 +34,10 @@ export class EpisodeService {
                 counter: e.counter,
                 special: e.special,
                 summary: e.summary,
-                poster: Array.isArray(e.image?.poster) ? e.image?.poster[0] : e.image?.poster,
+                poster: e.image?.poster && e.image?.poster.length  ? e.image?.poster[0] : '',
                 seen: e.seen,
-                previousId: e.previous_id,
-                nextId: e.next_id,
+                previousId: previousId,
+                nextId: nextId,
                 apiSource: e.api_source,
                 apiId: e.api_id
             };
@@ -56,13 +58,13 @@ export class EpisodeService {
         return model;
     }
 
-    createEpisodeId(episode: IMyTvQShowEpisodeFlatV5): string {
-        if (episode.special) {
-            return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_S${this.commonSvc.zeroPad(episode.number, 4)}`;
-        } else {
-            return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_${this.commonSvc.zeroPad(episode.number, 4)}`;
-        }
-    }
+    // createEpisodeId(episode: IMyTvQShowEpisodeFlatV5): string {
+    //     if (episode.special) {
+    //         return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_S${this.commonSvc.zeroPad(episode.number, 4)}`;
+    //     } else {
+    //         return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_${this.commonSvc.zeroPad(episode.number, 4)}`;
+    //     }
+    // }
 
     getEpisodeName(episode?: IMyTvQShowEpisodeFlatV5): string {
         if (!!episode) {

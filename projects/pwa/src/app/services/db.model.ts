@@ -34,7 +34,6 @@ export interface IMyTvQDbShow {
     };
     contentRating: string;
     channel: {
-        id: number;
         name: string;
         country: {
             name: string;

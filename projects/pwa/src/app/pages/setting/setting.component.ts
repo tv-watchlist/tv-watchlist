@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IMyTvQFlatV5 } from '../../services/flat-file-v5.model';
 import { MigrationService } from '../../services/migration.service';
 import { SettingService } from "../../services/setting.service";
 
@@ -36,8 +37,8 @@ export class SettingComponent implements OnInit {
             if (evt?.target?.readyState === FileReader.DONE) { // DONE == 2
                 const fileContent = evt.target.result;
                 try {
-                    const bakStr = fileContent || '{}';
-                    const backup = JSON.parse(bakStr as string);
+                    const bakStr = (fileContent || '{}') as string;
+                    const backup = JSON.parse(bakStr) as IMyTvQFlatV5;
                     this.migrateSvc.import(backup);
                 } catch (e) {
                     console.log('Import Error', e);

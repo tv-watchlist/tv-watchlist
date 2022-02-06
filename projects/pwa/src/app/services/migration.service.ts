@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { CommonService } from "./common.service";
 import { EpisodeService } from "./episode.service";
 import { IMyTvQFlatV5, IMyTvQShowEpisodeFlatV5 } from "./flat-file-v5.model";
 import { SettingService } from "./setting.service";
@@ -13,6 +14,7 @@ export class MigrationService {
         private episodeSvc: EpisodeService,
         private showSvc: ShowService,
         private http: HttpClient,
+        private commonSvc: CommonService,
         private webDb: WebDatabaseService,
     ) {
         this.now = new Date().getTime();
@@ -20,9 +22,8 @@ export class MigrationService {
 
     now: number;
 
-    public async import(fileContent: string): Promise<void> {
-        console.log('fileContent', fileContent);
-        const model = JSON.parse(fileContent) as IMyTvQFlatV5;
+    public async import(model: IMyTvQFlatV5): Promise<void> {
+        console.log('fileContent', model);
         if(!('data_structure_version' in model)) {
             throw new Error('file content does not contain TV Watchlist backup.');
         }
@@ -38,33 +39,34 @@ export class MigrationService {
             for (const key in episode_listObj) {
                 if (Object.prototype.hasOwnProperty.call(episode_listObj, key)) {
                     const episode = episode_listObj[key];
-                    if(episode.number != null){
+                    if(!!episode.number){
                         last_number = episode.number;
                         episode.special = false;
                         episode.counter = ++normal_counter;
-                        episode.episode_id = this.episodeSvc.createEpisodeId(episode);
+                        episode.episode_id = this.createEpisodeId(show.show_id, episode.season, last_number, normal_counter);
                     }else{
+                        episode.number = last_number;
                         episode.special = true;
                         episode.counter = ++special_counter;
-                        episode.episode_id = this.episodeSvc.createEpisodeId(episode);
+                        // use previous normal_counter and last_number
+                        episode.episode_id = this.createEpisodeId(show.show_id, episode.season, last_number, normal_counter, special_counter);
                     }
                     episode_list.push(episode);
                 }
             }
         });
+        await this.showSvc.saveAll(model.show_list);
         await this.episodeSvc.saveAll(episode_list);
-        // nsr.myTvQ.subscribed.SaveShow(show, function(show_status){
-        //     nsr.myTvQ.subscribed.SaveEpisodeList(episode_list, function(episode_status){
-        //         processed++;
-        //         if (processed == show_list.length && callback) {
-        //             nsr.myTvQ.subscribed.UpdateAllShowReference();
-        //             callback(processed);
-        //         }
-        //         nsr.myTvQ.notify.AddShowNotifications(show, episode_list, function(cnt){
-        //             console.log('AddNotifications Added', cnt);
-        //         });
-        //     });
-        // });
+        //  nsr.myTvQ.subscribed.UpdateAllShowReference();
+        // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
+    }
+
+    createEpisodeId(showId: string, season: number, epNumber: number, epCounter:number, splCounter?:number): string {
+        if (splCounter) {
+            return `${showId}_S${this.commonSvc.zeroPad(season, 3)}_E${this.commonSvc.zeroPad(epNumber, 3)}_C${this.commonSvc.zeroPad(epCounter, 4)}_X${this.commonSvc.zeroPad(splCounter, 3)}`;
+        } else {
+            return `${showId}_S${this.commonSvc.zeroPad(season, 3)}_E${this.commonSvc.zeroPad(epNumber, 3)}_C${this.commonSvc.zeroPad(epCounter, 4)}`;
+        }
     }
 
     export(): string {

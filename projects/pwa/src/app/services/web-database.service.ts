@@ -17,12 +17,30 @@ export class WebDatabaseService {
         this.createDb();
     }
 
+    /*
+ERROR Error: Uncaught (in promise): InvalidStateError: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is not running a version change transaction.
+Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is not running a version change transaction
+    */
+
     private async createDb(name = 'myTvQDB', version = 1): Promise<void> {
         this.dbPromise = openDB<IMyTvQDBv1>(name, version, {
             async upgrade(db: IDBPDatabase<IMyTvQDBv1>, oldVersion: number, newVersion: number | null,
                           transaction: IDBPTransaction<IMyTvQDBv1, ("settings" | "shows" | "episodes")[], "versionchange">): Promise<void> {
                 if (oldVersion < 1) {
+                    // first create all Object Stores
                     db.createObjectStore('settings');
+                    const showStore = db.createObjectStore('shows', {
+                        keyPath: 'showId',
+                    });
+                    showStore.createIndex('nextUpdateTimeIndex', 'nextUpdateTime', {unique: false});
+
+                    const episodeStore = db.createObjectStore('episodes', {
+                        keyPath: 'episodeId',
+                    });
+                    episodeStore.createIndex('showIdIndex', 'showId', {unique: false});
+                    episodeStore.createIndex('localShowtimeIndex', 'localShowTime', {unique: false});
+
+                    // and then initialize data
                     const settings: {[key: string]: any} = {
                         updateTime: (new Date()).getTime(),
                         showsOrder: 'airdate',
@@ -42,17 +60,6 @@ export class WebDatabaseService {
                     promises.push(transaction.done);
                     await Promise.all(promises);
                     promises.length = 0;
-
-                    const showStore = db.createObjectStore('shows', {
-                        keyPath: 'showId',
-                    });
-                    showStore.createIndex('nextUpdateTimeIndex', 'nextUpdateTime', {unique: false});
-
-                    const episodeStore = db.createObjectStore('episodes', {
-                        keyPath: 'episodeId',
-                    });
-                    episodeStore.createIndex('showIdIndex', 'showId', {unique: false});
-                    episodeStore.createIndex('localShowtimeIndex', 'localShowTime', {unique: false});
                     console.log('IndexedDB v1 created!');
                 }
             },
