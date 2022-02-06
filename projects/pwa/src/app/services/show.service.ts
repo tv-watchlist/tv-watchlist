@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { IMyTvQShowFlatV5, IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
 import { CommonService } from './common.service';
 import { SettingService } from "./setting.service";
-import { IShowImportantEpisodes, UiShowModel } from './ui.model';
+import { UiShowModel } from './ui.model';
 import { EpisodeService } from './episode.service';
-import { IMyTvQDbShow } from './db.model';
+import { IMyTvQDbEpisode, IMyTvQDbShow } from './db.model';
 import { WebDatabaseService } from './web-database.service';
+import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {
@@ -18,88 +18,83 @@ export class ShowService {
 
     private EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
 
-    shows: Map<string, IMyTvQShowFlatV5> = new Map();
-    showIdOrder: string[] = [];
+    public async getAll() {
+        return await this.webDb.getAllAsArray<IMyTvQDbShow>('shows').then(showList => {
+            if (this.settingSvc.showsOrder === 'showname') {
+                // http://www.javascriptkit.com/javatutors/arraysort2.shtml
+                if (showList.length) {
+                    showList.sort((a, b) => {
+                        const x = a.name.toLowerCase();
+                        const y = b.name.toLowerCase();
+                        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                    });
+                }
+            }
+            else { // unseen or default airdate
+                // get future shows
+                const futureShowList = showList.filter((item) => {
+                    return !!item.nextEpisode;
+                });
+                // sort by asc
+                futureShowList.sort((a, b) => {
+                    const x = a.nextEpisode?.localShowTime || 0;
+                    const y = b.nextEpisode?.localShowTime || 0;
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                });
 
-    initShowList(showsOrder: string, showList: IMyTvQShowFlatV5[]): void {
-        showList.forEach(o => {
-            this.shows.set(o.show_id, o);
+                // tba
+                const tbaShowList = showList.filter((item) => {
+                    return !(item.status || '').match(this.EndedRegex) && !item.nextEpisode;
+                });
+
+                // sort by desc
+                tbaShowList.sort((a, b) => {
+                    const x = (b.previousEpisode || b.lastEpisode || { local_showtime: 0 }).localShowTime || 0;
+                    const y = (a.previousEpisode || a.lastEpisode || { local_showtime: 0 }).localShowTime || 0;
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                });
+
+                // console.log(tba_show_list);
+                // completed
+                const endedShowList = showList.filter((item, index) => {
+                    return (item.status || '').match(this.EndedRegex);
+                });
+                // sort by desc
+                endedShowList.sort((a, b) => {
+                    const x = (b.lastEpisode || { local_showtime: 0 }).localShowTime || 0;
+                    const y = (a.lastEpisode || { local_showtime: 0 }).localShowTime || 0;
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                });
+
+                const tbaEnded = tbaShowList.concat(endedShowList);
+
+                let newShowList = futureShowList.concat(tbaEnded);
+
+                if (this.settingSvc.showsOrder === 'unseen') {
+                    const showListUnseen = newShowList.filter((item) => {
+                        return item.unseenCount > 0;
+                    });
+                    const showListSeen = newShowList.filter((item) => {
+                        return item.unseenCount === 0;
+                    });
+                    showListUnseen.sort((a, b) => {
+                        const x = b.unseenCount;
+                        const y = a.unseenCount;
+                        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                    });
+                    newShowList = showListUnseen.concat(showListSeen);
+                }
+                showList = newShowList;
+            }
+
+            if (this.settingSvc.hideTba) {
+                showList = showList.filter(o => !!o && (o.unseenCount > 0 || !!o.nextEpisode));
+            }
+            return showList;
         });
-        if (showsOrder === 'showname') {
-            // http://www.javascriptkit.com/javatutors/arraysort2.shtml
-            if (showList.length) {
-                showList.sort((a, b) => {
-                    const x = a.name.toLowerCase();
-                    const y = b.name.toLowerCase();
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-                });
-            }
-        }
-        else { // unseen or default airdate
-            // get future shows
-            const futureShowList = showList.filter((item) => {
-                return !!item.next_episode;
-            });
-            // sort by asc
-            futureShowList.sort((a, b) => {
-                const x = a.next_episode.local_showtime;
-                const y = b.next_episode.local_showtime;
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            });
-
-            // tba
-            const tbaShowList = showList.filter((item) => {
-                return !(item.status || '').match(this.EndedRegex) && !item.next_episode;
-            });
-
-            // sort by desc
-            tbaShowList.sort((a, b) => {
-                const x = (b.previous_episode || b.last_episode || { local_showtime: null }).local_showtime;
-                const y = (a.previous_episode || a.last_episode || { local_showtime: null }).local_showtime;
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            });
-
-            // console.log(tba_show_list);
-            // completed
-            const endedShowList = showList.filter((item, index) => {
-                return (item.status || '').match(this.EndedRegex);
-            });
-            // sort by desc
-            endedShowList.sort((a, b) => {
-                const x = (b.last_episode || { local_showtime: null }).local_showtime;
-                const y = (a.last_episode || { local_showtime: null }).local_showtime;
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            });
-
-            const tbaEnded = tbaShowList.concat(endedShowList);
-
-            let newShowList = futureShowList.concat(tbaEnded);
-
-            if (showsOrder === 'unseen') {
-                const showListUnseen = newShowList.filter((item) => {
-                    return item.unseen_count > 0;
-                });
-                const showListSeen = newShowList.filter((item) => {
-                    return item.unseen_count === 0;
-                });
-                showListUnseen.sort((a, b) => {
-                    const x = b.unseen_count;
-                    const y = a.unseen_count;
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-                });
-                newShowList = showListUnseen.concat(showListSeen);
-            }
-            this.showIdOrder = newShowList.map(o => o.show_id);
-        }
-
-        if (this.settingSvc.hideTba) {
-            this.showIdOrder = this.showIdOrder.map(o => this.shows.get(o))
-                .filter(o => !!o && (o.unseen_count > 0 || !!o.next_episode))
-                .map(o => (!!o && o.show_id) as string);
-        }
     }
 
-    public async saveAll(showList: IMyTvQShowFlatV5[]) {
+    public async saveFileToDb(showList: IMyTvQShowFlatV5[]) {
         const list = showList.map(e => {
             // IMyTvQDbShow
             const show = {
@@ -131,46 +126,45 @@ export class ShowService {
         await this.webDb.putList('shows', list);
     }
 
-    getShowModel(showId: string) {
-        const show = this.getShow(showId);
+    async getShowModel(showId: string) {
+        // this.webDb
+        const show = await this.getShow(showId);
 
-        const latestEpisode = show.next_episode || show.last_episode;
-        const episode = this.episodeSvc.getEpisode(show, latestEpisode.episode_id);
+        // const latestEpisode = show.nextEpisode || show.lastEpisode!;
+        // const episode = await this.episodeSvc.getEpisode(latestEpisode.episodeId);
         const status = this.getShowStatus(show);
-        const impEpisodes = this.episodeSvc.getImportantEpisodes(show);
 
         const model = new UiShowModel(show);
         model.status = status;
-        model.latestEpisodeName = this.episodeSvc.getEpisodeName(episode) || 'TBA';
-        model.latestEpisodeDateFormatted = this.episodeSvc.getFormattedTime(episode.local_showtime, status);
-        model.latestEpisodeIn = this.episodeSvc.getNextEpisodeDays(episode);
-        model.nextEpisodeName = this.episodeSvc.getEpisodeName(impEpisodes.next);
+        // model.latestEpisodeName = this.episodeSvc.getEpisodeName(episode) || 'TBA';
+        // model.latestEpisodeDateFormatted = this.episodeSvc.getFormattedTime(episode.localShowTime, status);
+        // model.latestEpisodeIn = this.episodeSvc.getNextEpisodeDays(episode);
 
         return model;
     }
 
-    getShow(showId: string): IMyTvQShowFlatV5 {
-        return this.shows.get(showId)!;
+    async getShow(showId: string): Promise<IMyTvQDbShow> {
+        return await this.webDb.getObj('shows', showId)!;
     }
 
     getShowIdFromEpisode(episodeId: string): string {
         return episodeId.split('_')[0];
     }
 
-    getShowByEpisodeId(episodeId: string): IMyTvQShowFlatV5 {
+    async getShowByEpisodeId(episodeId: string): Promise<IMyTvQDbShow> {
         const showId = episodeId.split('_')[0];
-        return this.shows.get(showId)!;
+        return await this.getShow(showId);
     }
 
-    getShowStatus(show: IMyTvQShowFlatV5): -1 | 0 | 1 {
+    getShowStatus(show: IMyTvQDbShow): -1 | 0 | 1 {
         if ((show.status || '').match(this.EndedRegex)) {
             return -1; // Completed
         }
-        const episode = show.next_episode || show.last_episode;
+        const episode = show.nextEpisode || show.lastEpisode;
 
         // console.log(show, episode);
         const now = new Date().getTime();
-        if (!!episode && !!episode.local_showtime && episode.local_showtime > now) {
+        if (!!episode && !!episode.localShowTime && episode.localShowTime > now) {
             return 0; // Running
         }
         else {
@@ -179,15 +173,17 @@ export class ShowService {
     }
 
     removeShow(showId: string): void {
-        this.shows.delete(showId);
-        this.showIdOrder.splice(this.showIdOrder.findIndex(o => o === showId), 1);
+        this.webDb.deleteObj('shows',showId);
+        this.webDb.deleteRange('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
+        // this.showIdOrder.splice(this.showIdOrder.findIndex(o => o === showId), 1);
     }
 
-    markAsSeen(show: IMyTvQShowFlatV5, nextEpisode: IMyTvQShowEpisodeFlatV5): void {
-        nextEpisode.seen = true;
+    async markAsSeen(show: IMyTvQDbShow, nextEpisodeId: string): Promise<void> {
+        await this.episodeSvc.toggleSeen(nextEpisodeId, true);
 
-        if (show.unseen_count > 0) {
-            show.unseen_count = show.unseen_count - 1;
+        if (show.unseenCount > 0) {
+            show.unseenCount = show.unseenCount - 1;
+            await this.webDb.putObj('shows',show);
         }
     }
 }

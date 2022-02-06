@@ -1,4 +1,4 @@
-<div class="relative flex flex-wrap mb-2 rounded-md shadow-md"
+<div *ngIf="!!model"  class="relative flex flex-wrap mb-2 rounded-md shadow-md"
             [ngClass]="{
         'bg-red-500': model.status === -1,
         'bg-green-500': model.status === 0,
@@ -37,7 +37,7 @@
         <ng-container *ngIf="model.expand">
             <div class="flex justify-between w-full gap-1 mb-2">
                 <span class="flex justify-between w-10/12 px-1 my-auto text-sm truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
-                    <span class="truncate">{{model.nextEpisodeName || '**All Seen**'}}</span>
+                    <span class="truncate">{{model.unseenCount || '**All Seen**'}}</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -55,8 +55,8 @@ export class MigrationService {
                 }
             }
         });
-        await this.showSvc.saveAll(model.show_list);
-        await this.episodeSvc.saveAll(episode_list);
+        await this.showSvc.saveFileToDb(model.show_list);
+        await this.episodeSvc.saveFileToDb(episode_list);
         //  nsr.myTvQ.subscribed.UpdateAllShowReference();
         // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
     }

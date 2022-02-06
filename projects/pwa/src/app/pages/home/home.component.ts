@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit {
 
     showIdList: string[] = [];
 
-    ngOnInit(): void {
-        this.showIdList = this.showSvc.showIdOrder;
+    async ngOnInit(): Promise<void> {
+        this.showIdList = (await this.showSvc.getAll()).map(o=>o.showId);
         this.cdRef.markForCheck();
     }
 }

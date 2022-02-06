@@ -3,6 +3,7 @@ import { EpisodeService } from "../../services/episode.service";
 import { IMyTvQShowFlatV5 } from '../../services/flat-file-v5.model';
 import { UiEpisodeModel } from '../../services/ui.model';
 import { ShowService } from '../../services/show.service';
+import { IMyTvQDbShow } from '../../services/db.model';
 
 @Component({
     selector: 'tvq-episode',
@@ -24,13 +25,12 @@ export class EpisodeComponent implements OnInit {
     @Output() public seenToggled = new EventEmitter<boolean>();
 
     model!: UiEpisodeModel;
-    show!: IMyTvQShowFlatV5;
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.episodeId) {
             throw (new Error('The required input [episodeId] was not provided'));
         }
-        this.show = this.showSvc.getShowByEpisodeId(this.episodeId);
-        this.model = this.episodeSvc.getEpisodeModel(this.show, this.episodeId);
+        const show = await this.showSvc.getShowByEpisodeId(this.episodeId);
+        this.model = await this.episodeSvc.getEpisodeModel(this.episodeId, show.channel.country.code);
 
         this.cdRef.markForCheck();
     }
@@ -40,7 +40,7 @@ export class EpisodeComponent implements OnInit {
     }
 
     toggleSeen(): void {
-        this.episodeSvc.toggleSeen(this.show, this.episodeId, !this.model.seen);
+        this.episodeSvc.toggleSeen(this.episodeId, !this.model.seen);
         this.seenToggled.emit(!this.model.seen);
     }
 

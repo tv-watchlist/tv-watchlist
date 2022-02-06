@@ -1,8 +1,9 @@
 import { calcPossibleSecurityContexts } from '@angular/compiler/src/template_parser/binding_parser';
 import { Injectable } from '@angular/core';
 // https://github.com/jakearchibald/idb#typescript
-import { IDBPDatabase, IDBPTransaction, openDB, unwrap } from 'idb';
-import { IMyTvQDBv1 } from './db.model';
+// examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
+import { IDBPDatabase, IDBPTransaction, IndexKey, IndexNames, openDB, unwrap } from 'idb';
+import { IMyTvQDBv1, MyTvQStoreName } from './db.model';
 
 @Injectable({ providedIn: 'root' })
 export class WebDatabaseService {
@@ -17,31 +18,26 @@ export class WebDatabaseService {
         this.createDb();
     }
 
-    /*
-ERROR Error: Uncaught (in promise): InvalidStateError: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is not running a version change transaction.
-Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is not running a version change transaction
-    */
-
     private async createDb(name = 'myTvQDB', version = 1): Promise<void> {
         this.dbPromise = openDB<IMyTvQDBv1>(name, version, {
             async upgrade(db: IDBPDatabase<IMyTvQDBv1>, oldVersion: number, newVersion: number | null,
-                          transaction: IDBPTransaction<IMyTvQDBv1, ("settings" | "shows" | "episodes")[], "versionchange">): Promise<void> {
+                transaction: IDBPTransaction<IMyTvQDBv1, (MyTvQStoreName)[], "versionchange">): Promise<void> {
                 if (oldVersion < 1) {
                     // first create all Object Stores
                     db.createObjectStore('settings');
                     const showStore = db.createObjectStore('shows', {
                         keyPath: 'showId',
                     });
-                    showStore.createIndex('nextUpdateTimeIndex', 'nextUpdateTime', {unique: false});
+                    showStore.createIndex('nextUpdateTimeIndex', 'nextUpdateTime', { unique: false });
 
                     const episodeStore = db.createObjectStore('episodes', {
                         keyPath: 'episodeId',
                     });
-                    episodeStore.createIndex('showIdIndex', 'showId', {unique: false});
-                    episodeStore.createIndex('localShowtimeIndex', 'localShowTime', {unique: false});
+                    episodeStore.createIndex('showIdIndex', 'showId', { unique: false });
+                    episodeStore.createIndex('localShowtimeIndex', 'localShowTime', { unique: false });
 
                     // and then initialize data
-                    const settings: {[key: string]: any} = {
+                    const settings: { [key: string]: any } = {
                         updateTime: (new Date()).getTime(),
                         showsOrder: 'airdate',
                         version: 5,
@@ -75,16 +71,45 @@ Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is n
         });
     }
 
-    public async getAllAsArray<T>(storeNames: 'settings' | 'shows' | 'episodes'): Promise<T[]>{
-        const store = (await this.dbPromise).transaction(storeNames, 'readonly');
-        const result = await store.objectStore(storeNames).getAll();
+    public getKeyRange(operator: "=" | "<" | "<=" | ">" | ">=" | "> && <" | ">= && <=" | "> && <=" | ">= && <", lower: string, upper?: string): IDBKeyRange {
+        switch (operator) {
+            case "=":
+                return IDBKeyRange.only(lower);
+            case "<":
+                return IDBKeyRange.upperBound(lower, true);
+            case "<=":
+                return IDBKeyRange.upperBound(lower);
+            case ">":
+                return IDBKeyRange.lowerBound(lower, true);
+            case ">=":
+                return IDBKeyRange.lowerBound(lower);
+            case "> && <":
+                return IDBKeyRange.bound(lower, upper, true, true);
+            case ">= && <=":
+                //IDBKeyRange.bound(searchTerm, searchTerm + '\uffff') It'd be better to use \uffff as your dagger rather than z. You won't get search results like "wikip�dia" when searching for "wiki" if you use z...
+                return IDBKeyRange.bound(lower, upper);
+            case "> && <=":
+                return IDBKeyRange.bound(lower, upper, true, false);
+            case ">= && <":
+                return IDBKeyRange.bound(lower, upper, false, true);
+        }
+    }
+
+    public async getObj<T>(storeName: MyTvQStoreName, key: string | IDBKeyRange): Promise<T> {
+        const transaction = (await this.dbPromise).transaction(storeName, 'readonly');
+        return await transaction.objectStore(storeName).get(key) as T;
+    }
+
+    public async getAllAsArray<T>(storeName: MyTvQStoreName, query?: string | IDBKeyRange | null | undefined, count?: number | undefined): Promise<T[]> {
+        const transaction = (await this.dbPromise).transaction(storeName, 'readonly');
+        const result = await transaction.objectStore(storeName).getAll(query, count);
         return result as T[];
     }
 
-    public async getAllAsObject<T>(storeNames: 'settings' | 'shows' | 'episodes'): Promise<T> {
-        const store = (await this.dbPromise).transaction(storeNames, 'readonly');
-        const result: {[key: string]: any} = {};
-        const cursor = store.objectStore(storeNames).openCursor();
+    public async getAllAsObject<T>(storeName: MyTvQStoreName,query?: string | IDBKeyRange | null | undefined, direction?: IDBCursorDirection | undefined): Promise<T> {
+        const store = (await this.dbPromise).transaction(storeName, 'readonly');
+        const result: { [key: string]: any } = {};
+        const cursor = store.objectStore(storeName).openCursor(query, direction);
         let cursorValue = (await cursor);
         while (true) {
             if (!!cursorValue) {
@@ -97,10 +122,29 @@ Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is n
         return result as T;
     }
 
-    public async clearStore(storeName: "settings" | "shows" | "episodes"): Promise<boolean> {
+    public async deleteObj(storeName: MyTvQStoreName, key: string | IDBKeyRange) {
+        const transaction = (await this.dbPromise).transaction(storeName, "readwrite");
+        return transaction.objectStore(storeName).delete(key);
+    }
+
+    public async deleteRange<T extends MyTvQStoreName>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange ) {
+        const transaction = (await this.dbPromise).transaction(storeName, "readwrite");
+        const index = transaction.store.index(indexName);
+        let cursorRequest = await index.openCursor(range);
+        while (true) {
+            if(!!cursorRequest) {
+                await cursorRequest.delete();
+                cursorRequest = await cursorRequest.continue();
+            } else {
+                break;
+            }
+        }
+    }
+
+    public async clearStore(storeName: MyTvQStoreName): Promise<boolean> {
         const db = (await this.dbPromise);
         return new Promise((resolve, reject) => {
-            if(db && db.objectStoreNames.contains(storeName)) {
+            if (db && db.objectStoreNames.contains(storeName)) {
                 const clearTransaction = db.transaction([storeName], 'readwrite');
                 clearTransaction.objectStore(storeName).clear().then(() => {
                     resolve(true);
@@ -125,34 +169,26 @@ Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is n
                 }
                 this.clearStore(name).then(() => {
                     count++;
-                    if(len == count){
+                    if (len == count) {
                         resolve(count);
                     }
                 })
             }
-            if(len == 0) {
+            if (len == 0) {
                 resolve(0);
             }
         });
     }
 
-    public async putObj(storeName: "settings" | "shows" | "episodes", obj: any, key?: string | IDBKeyRange | undefined): Promise<boolean> {
+    public async putObj(storeName: MyTvQStoreName, obj: any, key?: string | IDBKeyRange | undefined): Promise<boolean> {
         const db = (await this.dbPromise);
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            store.put(obj, key).then(() => {
-                resolve(true);
-            }).catch(err => {
-                console.error(err);
-                resolve(false);
-            })
-        });
+        const transaction = db.transaction(storeName, 'readwrite');
+        return await transaction.objectStore(storeName).put(obj, key).then(()=>true);
     }
 
-    public async putKeyValueBulk(storeName: "settings" | "shows" | "episodes", obj: {[key: string]: any}): Promise<boolean> {
+    public async putKeyValueBulk(storeName: MyTvQStoreName, obj: { [key: string]: any }): Promise<boolean> {
         const db = (await this.dbPromise);
-        const transaction = db.transaction([storeName], 'readwrite');
+        const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
         const promises = [];
         for (const key in obj) {
@@ -161,9 +197,7 @@ Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is n
             }
         }
         promises.push(transaction.done);
-        return Promise.all(promises).then(() => {
-            return true;
-        });
+        return Promise.all(promises).then(() =>  true);
     }
 
     /**
@@ -173,14 +207,14 @@ Error: Failed to execute 'createObjectStore' on 'IDBDatabase': The database is n
      * @param progress
      * @returns
      */
-    public async putList(storeName: "settings" | "shows" | "episodes", list: any[], progress?: (counter:number, length:number, isComplete: boolean) => void) {
+    public async putList(storeName: MyTvQStoreName, list: any[], progress?: (counter: number, length: number, isComplete: boolean) => void) {
         const db = (await this.dbPromise);
 
         return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName], 'readwrite');
+            const transaction = db.transaction(storeName, 'readwrite');
             let count = 0;
             transaction.oncomplete = (event) => {
-                console.log(storeName+' Added ' + count + '/' + list.length);
+                console.log(storeName + ' Added ' + count + '/' + list.length);
                 if (!!progress) {
                     progress(count, list.length, true);
                 }

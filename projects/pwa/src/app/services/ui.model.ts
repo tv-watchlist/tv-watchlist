@@ -1,5 +1,6 @@
 import { DatePipe } from "@angular/common";
-import { IMyTvQShowEpisodeFlatV5, IMyTvQShowFlatV5 } from "./flat-file-v5.model";
+import { IMyTvQDbEpisode, IMyTvQDbShow } from "./db.model";
+import { IMyTvQShowEpisodeFlatV5 } from "./flat-file-v5.model";
 
 export interface IUiShowModel {
     id: string;
@@ -18,20 +19,20 @@ export interface IUiShowModel {
 }
 
 export class UiShowModel {
-    constructor(show: IMyTvQShowFlatV5) {
+    constructor(show: IMyTvQDbShow) {
         const today = new Date().getTime();
-        this.id = show.show_id;
+        this.id = show.showId;
         this.name = show.name;
         this.premiered = !!show.premiered ? show.premiered.substring(0, 4) : '';
         this.banner = show.image?.banner[0] || '';
         this.poster = show.image?.poster[0] || '';
         this.channel = show.channel.name || '';
-        this.unseenCount = show.unseen_count;
-        this.totalEpisodes = show.total_episodes;
+        this.unseenCount = show.unseenCount;
+        this.totalEpisodes = show.totalEpisodes;
         this.language = show.language;
         this.genres = show.genres;
         this.runtime = show.runtime;
-        this.contentRating = show.content_rating;
+        this.contentRating = show.contentRating;
         this.summary = show.summary;
         this.url = show.url;
         this.totalSeasons = 0;
@@ -48,7 +49,6 @@ export class UiShowModel {
     latestEpisodeName = '';
     latestEpisodeDateFormatted = '';
     latestEpisodeIn = '';
-    nextEpisodeName = '';
     totalEpisodes: number;
     expand: boolean;
 
@@ -75,14 +75,14 @@ export interface IUiEpisodeModel {
 }
 
 export class UiEpisodeModel {
-    constructor(private episode: IMyTvQShowEpisodeFlatV5) {
+    constructor(private episode: IMyTvQDbEpisode) {
         const today = new Date().getTime();
-        this.id = episode.episode_id;
+        this.id = episode.episodeId;
         this.episodeName = this.getEpisodeName() || 'TBA';
         this.dateFormatted = '';
         this.summary = episode.summary || '';
-        this.isUnaired = episode.local_showtime > today;
-        this.image = Array.isArray(episode.image?.poster) ? episode.image?.poster[0] : episode.image?.poster;
+        this.isUnaired = episode.localShowTime > today;
+        this.image = episode.poster;
         this.seen = episode.seen;
         this.expand = false;
         this.url = episode.url;
@@ -108,8 +108,8 @@ export class UiEpisodeModel {
     }
 
     setFormattedDate(offset: number| undefined, datePipe: DatePipe) {
-        if (this.episode.local_showtime) {
-            const offsetNextDate = new Date(this.episode.local_showtime);
+        if (this.episode.localShowTime) {
+            const offsetNextDate = new Date(this.episode.localShowTime);
             if (!!offset) {
                 offsetNextDate.setMinutes(offsetNextDate.getMinutes() + (60 * offset));
             }
@@ -138,9 +138,9 @@ export interface IUiSetting {
     };
 }
 
-export interface IShowImportantEpisodes {
-    first: UiEpisodeModel | undefined;
-    last: UiEpisodeModel | undefined;
-    next: UiEpisodeModel | undefined;
-    latest: UiEpisodeModel | undefined;
-}
+// export interface IShowImportantEpisodes {
+//     first: UiEpisodeModel | undefined;
+//     last: UiEpisodeModel | undefined;
+//     next: UiEpisodeModel | undefined;
+//     latest: UiEpisodeModel | undefined;
+// }

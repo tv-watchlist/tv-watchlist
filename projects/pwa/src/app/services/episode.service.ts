@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { IMyTvQShowEpisodeFlatV5, IMyTvQShowFlatV5 } from './flat-file-v5.model';
+import { IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
 import { CommonService } from './common.service';
 import { SettingService } from './setting.service';
 import { UiEpisodeModel } from './ui.model';
@@ -17,7 +17,7 @@ export class EpisodeService {
     ) {
     }
 
-    public async saveAll(episodes: IMyTvQShowEpisodeFlatV5[]) {
+    public async saveFileToDb(episodes: IMyTvQShowEpisodeFlatV5[]) {
         const list = episodes.map((e,i,a) => {
             const previousId = (i-1 >= 0) ? a[i-1].episode_id: '';
             const nextId = i+1 < a.length ? a[i+1].episode_id: '';
@@ -46,27 +46,19 @@ export class EpisodeService {
         await this.webDb.putList('episodes', list);
     }
 
-    getEpisodeModel(show: IMyTvQShowFlatV5, episodeId: string) {
-        const episode = this.getEpisode(show, episodeId);
+    async getEpisodeModel(episodeId: string, countryCode: string) {
+        const episode = await this.getEpisode(episodeId);
         if (!episode) {
             throw (new Error('Episode was not found'));
         }
 
         const model = new UiEpisodeModel(episode);
-        const offset = this.settingSvc.getTimezoneOffset(show.channel.country.code);
+        const offset = this.settingSvc.getTimezoneOffset(countryCode);
         model.setFormattedDate(offset, this.datePipe);
         return model;
     }
 
-    // createEpisodeId(episode: IMyTvQShowEpisodeFlatV5): string {
-    //     if (episode.special) {
-    //         return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_S${this.commonSvc.zeroPad(episode.number, 4)}`;
-    //     } else {
-    //         return `${episode.show_id}_${this.commonSvc.zeroPad(episode.counter, 4)}_${this.commonSvc.zeroPad(episode.season, 4)}_${this.commonSvc.zeroPad(episode.number, 4)}`;
-    //     }
-    // }
-
-    getEpisodeName(episode?: IMyTvQShowEpisodeFlatV5): string {
+    getEpisodeName(episode?: IMyTvQDbEpisode): string {
         if (!!episode) {
             return episode.special ? `[Special ${episode.counter}] ${episode.name}` :
                 `${episode.counter}.(${episode.season}x${episode.number}) ${episode.name}`;
@@ -75,11 +67,11 @@ export class EpisodeService {
         }
     }
 
-    getNextEpisodeDays(episode?: IMyTvQShowEpisodeFlatV5): string {
+    getNextEpisodeDays(episode?: IMyTvQDbEpisode): string {
         if (!episode) {
             return 'TBA';
         }
-        return this.commonSvc.getDaysBetweenToEnglish(new Date(), new Date(episode.local_showtime));
+        return this.commonSvc.getDaysBetweenToEnglish(new Date(), new Date(episode.localShowTime));
     }
 
     getFormattedTime(localShowtime: number, status: number): string {
@@ -93,46 +85,34 @@ export class EpisodeService {
         }
     }
 
-    getFormattedDate(episode: IMyTvQShowEpisodeFlatV5): string {
-        return this.datePipe.transform(episode.local_showtime, '(MMM d, y)') || '(n/a)';
+    getFormattedDate(episode: IMyTvQDbEpisode): string {
+        return this.datePipe.transform(episode.localShowTime, '(MMM d, y)') || '(n/a)';
     }
 
-    /**
-     *
-     * @param showId
-     * @returns IShowImportantEpisodes
-     */
-    getImportantEpisodes(show: IMyTvQShowFlatV5) {
-        let next;
-        for (const episodeId in show.episode_list) {
-            if (Object.prototype.hasOwnProperty.call(show.episode_list, episodeId)) {
-                const episode = show.episode_list[episodeId];
-                if (!next && !episode.seen) {
-                    next = episode;
-                }
-            }
-        }
-        return {
-            first: show?.first_episode,
-            last: show?.last_episode,
-            next,
-            latest: show?.next_episode
-        };
+    async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
+        return await this.webDb.getAllAsObject('episodes');
     }
 
-    getEpisodeList(show: IMyTvQShowFlatV5): { [episodeId: string]: IMyTvQShowEpisodeFlatV5; } {
-        return show.episode_list || {};
+    async getEpisode(episodeId: string): Promise<IMyTvQDbEpisode> {
+        return await this.webDb.getObj('episodes',episodeId);
     }
 
-    getEpisode(show: IMyTvQShowFlatV5, episodeId: string): IMyTvQShowEpisodeFlatV5 {
-        const list = show.episode_list;
-        return list[episodeId];
-    }
-
-    toggleSeen(show: IMyTvQShowFlatV5, episodeId: string, seen: boolean): void {
-        const episode = this.getEpisode(show, episodeId);
+    async toggleSeen(episodeId: string, seen: boolean): Promise<void> {
+        const episode = await this.getEpisode(episodeId);
         if (!!episode) {
             episode.seen = seen;
+            await this.webDb.putObj('episodes',episode);
         }
+    }
+
+    async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
+        const ids = episodeIds.filter(o=>o).sort();
+        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange(">= && <=",ids[1], ids[ids.length - 1]));
+        for (const episode of list) {
+            if(episodeIds.includes(episode.episodeId)){
+                episode.seen = seen;
+            }
+        }
+        await this.webDb.putList('episodes',list);
     }
 }

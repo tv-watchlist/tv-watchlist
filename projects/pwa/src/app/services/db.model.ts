@@ -1,4 +1,6 @@
-import { DBSchema } from 'idb'; // https://github.com/jakearchibald/idb#typescript
+import { DBSchema, IndexNames, StoreNames } from 'idb'; // https://github.com/jakearchibald/idb#typescript
+
+export type MyTvQStoreName = 'settings' | 'shows' | 'episodes';
 
 export interface IMyTvQDBv1 extends DBSchema {
     settings: {key: string, value: any};
@@ -10,10 +12,12 @@ export interface IMyTvQDBv1 extends DBSchema {
         'localShowtimeIndex': number }
     };
 }
+// export declare type IndexNames<DBTypes extends DBSchema | unknown, StoreName extends StoreNames<DBTypes>> = DBTypes extends DBSchema ? keyof DBTypes[StoreName]['indexes'] : string;
+
+// export interface MyTvQStoreName extends StoreNames<IMyTvQDBv1> {}
 
 export interface IMyTvQDbShow {
     showId: string;
-    nextUpdateTime: number;
     name: string;
     url: string;
     showType: string;
@@ -47,9 +51,16 @@ export interface IMyTvQDbShow {
         banner: string[];
         poster: string[];
     };
+
+    // updated by cron
+    nextUpdateTime: number;
     unseenCount: number;
     totalEpisodes: number;
     totalSeasons: number;
+    firstEpisode?: {episodeId: string; localShowTime: number;};
+    previousEpisode?: {episodeId: string; localShowTime: number;};
+    nextEpisode?: {episodeId: string; localShowTime: number;};
+    lastEpisode?: {episodeId: string; localShowTime: number;};
 }
 
 export interface IMyTvQDbEpisode {

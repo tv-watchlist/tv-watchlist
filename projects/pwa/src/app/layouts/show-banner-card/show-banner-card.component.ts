@@ -22,26 +22,25 @@ export class ShowBannerCardComponent implements OnInit {
 
     model!: UiShowModel;
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.showId) {
             throw (new Error('The required input [showId] was not provided'));
         }
 
-        this.model = this.showSvc.getShowModel(this.showId);
+        this.model = await this.showSvc.getShowModel(this.showId);
 
         this.cdRef.markForCheck();
     }
 
     markAsSeen(): void {
-        const show = this.showSvc.getShow(this.showId);
-        const impEpisodes = this.episodeSvc.getImportantEpisodes(show);
-        if (!!impEpisodes.next) {
-            this.showSvc.markAsSeen(show, impEpisodes.next);
-            this.model.nextEpisodeName = this.episodeSvc.getEpisodeName(impEpisodes.next);
-        } else {
-            this.model.nextEpisodeName = '';
-            this.model.unseenCount = 0;
-        }
+        // const impEpisodes = this.episodeSvc.getImportantEpisodes(show);
+        // if (!!impEpisodes.next) {
+        //     this.showSvc.markAsSeen(show, impEpisodes.next);
+        //     this.model.nextEpisodeName = this.episodeSvc.getEpisodeName(impEpisodes.next);
+        // } else {
+        //     this.model.nextEpisodeName = '';
+        //     this.model.unseenCount = 0;
+        // }
         this.cdRef.markForCheck();
     }
 
