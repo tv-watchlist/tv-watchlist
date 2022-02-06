@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IMyTvQFlatV5 } from '../../services/flat-file-v5.model';
 import { MigrationService } from '../../services/migration.service';
 import { SettingService } from "../../services/setting.service";
@@ -11,10 +11,61 @@ export class SettingComponent implements OnInit {
     constructor(
         public settingSvc: SettingService,
         private migrateSvc: MigrationService,
+        private cdRef: ChangeDetectorRef,
         ) { }
 
     file?: File | null;
-    ngOnInit(): void { }
+
+    private _hideTba: boolean = false;
+    get hideTba() {
+        return this._hideTba;
+    }
+
+    set hideTba(val: boolean) {
+        this.settingSvc.save('hideTba', val);
+        this._hideTba = val;
+    }
+
+    private _hideSeen: boolean = false;
+    get hideSeen() {
+        return this._hideSeen;
+    }
+
+    set hideSeen(val: boolean) {
+        this.settingSvc.save('hideSeen', val);
+        this._hideSeen = val;
+    }
+
+    private _showsOrder: string = '';
+    get showsOrder() {
+        return this._showsOrder;
+    }
+
+    set showsOrder(val: string) {
+        this.settingSvc.save('showsOrder', val);
+        this._showsOrder = val;
+    }
+
+    private _defaultEpisodes: string = '';
+    get defaultEpisodes() {
+        return this._defaultEpisodes;
+    }
+
+    set defaultEpisodes(val: string) {
+        this.settingSvc.save('defaultEpisodes', val);
+        this._defaultEpisodes = val;
+    }
+
+    async ngOnInit(): Promise<void> {
+        const settings = await this.settingSvc.getAll();
+        console.log({settings});
+        this._hideTba = settings.hideTba;
+        this._hideSeen = settings.hideSeen;
+        this._showsOrder = settings.showsOrder;
+        this._defaultEpisodes = settings.defaultEpisodes;
+        this._hideTba = settings.hideTba;
+        this.cdRef.detectChanges();
+    }
 
     handleFileInput(event: Event): void {
         const reader = new FileReader();

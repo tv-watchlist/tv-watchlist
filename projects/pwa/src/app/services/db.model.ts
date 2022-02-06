@@ -12,9 +12,6 @@ export interface IMyTvQDBv1 extends DBSchema {
         'localShowtimeIndex': number }
     };
 }
-// export declare type IndexNames<DBTypes extends DBSchema | unknown, StoreName extends StoreNames<DBTypes>> = DBTypes extends DBSchema ? keyof DBTypes[StoreName]['indexes'] : string;
-
-// export interface MyTvQStoreName extends StoreNames<IMyTvQDBv1> {}
 
 export interface IMyTvQDbShow {
     showId: string;
@@ -82,4 +79,18 @@ export interface IMyTvQDbEpisode {
     nextId: string;
     apiSource: string;
     apiId: {[key: string]: string|number}
+}
+
+export interface IMyTvQDbSetting {
+    updateTime: number;
+    showsOrder: string;
+    version: number;
+    defaultEpisodes: string;
+    hideTba: boolean;
+    hideSeen: boolean;
+    defaultCountry: string;
+    timezoneOffset: {
+        [country: string]: number;
+    };
+    showIdOrderList: string[];
 }

@@ -19,8 +19,8 @@ export class ShowService {
     private EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
 
     public async getAll() {
-        return await this.webDb.getAllAsArray<IMyTvQDbShow>('shows').then(showList => {
-            if (this.settingSvc.showsOrder === 'showname') {
+        return await this.webDb.getAllAsArray<IMyTvQDbShow>('shows').then(async showList => {
+            if (await this.settingSvc.get('showsOrder') === 'showname') {
                 // http://www.javascriptkit.com/javatutors/arraysort2.shtml
                 if (showList.length) {
                     showList.sort((a, b) => {
@@ -70,7 +70,7 @@ export class ShowService {
 
                 let newShowList = futureShowList.concat(tbaEnded);
 
-                if (this.settingSvc.showsOrder === 'unseen') {
+                if (await this.settingSvc.get('showsOrder') === 'unseen') {
                     const showListUnseen = newShowList.filter((item) => {
                         return item.unseenCount > 0;
                     });
@@ -87,7 +87,7 @@ export class ShowService {
                 showList = newShowList;
             }
 
-            if (this.settingSvc.hideTba) {
+            if (await this.settingSvc.get('hideTba')) {
                 showList = showList.filter(o => !!o && (o.unseenCount > 0 || !!o.nextEpisode));
             }
             return showList;

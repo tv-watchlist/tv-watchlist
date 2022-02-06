@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 // https://github.com/jakearchibald/idb#typescript
 // examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
 import { IDBPDatabase, IDBPTransaction, IndexKey, IndexNames, openDB, unwrap } from 'idb';
-import { IMyTvQDBv1, MyTvQStoreName } from './db.model';
+import { IMyTvQDbSetting, IMyTvQDBv1, MyTvQStoreName } from './db.model';
 
 @Injectable({ providedIn: 'root' })
 export class WebDatabaseService {
@@ -15,14 +15,14 @@ export class WebDatabaseService {
             return;
         }
 
-        this.createDb();
+        this.createDb()
     }
 
     private async createDb(name = 'myTvQDB', version = 1): Promise<void> {
         this.dbPromise = openDB<IMyTvQDBv1>(name, version, {
             async upgrade(db: IDBPDatabase<IMyTvQDBv1>, oldVersion: number, newVersion: number | null,
-                transaction: IDBPTransaction<IMyTvQDBv1, (MyTvQStoreName)[], "versionchange">): Promise<void> {
-                if (oldVersion < 1) {
+                transaction: IDBPTransaction<IMyTvQDBv1, (MyTvQStoreName)[], "versionchange">) {
+                async function upgradeMyTvQDBfromV0toV1() {
                     // first create all Object Stores
                     db.createObjectStore('settings');
                     const showStore = db.createObjectStore('shows', {
@@ -37,26 +37,42 @@ export class WebDatabaseService {
                     episodeStore.createIndex('localShowtimeIndex', 'localShowTime', { unique: false });
 
                     // and then initialize data
-                    const settings: { [key: string]: any } = {
+                    const settings: IMyTvQDbSetting = {
                         updateTime: (new Date()).getTime(),
                         showsOrder: 'airdate',
                         version: 5,
                         defaultEpisodes: 'bookmarked',
                         hideTba: true,
                         hideSeen: true,
-                        defaultCountry: 'US'
+                        defaultCountry: 'US',
+                        showIdOrderList: [],
+                        timezoneOffset: {'US': 0}
                     };
 
                     const promises = [];
                     for (const key in settings) {
                         if (Object.prototype.hasOwnProperty.call(settings, key)) {
-                            promises.push(transaction.objectStore('settings').put(settings[key] as any, key));
+                            promises.push(transaction.objectStore('settings').put(settings[key as keyof IMyTvQDbSetting], key));
                         }
                     }
                     promises.push(transaction.done);
                     await Promise.all(promises);
                     promises.length = 0;
                     console.log('IndexedDB v1 created!');
+                }
+                async function upgradeMyTvQDBfromV1toV2() {
+                    console.log('IndexedDB v2 stub. To be implemented when need upgrading');
+                }
+                switch (oldVersion) {
+                    case 0:
+                        upgradeMyTvQDBfromV0toV1();
+                        break;
+                    //     /* falls through */
+                    // case 1:
+                    //     upgradeMyTvQDBfromV1toV2();
+                    //     break;
+                    default:
+                        console.error('unknown db version');
                 }
             },
             blocked(): void {
@@ -100,26 +116,87 @@ export class WebDatabaseService {
         return await transaction.objectStore(storeName).get(key) as T;
     }
 
-    public async getAllAsArray<T>(storeName: MyTvQStoreName, query?: string | IDBKeyRange | null | undefined, count?: number | undefined): Promise<T[]> {
+    public async getList<T>(storeName: MyTvQStoreName, keyList: string[], progress?: (counter: number, length: number, isComplete: boolean) => void):Promise<T[]> {
+        const db = (await this.dbPromise);
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(storeName, 'readwrite');
+            let count = 0;
+            const result:T[] = [];
+            transaction.oncomplete = (event) => {
+                console.log(storeName + ' Added ' + count + '/' + keyList.length);
+                if (!!progress) {
+                    progress(count, keyList.length, true);
+                }
+                resolve(result);
+            }
+
+            transaction.onabort = (event) => {
+                if (!!progress) {
+                    progress(count, keyList.length, true);
+                }
+                resolve(result);
+            }
+
+            if (keyList.length == 0) {
+                transaction.abort();
+                return;
+            }
+            const store = unwrap(transaction.objectStore(storeName)); // unwrapping to use onsuccess
+
+            const getNext = (ev?: Event) => {
+                let request: IDBRequest<any> | undefined;
+                if (count < keyList.length) {
+                    if(!!request) {
+                        result.push(request.result);
+                    }
+                    request = store.get(keyList[count]);
+                    request.onsuccess = getNext;
+                    ++count;
+                    if (!!progress) {
+                        progress(count, keyList.length, false); // called multiple times, false means not complete
+                    }
+                } else {
+                    console.log('populate complete'); // complete
+                }
+            };
+            getNext();
+        });
+    }
+
+    public async getAllAsArray<T>(storeName: MyTvQStoreName, key?: string | IDBKeyRange | null | undefined, count?: number | undefined): Promise<T[]> {
         const transaction = (await this.dbPromise).transaction(storeName, 'readonly');
-        const result = await transaction.objectStore(storeName).getAll(query, count);
+        const result = await transaction.objectStore(storeName).getAll(key, count);
         return result as T[];
     }
 
-    public async getAllAsObject<T>(storeName: MyTvQStoreName,query?: string | IDBKeyRange | null | undefined, direction?: IDBCursorDirection | undefined): Promise<T> {
+    public async getAllAsObject<T>(storeName: MyTvQStoreName, key?: string | IDBKeyRange | null | undefined, direction?: IDBCursorDirection | undefined): Promise<T> {
         const store = (await this.dbPromise).transaction(storeName, 'readonly');
         const result: { [key: string]: any } = {};
-        const cursor = store.objectStore(storeName).openCursor(query, direction);
-        let cursorValue = (await cursor);
+        let cursorRequest = await store.objectStore(storeName).openCursor(key, direction);
         while (true) {
-            if (!!cursorValue) {
-                result[cursorValue.key] = cursorValue.value;
-                cursorValue = await cursorValue.continue();
+            if (!!cursorRequest) {
+                result[cursorRequest.key] = cursorRequest.value;
+                cursorRequest = await cursorRequest.continue();
             }
-            if (!cursorValue) { break; }
+            if (!cursorRequest) { break; }
         }
 
         return result as T;
+    }
+
+    public async getIndexedList<T extends MyTvQStoreName>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange, direction?: IDBCursorDirection | undefined) {
+        const transaction = (await this.dbPromise).transaction(storeName, "readonly");
+        const index = transaction.store.index(indexName);
+        let cursorRequest = await index.openCursor(range, direction);
+        const result: T[] = [];
+        while (true) {
+            if(!!cursorRequest) {
+                result.push(cursorRequest.value);
+                cursorRequest = await cursorRequest.continue();
+            } else {
+                break;
+            }
+        }
     }
 
     public async deleteObj(storeName: MyTvQStoreName, key: string | IDBKeyRange) {

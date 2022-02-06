@@ -31,9 +31,9 @@ export class ShowDetailComponent implements OnInit {
     showDetails = false;
     menuOptions = ['Bookmarked', 'Latest'];
     defaultMenuOption: 'Bookmarked' | 'Latest' = 'Bookmarked';
-    private pHideSeen: undefined|boolean;
+    private pHideSeen!: boolean;
     get hideSeen(): boolean {
-        return this.pHideSeen === undefined ? this.settingSvc.hideSeen : this.pHideSeen;
+        return this.pHideSeen || false;
     }
     set hideSeen(val: boolean) {
         this.pHideSeen = val;
@@ -56,6 +56,7 @@ export class ShowDetailComponent implements OnInit {
             this.showId = p.showId;
             this.showModel = await this.showSvc.getShowModel(p.showId);
             this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(p.showId);
+            this.pHideSeen = await this.settingSvc.get('hideSeen');
             this.populateEpisodeList();
             this.cdRef.markForCheck();
         });

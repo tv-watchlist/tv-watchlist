@@ -33,14 +33,13 @@ export class AppComponent implements OnInit, OnDestroy {
     isReady = false;
     test = false;
     ngOnInit(): void {
-        this.tvSvc.initAll().subscribe(() => {
-            this.isReady = true;
-            this.cdRef.detectChanges();
-        });
+        this.isReady = true;
+        this.cdRef.detectChanges();
         this.navSvc.onBack.subscribe(history => {
             this.isHome = history.url === '/home';
             console.log('pop history', history);
             this.scrollTop = history.position ? history.position[1] : 0;
+            this.cdRef.detectChanges();
         });
         // this.routeTrigger$ = this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd),

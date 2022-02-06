@@ -17,45 +17,12 @@ export class EpisodeService {
     ) {
     }
 
-    public async saveFileToDb(episodes: IMyTvQShowEpisodeFlatV5[]) {
-        const list = episodes.map((e,i,a) => {
-            const previousId = (i-1 >= 0) ? a[i-1].episode_id: '';
-            const nextId = i+1 < a.length ? a[i+1].episode_id: '';
-            const episode: IMyTvQDbEpisode = {
-                episodeId: e.episode_id,
-                showId: e.show_id,
-                localShowTime: e.local_showtime,
-                name: e.name,
-                url: e.url,
-                iso8601: e.iso8601,
-                runtime: e.runtime,
-                season: e.season,
-                number: e.number ,
-                counter: e.counter,
-                special: e.special,
-                summary: e.summary,
-                poster: e.image?.poster && e.image?.poster.length  ? e.image?.poster[0] : '',
-                seen: e.seen,
-                previousId: previousId,
-                nextId: nextId,
-                apiSource: e.api_source,
-                apiId: e.api_id
-            };
-            return episode;
-        });
-        await this.webDb.putList('episodes', list);
-    }
-
-    async getEpisodeModel(episodeId: string, countryCode: string) {
-        const episode = await this.getEpisode(episodeId);
-        if (!episode) {
-            throw (new Error('Episode was not found'));
+    createEpisodeId(showId: string, season: number, epNumber: number, epCounter:number, splCounter?:number): string {
+        if (splCounter) {
+            return `${showId}_S${this.commonSvc.zeroPad(season, 3)}_E${this.commonSvc.zeroPad(epNumber, 3)}_C${this.commonSvc.zeroPad(epCounter, 4)}_X${this.commonSvc.zeroPad(splCounter, 3)}`;
+        } else {
+            return `${showId}_S${this.commonSvc.zeroPad(season, 3)}_E${this.commonSvc.zeroPad(epNumber, 3)}_C${this.commonSvc.zeroPad(epCounter, 4)}`;
         }
-
-        const model = new UiEpisodeModel(episode);
-        const offset = this.settingSvc.getTimezoneOffset(countryCode);
-        model.setFormattedDate(offset, this.datePipe);
-        return model;
     }
 
     getEpisodeName(episode?: IMyTvQDbEpisode): string {
@@ -89,15 +56,27 @@ export class EpisodeService {
         return this.datePipe.transform(episode.localShowTime, '(MMM d, y)') || '(n/a)';
     }
 
-    async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
+    public async getEpisodeModel(episodeId: string, countryCode: string) {
+        const episode = await this.getEpisode(episodeId);
+        if (!episode) {
+            throw (new Error('Episode was not found'));
+        }
+
+        const model = new UiEpisodeModel(episode);
+        const offset = await this.settingSvc.getTimezoneOffset(countryCode);
+        model.setFormattedDate(offset, this.datePipe);
+        return model;
+    }
+
+    public async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
         return await this.webDb.getAllAsObject('episodes');
     }
 
-    async getEpisode(episodeId: string): Promise<IMyTvQDbEpisode> {
+    public async getEpisode(episodeId: string): Promise<IMyTvQDbEpisode> {
         return await this.webDb.getObj('episodes',episodeId);
     }
 
-    async toggleSeen(episodeId: string, seen: boolean): Promise<void> {
+    public async toggleSeen(episodeId: string, seen: boolean): Promise<void> {
         const episode = await this.getEpisode(episodeId);
         if (!!episode) {
             episode.seen = seen;
@@ -105,7 +84,7 @@ export class EpisodeService {
         }
     }
 
-    async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
+    public async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
         const ids = episodeIds.filter(o=>o).sort();
         const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange(">= && <=",ids[1], ids[ids.length - 1]));
         for (const episode of list) {
@@ -114,5 +93,56 @@ export class EpisodeService {
             }
         }
         await this.webDb.putList('episodes',list);
+    }
+
+    public async saveFileToDb(episodes: { [episodeId: string]: IMyTvQShowEpisodeFlatV5 }) {
+        let normal_counter = 0;
+        let special_counter = 0;
+        let last_number = 0;
+        const episode_list = [];
+        for (const key in episodes) {
+            if (Object.prototype.hasOwnProperty.call(episodes, key)) {
+                const episode = episodes[key];
+                if(!!episode.number){
+                    last_number = episode.number;
+                    episode.special = false;
+                    episode.counter = ++normal_counter;
+                    episode.episode_id = this.createEpisodeId(episode.show_id, episode.season, last_number, normal_counter);
+                }else{
+                    episode.number = last_number;
+                    episode.special = true;
+                    episode.counter = ++special_counter;
+                    // use previous normal_counter and last_number
+                    episode.episode_id = this.createEpisodeId(episode.show_id, episode.season, last_number, normal_counter, special_counter);
+                }
+                episode_list.push(episode);
+            }
+        }
+        const list = episode_list.map((e,i,a) => {
+            const previousId = (i-1 >= 0) ? a[i-1].episode_id: '';
+            const nextId = i+1 < a.length ? a[i+1].episode_id: '';
+            const episode: IMyTvQDbEpisode = {
+                episodeId: e.episode_id,
+                showId: e.show_id,
+                localShowTime: e.local_showtime,
+                name: e.name,
+                url: e.url,
+                iso8601: e.iso8601,
+                runtime: e.runtime,
+                season: e.season,
+                number: e.number ,
+                counter: e.counter,
+                special: e.special,
+                summary: e.summary,
+                poster: e.image?.poster && e.image?.poster.length  ? e.image?.poster[0] : '',
+                seen: e.seen,
+                previousId: previousId,
+                nextId: nextId,
+                apiSource: e.api_source,
+                apiId: e.api_id
+            };
+            return episode;
+        });
+        await this.webDb.putList('episodes', list);
     }
 }
