@@ -1,9 +1,9 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ShowService } from "../../services/show.service";
-import { EpisodeService } from "../../services/episode.service";
-import { UiShowModel } from "../../services/ui.model";
+import { ShowService } from '../../services/show.service';
+import { EpisodeService } from '../../services/episode.service';
+import { UiShowModel } from '../../services/ui.model';
 
 @Component({
     selector: 'tvq-show-banner-card',

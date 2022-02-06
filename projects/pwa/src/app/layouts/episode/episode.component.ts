@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
-import { EpisodeService } from "../../services/episode.service";
+import { EpisodeService } from '../../services/episode.service';
 import { IMyTvQShowFlatV5 } from '../../services/flat-file-v5.model';
 import { UiEpisodeModel } from '../../services/ui.model';
 import { ShowService } from '../../services/show.service';

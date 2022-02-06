@@ -69,7 +69,11 @@ export class EpisodeService {
     }
 
     public async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
-        return await this.webDb.getAllAsObject('episodes');
+       return await this.webDb.getIndexedObject<'episodes', IMyTvQDbEpisode>('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
+    }
+
+    public async getEpisodeList(showId: string): Promise<IMyTvQDbEpisode[]> {
+        return await this.webDb.getIndexedList<'episodes', IMyTvQDbEpisode>('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
     }
 
     public async getEpisode(episodeId: string): Promise<IMyTvQDbEpisode> {
@@ -86,7 +90,7 @@ export class EpisodeService {
 
     public async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
         const ids = episodeIds.filter(o=>o).sort();
-        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange(">= && <=",ids[1], ids[ids.length - 1]));
+        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange('>= && <=',ids[1], ids[ids.length - 1]));
         for (const episode of list) {
             if(episodeIds.includes(episode.episodeId)){
                 episode.seen = seen;
@@ -134,7 +138,7 @@ export class EpisodeService {
                 counter: e.counter,
                 special: e.special,
                 summary: e.summary,
-                poster: e.image?.poster && e.image?.poster.length  ? e.image?.poster[0] : '',
+                poster: (!!e.image?.poster && Array.isArray(e.image?.poster) ? e.image?.poster[0] : e.image?.poster as string) ||'',
                 seen: e.seen,
                 previousId: previousId,
                 nextId: nextId,

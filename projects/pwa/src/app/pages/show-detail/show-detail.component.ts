@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 // import { IMyTvQShowFlatV5 } from '../../services/flat-file-v5.model';
-import { SettingService } from "../../services/setting.service";
-import { ShowService } from "../../services/show.service";
-import { EpisodeService } from "../../services/episode.service";
-import { CommonService } from "../../services/common.service";
+import { SettingService } from '../../services/setting.service';
+import { ShowService } from '../../services/show.service';
+import { EpisodeService } from '../../services/episode.service';
+import { CommonService } from '../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OptionsMenuComponent } from '../../widgets/options-menu/options-menu.component';
 import { UiShowModel } from '../../services/ui.model';
@@ -84,7 +84,7 @@ export class ShowDetailComponent implements OnInit {
                     this.latestEpisodeId = episode.episodeId;
                 }
                 if (episode.localShowTime > today) {
-                    // this.episodeList.push({"type":"label", "text":`**UNAIRED**`});
+                    // this.episodeList.push({'type':'label', 'text':`**UNAIRED**`});
                     isUnairedFlagSet = true;
                 }
 

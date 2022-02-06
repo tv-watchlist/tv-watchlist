@@ -1,11 +1,11 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { CommonService } from "./common.service";
-import { EpisodeService } from "./episode.service";
-import { IMyTvQFlatV5, IMyTvQShowEpisodeFlatV5 } from "./flat-file-v5.model";
-import { SettingService } from "./setting.service";
-import { ShowService } from "./show.service";
-import { WebDatabaseService } from "./web-database.service";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { CommonService } from './common.service';
+import { EpisodeService } from './episode.service';
+import { IMyTvQFlatV5, IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
+import { SettingService } from './setting.service';
+import { ShowService } from './show.service';
+import { WebDatabaseService } from './web-database.service';
 
 @Injectable({ providedIn: 'root' })
 export class MigrationService {
@@ -35,12 +35,10 @@ export class MigrationService {
         await this.showSvc.saveFileToDb(model.show_list);
         model.show_list.forEach(async show => {
             await this.episodeSvc.saveFileToDb(show.episode_list);
-            //  nsr.myTvQ.subscribed.UpdateAllShowReference();
-             // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
         });
+        await this.showSvc.updateAllShowReference();
+        // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
     }
-
-
 
     export(): string {
         return '';

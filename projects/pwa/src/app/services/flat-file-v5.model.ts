@@ -89,8 +89,8 @@ export interface IMyTvQShowFlatV5 {
 // tvmaze5027_0024_0001_0024S02:
 // tvmaze5027_0024_0002_0024S01:
 // tvmaze5027_0025_0001_0001S03:
-// newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4);
-// Special newShow.show_id + "_" + nsr.ZeroPad(normal_counter,4) + "_" + nsr.ZeroPad(newEpisode.season, 4) + "_" + nsr.ZeroPad(last_number, 4) + "S"+nsr.ZeroPad(special_counter, 2)
+// newShow.show_id + '_' + nsr.ZeroPad(normal_counter,4) + '_' + nsr.ZeroPad(newEpisode.season, 4) + '_' + nsr.ZeroPad(last_number, 4);
+// Special newShow.show_id + '_' + nsr.ZeroPad(normal_counter,4) + '_' + nsr.ZeroPad(newEpisode.season, 4) + '_' + nsr.ZeroPad(last_number, 4) + 'S'+nsr.ZeroPad(special_counter, 2)
 export interface IMyTvQShowEpisodeFlatV5 {
     // {show_id}_{season}_{number}_{counter}
     // {show_id}_{season}_{number}_{counter}
@@ -112,7 +112,7 @@ export interface IMyTvQShowEpisodeFlatV5 {
     summary: string;
     image: {
         banner: string[];
-        poster: string[];
+        poster: string | string[];
     };
     seen: boolean;
     previous_id: string;

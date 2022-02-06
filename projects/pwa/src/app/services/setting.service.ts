@@ -10,6 +10,20 @@ export class SettingService {
     constructor(private webDb: WebDatabaseService) {
     }
 
+    public static get default(): IMyTvQDbSetting {
+        return {
+            updateTime: (new Date()).getTime(),
+            showsOrder: 'airdate',
+            version: 5,
+            defaultEpisodes: 'bookmarked',
+            hideTba: true,
+            hideSeen: true,
+            defaultCountry: 'US',
+            showIdOrderList: [],
+            timezoneOffset: {US: 0}
+        }
+    }
+
     async get<T>(key: keyof IMyTvQDbSetting) {
         return await this.webDb.getObj('settings',key) as T;
     }
@@ -18,8 +32,8 @@ export class SettingService {
         return await this.webDb.getAllAsObject<IMyTvQDbSetting>('settings');
     }
 
-    public async save(name: string, value: any) {
-        return await this.webDb.putObj('settings', value, name);
+    public async save(key: keyof IMyTvQDbSetting, value: any) {
+        return await this.webDb.putObj('settings', value, key);
     }
 
     public async saveAll(settings: IMyTvQDbSetting): Promise<boolean> {
@@ -34,16 +48,17 @@ export class SettingService {
 
     public async saveFileToDb(settings?: IMyTvQSettingFlatV5) {
         if (!!settings) {
+            const defaults = SettingService.default;
             const model: IMyTvQDbSetting = {
-                defaultCountry: settings.default_country,
+                defaultCountry: settings.default_country || defaults.defaultCountry,
                 hideSeen: settings.hide_seen,
-                defaultEpisodes: settings.default_episodes,
+                defaultEpisodes: settings.default_episodes|| defaults.defaultEpisodes,
                 hideTba: settings.hide_tba,
-                showsOrder: settings.shows_order,
-                updateTime: settings.update_time,
-                timezoneOffset: settings.timezone_offset,
-                version: 5,
-                showIdOrderList: [],
+                showsOrder: settings.shows_order || defaults.showsOrder,
+                updateTime: settings.update_time || defaults.updateTime,
+                timezoneOffset: settings.timezone_offset|| defaults.timezoneOffset,
+                version: defaults.version,
+                showIdOrderList: defaults.showIdOrderList,
             }
             this.webDb.putKeyValueBulk('settings', model);
         }

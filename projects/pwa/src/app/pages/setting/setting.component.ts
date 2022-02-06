@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IMyTvQFlatV5 } from '../../services/flat-file-v5.model';
 import { MigrationService } from '../../services/migration.service';
-import { SettingService } from "../../services/setting.service";
+import { SettingService } from '../../services/setting.service';
 
 @Component({
     selector: 'tvq-setting',

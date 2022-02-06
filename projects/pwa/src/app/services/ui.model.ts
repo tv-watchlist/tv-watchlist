@@ -1,6 +1,6 @@
-import { DatePipe } from "@angular/common";
-import { IMyTvQDbEpisode, IMyTvQDbShow } from "./db.model";
-import { IMyTvQShowEpisodeFlatV5 } from "./flat-file-v5.model";
+import { DatePipe } from '@angular/common';
+import { IMyTvQDbEpisode, IMyTvQDbShow } from './db.model';
+import { IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
 
 export interface IUiShowModel {
     id: string;

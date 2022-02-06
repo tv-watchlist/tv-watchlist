@@ -1,7 +1,8 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { slideInLeftOnEnterAnimation, slideInRightOnEnterAnimation, slideOutLeftOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { ShowService } from "../../services/show.service";
+import { SettingService } from '../../services/setting.service';
+import { ShowService } from '../../services/show.service';
 
 @Component({
     selector: 'tvq-home',
@@ -16,6 +17,7 @@ import { ShowService } from "../../services/show.service";
 })
 export class HomeComponent implements OnInit {
     constructor(
+        private settingSvc: SettingService,
         private showSvc: ShowService,
         private cdRef: ChangeDetectorRef) {
     }
@@ -23,7 +25,8 @@ export class HomeComponent implements OnInit {
     showIdList: string[] = [];
 
     async ngOnInit(): Promise<void> {
-        this.showIdList = (await this.showSvc.getAll()).map(o=>o.showId);
+        await this.showSvc.updateAllShowReference();
+        this.showIdList = (await this.settingSvc.get('showIdOrderList'))
         this.cdRef.markForCheck();
     }
 }

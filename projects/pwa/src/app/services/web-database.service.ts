@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 // examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
 import { IDBPDatabase, IDBPTransaction, IndexKey, IndexNames, openDB, unwrap } from 'idb';
 import { IMyTvQDbSetting, IMyTvQDBv1, MyTvQStoreName } from './db.model';
+import { SettingService } from './setting.service';
 
 @Injectable({ providedIn: 'root' })
 export class WebDatabaseService {
@@ -21,7 +22,7 @@ export class WebDatabaseService {
     private async createDb(name = 'myTvQDB', version = 1): Promise<void> {
         this.dbPromise = openDB<IMyTvQDBv1>(name, version, {
             async upgrade(db: IDBPDatabase<IMyTvQDBv1>, oldVersion: number, newVersion: number | null,
-                transaction: IDBPTransaction<IMyTvQDBv1, (MyTvQStoreName)[], "versionchange">) {
+                transaction: IDBPTransaction<IMyTvQDBv1, (MyTvQStoreName)[], 'versionchange'>) {
                 async function upgradeMyTvQDBfromV0toV1() {
                     // first create all Object Stores
                     db.createObjectStore('settings');
@@ -37,17 +38,7 @@ export class WebDatabaseService {
                     episodeStore.createIndex('localShowtimeIndex', 'localShowTime', { unique: false });
 
                     // and then initialize data
-                    const settings: IMyTvQDbSetting = {
-                        updateTime: (new Date()).getTime(),
-                        showsOrder: 'airdate',
-                        version: 5,
-                        defaultEpisodes: 'bookmarked',
-                        hideTba: true,
-                        hideSeen: true,
-                        defaultCountry: 'US',
-                        showIdOrderList: [],
-                        timezoneOffset: {'US': 0}
-                    };
+                    const settings: IMyTvQDbSetting = SettingService.default;
 
                     const promises = [];
                     for (const key in settings) {
@@ -87,26 +78,26 @@ export class WebDatabaseService {
         });
     }
 
-    public getKeyRange(operator: "=" | "<" | "<=" | ">" | ">=" | "> && <" | ">= && <=" | "> && <=" | ">= && <", lower: string, upper?: string): IDBKeyRange {
+    public getKeyRange(operator: '=' | '<' | '<=' | '>' | '>=' | '> && <' | '>= && <=' | '> && <=' | '>= && <', lower: string, upper?: string): IDBKeyRange {
         switch (operator) {
-            case "=":
+            case '=':
                 return IDBKeyRange.only(lower);
-            case "<":
+            case '<':
                 return IDBKeyRange.upperBound(lower, true);
-            case "<=":
+            case '<=':
                 return IDBKeyRange.upperBound(lower);
-            case ">":
+            case '>':
                 return IDBKeyRange.lowerBound(lower, true);
-            case ">=":
+            case '>=':
                 return IDBKeyRange.lowerBound(lower);
-            case "> && <":
+            case '> && <':
                 return IDBKeyRange.bound(lower, upper, true, true);
-            case ">= && <=":
-                //IDBKeyRange.bound(searchTerm, searchTerm + '\uffff') It'd be better to use \uffff as your dagger rather than z. You won't get search results like "wikip�dia" when searching for "wiki" if you use z...
+            case '>= && <=':
+                //IDBKeyRange.bound(searchTerm, searchTerm + '\uffff') It'd be better to use \uffff as your dagger rather than z. You won't get search results like 'wikip�dia' when searching for 'wiki' if you use z...
                 return IDBKeyRange.bound(lower, upper);
-            case "> && <=":
+            case '> && <=':
                 return IDBKeyRange.bound(lower, upper, true, false);
-            case ">= && <":
+            case '>= && <':
                 return IDBKeyRange.bound(lower, upper, false, true);
         }
     }
@@ -184,11 +175,11 @@ export class WebDatabaseService {
         return result as T;
     }
 
-    public async getIndexedList<T extends MyTvQStoreName>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange, direction?: IDBCursorDirection | undefined) {
-        const transaction = (await this.dbPromise).transaction(storeName, "readonly");
+    public async getIndexedList<T extends MyTvQStoreName,U>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange, direction?: IDBCursorDirection | undefined): Promise<U[]> {
+        const transaction = (await this.dbPromise).transaction(storeName, 'readonly');
         const index = transaction.store.index(indexName);
         let cursorRequest = await index.openCursor(range, direction);
-        const result: T[] = [];
+        const result: U[] = [];
         while (true) {
             if(!!cursorRequest) {
                 result.push(cursorRequest.value);
@@ -197,15 +188,32 @@ export class WebDatabaseService {
                 break;
             }
         }
+        return result;
+    }
+
+    public async getIndexedObject<T extends MyTvQStoreName,U>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange, direction?: IDBCursorDirection | undefined) {
+        const transaction = (await this.dbPromise).transaction(storeName, 'readonly');
+        const index = transaction.store.index(indexName);
+        let cursorRequest = await index.openCursor(range, direction);
+        const result: { [key: string]: U } = {};
+        while (true) {
+            if(!!cursorRequest) {
+                result[cursorRequest.primaryKey] = cursorRequest.value;
+                cursorRequest = await cursorRequest.continue();
+            } else {
+                break;
+            }
+        }
+        return result;
     }
 
     public async deleteObj(storeName: MyTvQStoreName, key: string | IDBKeyRange) {
-        const transaction = (await this.dbPromise).transaction(storeName, "readwrite");
+        const transaction = (await this.dbPromise).transaction(storeName, 'readwrite');
         return transaction.objectStore(storeName).delete(key);
     }
 
     public async deleteRange<T extends MyTvQStoreName>(storeName: T, indexName: IndexNames<IMyTvQDBv1, T>, range: IDBKeyRange ) {
-        const transaction = (await this.dbPromise).transaction(storeName, "readwrite");
+        const transaction = (await this.dbPromise).transaction(storeName, 'readwrite');
         const index = transaction.store.index(indexName);
         let cursorRequest = await index.openCursor(range);
         while (true) {
@@ -241,7 +249,7 @@ export class WebDatabaseService {
         let count = 0;
         return new Promise((resolve, reject) => {
             for (const name of storeNames) {
-                if (skipStores.indexOf(name) !== -1) { // ["listings","schedules"]
+                if (skipStores.indexOf(name) !== -1) { // ['listings','schedules']
                     continue;
                 }
                 this.clearStore(name).then(() => {

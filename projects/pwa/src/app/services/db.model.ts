@@ -54,10 +54,10 @@ export interface IMyTvQDbShow {
     unseenCount: number;
     totalEpisodes: number;
     totalSeasons: number;
-    firstEpisode?: {episodeId: string; localShowTime: number;};
-    previousEpisode?: {episodeId: string; localShowTime: number;};
-    nextEpisode?: {episodeId: string; localShowTime: number;};
-    lastEpisode?: {episodeId: string; localShowTime: number;};
+    firstEpisode?: IMyTvQDbEpisode;
+    previousEpisode?: IMyTvQDbEpisode;
+    nextEpisode?: IMyTvQDbEpisode;
+    lastEpisode?: IMyTvQDbEpisode;
 }
 
 export interface IMyTvQDbEpisode {
