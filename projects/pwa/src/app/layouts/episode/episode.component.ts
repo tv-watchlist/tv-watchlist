@@ -40,8 +40,9 @@ export class EpisodeComponent implements OnInit {
     }
 
     toggleSeen(): void {
-        this.episodeSvc.toggleSeen(this.episodeId, !this.model.seen);
-        this.seenToggled.emit(!this.model.seen);
+        this.model.seen = !this.model.seen
+        this.episodeSvc.toggleSeen(this.episodeId, this.model.seen);
+        this.seenToggled.emit(this.model.seen);
     }
 
     goToUrl(url: string): void {
