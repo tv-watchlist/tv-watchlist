@@ -49,15 +49,25 @@ export interface IMyTvQDbShow {
         poster: string[];
     };
 
-    // updated by cron
+    /**
+     * next fetch date
+     */
     nextUpdateTime: number;
     unseenCount: number;
     totalEpisodes: number;
     totalSeasons: number;
-    firstEpisode?: IMyTvQDbEpisode;
-    previousEpisode?: IMyTvQDbEpisode;
-    nextEpisode?: IMyTvQDbEpisode;
-    lastEpisode?: IMyTvQDbEpisode;
+    /**
+     * episode user has to watch next
+     */
+    unseenEpisode?: IMyTvQDbEpisode;
+    /**
+     * future episode to be aired
+     */
+    futureEpisode?: IMyTvQDbEpisode;
+    /**
+     * last/past aired episode
+     */
+    pastEpisode?: IMyTvQDbEpisode;
 }
 
 export interface IMyTvQDbEpisode {

@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-// import { IMyTvQShowFlatV5 } from '../../services/flat-file-v5.model';
 import { SettingService } from '../../services/setting.service';
 import { ShowService } from '../../services/show.service';
 import { EpisodeService } from '../../services/episode.service';
@@ -58,7 +57,6 @@ export class ShowDetailComponent implements OnInit {
             this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(p.showId);
             this.pHideSeen = await this.settingSvc.get('hideSeen');
             this.populateEpisodeList();
-            this.cdRef.markForCheck();
         });
     }
 
@@ -122,6 +120,7 @@ export class ShowDetailComponent implements OnInit {
             this.selectedSeasonNum = this.seasonNumList[this.seasonNumList.length - 1];
         }
         this.episodeList = episodeList;
+        this.cdRef.markForCheck();
     }
 
     goToUrl(): void {

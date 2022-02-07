@@ -27,15 +27,16 @@ export class UiShowModel {
         this.banner = show.image?.banner[0] || '';
         this.poster = show.image?.poster[0] || '';
         this.channel = show.channel.name || '';
-        this.unseenCount = show.unseenCount;
-        this.totalEpisodes = show.totalEpisodes;
         this.language = show.language;
         this.genres = show.genres;
         this.runtime = show.runtime;
         this.contentRating = show.contentRating;
         this.summary = show.summary;
         this.url = show.url;
-        this.totalSeasons = 0;
+
+        this.totalSeasons = show.totalSeasons;
+        this.unseenCount = show.unseenCount;
+        this.totalEpisodes = show.totalEpisodes;
         this.expand = false;
     }
 
@@ -46,20 +47,26 @@ export class UiShowModel {
     status = 0;
     banner: string;
     poster: string;
-    latestEpisodeName = '';
-    latestEpisodeDateFormatted = '';
-    latestEpisodeIn = '';
-    totalEpisodes: number;
-    expand: boolean;
-
     language: string;
+    summary: string;
+    url: string;
     genres: string[];
     runtime: number;
     contentRating: string;
+    totalEpisodes: number;
     unseenCount: number;
     totalSeasons: number;
-    summary: string;
-    url: string;
+
+    expand: boolean;
+
+    // show which is coming up next
+    latestEpisodeName = '';
+    latestEpisodeDateFormatted = '';
+    latestEpisodeInDays = '';
+
+    // next unseen episode
+    unseenEpisodeName = '';
+
 }
 
 export interface IUiEpisodeModel {

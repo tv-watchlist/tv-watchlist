@@ -32,15 +32,14 @@ export class ShowBannerCardComponent implements OnInit {
         this.cdRef.markForCheck();
     }
 
-    markAsSeen(): void {
-        // const impEpisodes = this.episodeSvc.getImportantEpisodes(show);
-        // if (!!impEpisodes.next) {
-        //     this.showSvc.markAsSeen(show, impEpisodes.next);
-        //     this.model.nextEpisodeName = this.episodeSvc.getEpisodeName(impEpisodes.next);
-        // } else {
-        //     this.model.nextEpisodeName = '';
-        //     this.model.unseenCount = 0;
-        // }
+    async markAsSeen(): Promise<void> {
+        const show = await this.showSvc.getShow(this.showId);
+
+        if (!!show.unseenEpisode) {
+            await this.showSvc.markAsSeen(show, show.unseenEpisode.episodeId);
+            this.model = await this.showSvc.getShowModel(this.showId);
+            this.model.expand = true;
+        }
         this.cdRef.markForCheck();
     }
 

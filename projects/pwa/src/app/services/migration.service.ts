@@ -13,8 +13,6 @@ export class MigrationService {
         private settingSvc: SettingService,
         private episodeSvc: EpisodeService,
         private showSvc: ShowService,
-        private http: HttpClient,
-        private commonSvc: CommonService,
         private webDb: WebDatabaseService,
     ) {
         this.now = new Date().getTime();

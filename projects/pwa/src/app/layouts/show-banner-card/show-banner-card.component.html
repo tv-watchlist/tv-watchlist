@@ -7,6 +7,7 @@
     <img *ngIf="!!model.banner" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="model.banner" alt="">
     <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!model.banner}">
         <div class="flex justify-between w-full">
+            <!-- show name - status -->
             <span>
                 <span [innerHTML]="model.name" class="mr-2 font-bold"></span>
                 <span [innerHTML]="model.premiered" class="text-sm"></span>
@@ -22,6 +23,7 @@
                 </ng-container>
             </span>
         </div>
+        <!-- latest/previous/last episode -->
         <div class="flex justify-between w-full" [ngClass]="{'mb-2':model.expand}">
             <span *ngIf="model.status === 0" class="w-full" [innerHTML]="model.latestEpisodeName"></span>
             <ng-container *ngIf="model.status !== 0">
@@ -36,8 +38,9 @@
         </div>
         <ng-container *ngIf="model.expand">
             <div class="flex justify-between w-full gap-1 mb-2">
+                <!-- dropdown next episode -->
                 <span class="flex justify-between w-10/12 px-1 my-auto text-sm truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
-                    <span class="truncate">{{model.unseenCount || '**All Seen**'}}</span>
+                    <span class="truncate">{{model.unseenEpisodeName || '**All Seen**'}}</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -58,7 +61,7 @@
                 <div class="w-11/12">
                     <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
                     <span class="my-auto mr-4" *ngIf="model.unseenCount">Unseen: {{model.unseenCount}}</span>
-                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.latestEpisodeIn}}</span>
+                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.latestEpisodeInDays}}</span>
                 </div>
             </div>
         </ng-container>
