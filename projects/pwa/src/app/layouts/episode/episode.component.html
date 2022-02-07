@@ -2,7 +2,7 @@
     <div class="relative flex-none w-4/12 h-20 mr-2">
         <img tvqDefault [src]="model.image" alt="" class="absolute inset-0 object-cover w-full h-full border" />
     </div>
-    <div class="w-8/12" [class.text-gray-400]="model.seen">
+    <div class="w-8/12" [class.text-gray-400]="seenToggled">
         <div [innerHTML]="model.episodeName"></div>
         <div class="flex justify-start">
             <span class="inline-block px-1 my-auto mr-2 text-sm text-white"

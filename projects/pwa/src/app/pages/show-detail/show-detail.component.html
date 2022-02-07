@@ -88,10 +88,11 @@
         </div>
     </div>
     <div class="flex flex-wrap mb-2 text-gray-800 ">
-        <div class="w-full mb-2" *ngFor="let episodeId of episodeList[selectedSeasonNum]">
+        <div class="w-full mb-2" *ngFor="let episode of episodeList[selectedSeasonNum]">
             <tvq-episode
-            [episodeId]="episodeId"
-            (seenToggled)="episodeToggled($event)"
+            [episodeId]="episode.episodeId"
+            [seenToggled]="episode.seen"
+            (seenToggledChanged)="episodeToggled($event)"
             [latestEpisodeId]="latestEpisodeId" ></tvq-episode>
         </div>
         <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700" *ngIf="!episodeList[selectedSeasonNum].length">
@@ -119,4 +120,4 @@
 </ng-template>
 <tvq-options-menu #menu (action)="onMenuSelect($event)" [default]="defaultMenuOption" [options]="menuOptions"></tvq-options-menu>
 <tvq-options-menu #menuRemove (action)="removeShow()" [options]="['Yes']" header="This will delete the show with your watched history. Are you sure?"></tvq-options-menu>
-<tvq-options-menu #menuAllSeen (action)="toggleSeasonSeen()" [options]="['Yes']" header="This will mark all episodes in selected season as seen. Are you sure?"></tvq-options-menu>
+<tvq-options-menu #menuAllSeen (action)="setSeasonAsSeen()" [options]="['Yes']" header="This will mark all episodes in selected season as seen. Are you sure?"></tvq-options-menu>

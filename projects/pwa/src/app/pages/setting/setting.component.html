@@ -33,5 +33,5 @@
         <input type="file" class="w-full" accept="application/JSON, .txt" (change)="handleFileInput($event)">
     </li>
 </ul>
-<tvq-options-menu #menu1 (action)="showsOrder=$event" [default]="showsOrder" [options]="['airdate','name']"></tvq-options-menu>
+<tvq-options-menu #menu1 (action)="showsOrder=$event" [default]="showsOrder" [options]="['airdate','unseen','unseen_my_popular','name']"></tvq-options-menu>
 <tvq-options-menu #menu2 (action)="defaultEpisodes=$event" [default]="defaultEpisodes" [options]="['bookmarked','latest']"></tvq-options-menu>

@@ -66,7 +66,6 @@ export class UiShowModel {
 
     // next unseen episode
     unseenEpisodeName = '';
-
 }
 
 export interface IUiEpisodeModel {
@@ -144,10 +143,3 @@ export interface IUiSetting {
         [country: string]: number;
     };
 }
-
-// export interface IShowImportantEpisodes {
-//     first: UiEpisodeModel | undefined;
-//     last: UiEpisodeModel | undefined;
-//     next: UiEpisodeModel | undefined;
-//     latest: UiEpisodeModel | undefined;
-// }

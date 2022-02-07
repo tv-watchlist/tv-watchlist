@@ -90,7 +90,7 @@ export class EpisodeService {
 
     public async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
         const ids = episodeIds.filter(o=>o).sort();
-        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange('>= && <=',ids[1], ids[ids.length - 1]));
+        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange('>= && <=',ids[0], ids[ids.length - 1]));
         for (const episode of list) {
             if(episodeIds.includes(episode.episodeId)){
                 episode.seen = seen;

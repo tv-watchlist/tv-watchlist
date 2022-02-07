@@ -25,8 +25,11 @@ export class HomeComponent implements OnInit {
     showIdList: string[] = [];
 
     async ngOnInit(): Promise<void> {
+        const t0 = performance.now();
         await this.showSvc.updateAllShowReference();
-        this.showIdList = (await this.settingSvc.get('showIdOrderList'))
+        this.showIdList = (await this.settingSvc.get('showIdOrderList'));
+        const t1 = performance.now();
+        console.log(`Call to updateAllShowReference took ${(t1 - t0)} milliseconds.`);
         this.cdRef.markForCheck();
     }
 }

@@ -57,6 +57,10 @@ export class ShowService {
         await this.webDb.putList('shows', list);
     }
 
+    public async save(show:IMyTvQDbShow) {
+        await this.webDb.putObj('shows', show);
+    }
+
     async getShowModel(showId: string) {
         // this.webDb
         const show = await this.getShow(showId);
@@ -77,19 +81,20 @@ export class ShowService {
     async updateAllShowReference() {
         console.log('Updating show references...starting!');
         let showList = await this.getAll();
+        const settings = await this.settingSvc.getAll();
         showList.forEach(async show => {
             const episodes = await this.episodeSvc.getEpisodeList(show.showId);
             // update show episode ref
-            this.updateShowReference(show, episodes);
+            this.updateReference(show, episodes);
             await this.webDb.putObj('shows', show);
         });
 
-        if (await this.settingSvc.get('hideTba')) {
+        if (settings.hideTba) {
             showList = showList.filter(o => !!o && (o.unseenCount > 0 || !!o.futureEpisode));
         }
 
         let showIdOrder: string[] = [];
-        if (await this.settingSvc.get('showsOrder') === 'showname') {
+        if (settings.showsOrder === 'showname') {
             // http://www.javascriptkit.com/javatutors/arraysort2.shtml
             if (showList.length) {
                 showList.sort((a, b) => {
@@ -115,8 +120,8 @@ export class ShowService {
             const tbaShowList = showList.filter((item) => {
                 return !(item.status || '').match(this.EndedRegex) && !item.futureEpisode;
             }).sort((a, b) => {
-                const x = (b.pastEpisode || { localShowTime: 0 }).localShowTime;
-                const y = (a.pastEpisode || { localShowTime: 0 }).localShowTime;
+                const x = b.pastEpisode?.localShowTime || 0;
+                const y = a.pastEpisode?.localShowTime || 0;
                 return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             });
 
@@ -125,8 +130,8 @@ export class ShowService {
             const endedShowList = showList.filter((item, index) => {
                 return (item.status || '').match(this.EndedRegex);
             }).sort((a, b) => {
-                const x = (b.pastEpisode || { latestEpisode: 0 }).localShowTime || 0;
-                const y = (a.pastEpisode || { latestEpisode: 0 }).localShowTime || 0;
+                const x = b.pastEpisode?.localShowTime || 0;
+                const y = a.pastEpisode?.localShowTime || 0;
                 return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             });
 
@@ -134,17 +139,68 @@ export class ShowService {
 
             let newShowList = futureShowList.concat(tbaEnded);
 
-            if (await this.settingSvc.get('showsOrder') === 'unseen') {
-                const showListUnseen = newShowList.filter((item) => {
-                    return item.unseenCount > 0;
+            // Acecool - Add a new type of sorting...
+            if(settings.showsOrder === 'unseen_my_popular') {
+                const DayInMilliSeconds = 24 * 60 * 60 * 1000;
+                // Acecool - How many seconds ahead of the shows' next-episode airtime before we prioritize that show and display it at the top of the unseen shows list ( all the way at the top )
+                // Note: Popular means it is either a NEW show with 0 aired, or you've seen ALL of the aired episodes meaning this will put the show at the very top of the list if 0 unseen and x hours before airtime...
+                //	   and at air-time, it'll be removed from the very top and it'll be at the very top anyway because it'll have 1 unseen episode...
+                const TimeBeforeAirToPrioritizePopularShow = DayInMilliSeconds;
+                // - Modify this helper function to ensure upcoming shows
+                // - which have been fully-watched to 0 eps un-seen except unaired
+                // - are added to the unseen list. Shows with an air-date less than 24 hours from the current timestamp are added to the top of the list!
+                const showListUnseen = newShowList.filter(show => {
+                    // // If show is special, don't add it...
+                    // if ( show.special ) { // not applicable
+                    //     return false;
+                    // }
+                    // Grab the next episode data in the double linked-list, if applicable..
+                    const nextEpisode = show.futureEpisode || show.unseenEpisode;
+
+                    // If there is a next episode with a name airing within the next day from a show which has no unseen aired episodes
+                    // ( Meaning it is either brand-new OR we follow this show carefully ) - ADD IT TO THE UNSEEN LIST AT THE TOP -
+                    // I could also mod it to appear after shows with 1 ep unseen, or 2 to help fit my no-scrolling criteria for the mods,
+                    // but the shows that air on the same day aren't many, typically...
+                    if ( !!nextEpisode && nextEpisode.name && !nextEpisode.seen ) {
+                        const now = new Date().getTime();
+
+                        if ( (nextEpisode.localShowTime - now) < TimeBeforeAirToPrioritizePopularShow ){
+                            // Debugging - Show the developer or curious user which unaired,
+                            // fully-watched or new show / episode is going to appear at the top of the list...
+                            console.log( '[ UnAired added to Unseen List ] Show: ' + show.name + ' - ' + ( show.futureEpisode?.name || "Unknown Episode Name" ) +
+                                '\t\t( showtime: ' + nextEpisode.localShowTime + ' - tnow: ' + now + ' ) = ' + ( (nextEpisode.localShowTime - now)/1000 ) + 'seconds until airtime...' );
+
+                            // Return true to ensure it is added to the unseen episodes list
+                            // - it will also appear in the other list in order with other upcoming shows...
+                            return true;
+                        }
+                    }
+                    return show.unseenCount > 0;
+                }).sort((a, b) => {
+                    const x = b.unseenCount;
+                    const y = a.unseenCount;
+                    // Acecool - Sort Ascending - ie the fewest episodes left to watch appear at the top because these are shows you pay more attention
+                    // to or have gotten around to watching vs other shows with hundreds of episodes you haven't started with yet...
+                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
                 });
-                const showListSeen = newShowList.filter((item) => {
-                    return item.unseenCount === 0;
+
+                const showListSeen = newShowList.filter(show => {
+                    return show.unseenCount === 0;
                 });
-                showListUnseen.sort((a, b) => {
+                newShowList = showListUnseen.concat(showListSeen);
+            }
+
+            if (settings.showsOrder === 'unseen') {
+                const showListUnseen = newShowList.filter(show => {
+                    return show.unseenCount > 0;
+                }).sort((a, b) => {
                     const x = b.unseenCount;
                     const y = a.unseenCount;
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                });
+
+                const showListSeen = newShowList.filter(show => {
+                    return show.unseenCount === 0;
                 });
                 newShowList = showListUnseen.concat(showListSeen);
             }
@@ -155,7 +211,14 @@ export class ShowService {
         console.log('Updating show references...complete!');
     }
 
-    updateShowReference(show: IMyTvQDbShow, episodeList:IMyTvQDbEpisode[]) {
+    async updateShowReference(showId: string) {
+        const show = await this.getShow(showId);
+        const episodeList = await this.episodeSvc.getEpisodeList(showId);
+        this.updateReference(show, episodeList);
+        await this.webDb.putObj('shows', show);
+    }
+
+    updateReference(show: IMyTvQDbShow, episodeList:IMyTvQDbEpisode[]) {
         // console.log(show,episodeList);
         const now = (new Date()).getTime();
         let unseenCount = 0;
@@ -164,9 +227,6 @@ export class ShowService {
         show.unseenEpisode = undefined;
 
         episodeList.forEach((episode,index,array) => {
-            if (index === 0 || (index > 0 && array[index - 1].seen && !episode.seen)) {
-                show.unseenEpisode = episode;
-            }
             if (!!episode.localShowTime && episode.localShowTime < now) {
                 show.pastEpisode = episode;
             } else  if (!show.futureEpisode && !!episode.localShowTime && episode.localShowTime >= now) {
@@ -175,6 +235,9 @@ export class ShowService {
 
             if (!!episode.localShowTime && episode.localShowTime < now && !episode.seen) {
                 unseenCount++;
+                if (index === 0 || (index > 0 && array[index - 1].seen)) {
+                    show.unseenEpisode = episode;
+                }
             }
         });
         show.totalSeasons = (show.futureEpisode || show.pastEpisode || {season:0}).season;
@@ -195,6 +258,13 @@ export class ShowService {
         return await this.getShow(showId);
     }
 
+    /**
+     * -1 Completed
+     * 0 Running
+     * 1 TBA
+     * @param show
+     * @returns
+     */
     getShowStatus(show: IMyTvQDbShow): -1 | 0 | 1 {
         if ((show.status || '').match(this.EndedRegex)) {
             return -1; // Completed
@@ -214,7 +284,11 @@ export class ShowService {
     removeShow(showId: string): void {
         this.webDb.deleteObj('shows',showId);
         this.webDb.deleteRange('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
-        // this.showIdOrder.splice(this.showIdOrder.findIndex(o => o === showId), 1);
+        this.settingSvc.get<string[]>('showIdOrderList').then(showIdOrder => {
+            showIdOrder.splice(showIdOrder.findIndex(o => o === showId), 1);
+            this.settingSvc.save('showIdOrderList',showIdOrder);
+        });
+        // TODO: remove from other places too
     }
 
     async markAsSeen(show: IMyTvQDbShow, nextEpisodeId: string): Promise<void> {

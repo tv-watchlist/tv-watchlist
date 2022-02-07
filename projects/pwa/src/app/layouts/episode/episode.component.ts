@@ -22,16 +22,19 @@ export class EpisodeComponent implements OnInit {
     private today: number;
     @Input() public episodeId!: string;
     @Input() public latestEpisodeId = '';
-    @Output() public seenToggled = new EventEmitter<boolean>();
+
+    @Input() public seenToggled!: boolean;
+    @Output() public seenToggledChanged = new EventEmitter<boolean>();
 
     model!: UiEpisodeModel;
+    private show!: IMyTvQDbShow;
     async ngOnInit(): Promise<void> {
         if (!this.episodeId) {
             throw (new Error('The required input [episodeId] was not provided'));
         }
-        const show = await this.showSvc.getShowByEpisodeId(this.episodeId);
-        this.model = await this.episodeSvc.getEpisodeModel(this.episodeId, show.channel.country.code);
-
+        this.show = await this.showSvc.getShowByEpisodeId(this.episodeId);
+        this.model = await this.episodeSvc.getEpisodeModel(this.episodeId, this.show.channel.country.code);
+        // this.seenToggled = this.model.seen;
         this.cdRef.markForCheck();
     }
 
@@ -39,10 +42,18 @@ export class EpisodeComponent implements OnInit {
         this.model.expand = !this.model.expand;
     }
 
-    toggleSeen(): void {
+    async toggleSeen() {
         this.model.seen = !this.model.seen
-        this.episodeSvc.toggleSeen(this.episodeId, this.model.seen);
-        this.seenToggled.emit(this.model.seen);
+
+        if(!this.model.seen) {
+            this.show.unseenCount--;
+        } else {
+            this.show.unseenCount++;
+        }
+        await this.episodeSvc.toggleSeen(this.episodeId, this.model.seen);
+        await this.showSvc.save(this.show);
+        this.seenToggled = this.model.seen;
+        this.seenToggledChanged.emit(this.seenToggled);
     }
 
     goToUrl(url: string): void {

@@ -27,40 +27,55 @@ export class ShowDetailComponent implements OnInit {
 
     @ViewChild('menu') menu!: OptionsMenuComponent;
 
-    showDetails = false;
-    menuOptions = ['Bookmarked', 'Latest'];
-    defaultMenuOption: 'Bookmarked' | 'Latest' = 'Bookmarked';
+    public showDetails = false;
+    public menuOptions = ['Bookmarked', 'Latest'];
+    public defaultMenuOption: 'Bookmarked' | 'Latest' = 'Bookmarked';
     private pHideSeen!: boolean;
-    get hideSeen(): boolean {
+    public get hideSeen(): boolean {
         return this.pHideSeen || false;
     }
-    set hideSeen(val: boolean) {
+
+    /**
+     * Temp override hideSeen
+     */
+    public set hideSeen(val: boolean) {
         this.pHideSeen = val;
     }
 
-    showId = '';
-    showModel!: UiShowModel;
-    episodeDictionary: {[episodeId: string]: IMyTvQDbEpisode} = {};
-    episodeList: {[season: number]: string[]} = {};
+    private showId = '';
 
-    seasonUnSeen: {[season: number]: number} = {};
-    seasonTotal: {[season: number]: number} = {};
-    seasonNumList: any[] = [];
-    latestEpisodeId!: string;
-    nextUnseenEpisodeId!: string;
-    selectedSeasonNum!: number;
+    private episodeDictionary: {[episodeId: string]: IMyTvQDbEpisode} = {};
+    /**
+     * List of episodeId to loop over per season for the UI
+     */
+    public episodeList: {[season: number]: {episodeId: string; seen:boolean}[]} = {};
+
+    /**
+     * total unseen episodes in a season
+     */
+    public seasonUnSeen: {[season: number]: number} = {};
+    /**
+     * total episodes in a season
+     */
+    public seasonTotal: {[season: number]: number} = {};
+    public seasonNumList: any[] = [];
+    public latestEpisodeId!: string;
+    public nextUnseenEpisodeId!: string;
+    public selectedSeasonNum!: number;
+    public showModel!: UiShowModel;
 
     async ngOnInit(): Promise<void> {
         this.activatedRoute.params.subscribe(async (p) => {
             this.showId = p.showId;
-            this.showModel = await this.showSvc.getShowModel(p.showId);
-            this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(p.showId);
             this.pHideSeen = await this.settingSvc.get('hideSeen');
-            this.populateEpisodeList();
+            await this.populateEpisodeList();
         });
     }
 
-    populateEpisodeList(): void {
+    async populateEpisodeList(): Promise<void> {
+        this.showModel = await this.showSvc.getShowModel(this.showId);
+        this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(this.showId);
+
         const today = new Date().getTime();
         this.seasonNumList.length = 0;
         this.commonSvc.clearObj(this.episodeList);
@@ -70,7 +85,7 @@ export class ShowDetailComponent implements OnInit {
         this.latestEpisodeId = '';
         let totalEpisodes = 0;
 
-        const episodeList: {[season: number]: string[]} = {};
+        const episodeList: {[season: number]: {episodeId: string; seen:boolean}[]} = {};
         for (const episodeId in this.episodeDictionary ) {
             if (Object.prototype.hasOwnProperty.call(this.episodeDictionary, episodeId)) {
                 const episode = this.episodeDictionary[episodeId];
@@ -103,7 +118,7 @@ export class ShowDetailComponent implements OnInit {
                     this.nextUnseenEpisodeId = episode.episodeId;
                 }
                 if ((this.hideSeen && !episode.seen) || !this.hideSeen) {
-                    episodeList[episode.season].push(episode.episodeId);
+                    episodeList[episode.season].push({episodeId:episode.episodeId, seen:episode.seen});
                 }
                 this.seasonTotal[episode.season]++;
                 if (!episode.seen) {
@@ -139,9 +154,12 @@ export class ShowDetailComponent implements OnInit {
         this.populateEpisodeList();
     }
 
-    toggleSeasonSeen(): void {
-        this.episodeSvc.toggleBulkSeen( this.episodeList[this.selectedSeasonNum], true);
-        this.populateEpisodeList();
+    async setSeasonAsSeen(): Promise<void> {
+        const list = this.episodeList[this.selectedSeasonNum].map(o=>o.episodeId);
+        await this.episodeSvc.toggleBulkSeen(list, true);
+        await this.showSvc.updateShowReference(this.showId);
+        this.seasonUnSeen[this.selectedSeasonNum] = 0;
+        await this.populateEpisodeList();
     }
 
     episodeToggled(seen: boolean): void {
