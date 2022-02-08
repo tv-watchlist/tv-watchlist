@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+export type sortArg<T> = keyof T | `-${string & keyof T}`
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
@@ -34,26 +35,27 @@ export class CommonService {
         return Array(Math.max(places - String(num).length + 1, 0)).join('0') + num;
     }
 
-    sortFunction(x: any, y: any): number {
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    }
-
-    getDaysBetween(first: Date, second: Date): number {
+    getDaysBetween(past: Date, future: Date): number {
         const millisecondsPerDay = 1000 * 60 * 60 * 24;
-        const millisBetween = second.getTime() - first.getTime();
-        const days = Math.abs(millisBetween / millisecondsPerDay);
-        // console.log('first:' + first.toString() + ' second:' + second.toString() + ' daysBetween:' + days);
+        const millisBetween = future.getTime() - past.getTime();
+        const days = millisBetween / millisecondsPerDay;
         return +days.toFixed(4);
     }
 
-    getDaysBetweenToEnglish(first: Date, second: Date): string {
-        if (!first || !second) {
+    getDaysBetweenToEnglish(past: Date, future: Date): string {
+        if (!past || !future) {
             return '';
         }
 
-        const days = this.getDaysBetween(
-            new Date(first.getFullYear(), first.getMonth(), first.getDate()),
-            new Date(second.getFullYear(), second.getMonth(), second.getDate()));
+        let days = this.getDaysBetween(
+            new Date(past.getFullYear(), past.getMonth(), past.getDate()),
+            new Date(future.getFullYear(), future.getMonth(), future.getDate()));
+
+        let isNegative = false;
+        if(days < 0) {
+            isNegative = true;
+            days = Math.abs(days);
+        }
 
         if (+(days / 365).toFixed(2) > 2) {
             return 'TBA';
@@ -61,15 +63,71 @@ export class CommonService {
         if (days < 1) {
             return 'Today';
         } else if (days < 2) {
-            return 'Tomorrow';
+            return  !isNegative ? 'Tomorrow' : 'Yesterday';
         } else if (days < 30) {
-            return days + ' Day(s)';
+            return (!isNegative ? 1 : -1) * days + ' Day(s)';
         } else if (days < 90) {
-            return (days / 7).toFixed(0) + ' Week(s)';
+            return  ((!isNegative ? 1 : -1) * (days / 7)).toFixed(0)  + ' Week(s)';
         } else if (days < 365) {
-            return (days / 30).toFixed(0) + ' Month(s)';
+            return ((!isNegative ? 1 : -1) * (days / 30)).toFixed(0) + ' Month(s)';
         } else {
-            return (days / 365).toFixed(2) + ' Year(s)';
+            return ((!isNegative ? 1 : -1) * (days / 365.25)).toFixed(2) + ' Year(s)';
         }
     }
+
+    // sortFunction(x: any, y: any): number {
+    //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    // }
+
+    // https://stackoverflow.com/questions/68278850/how-to-extend-a-keyof-type-so-that-it-includes-modified-versions-of-the-keys-e/68279093#68279093
+    /**
+     * Returns a comparator for objects of type T that can be used by sort
+     * functions, were T objects are compared by the specified T properties.
+     *
+     * @param sortBy - the names of the properties to sort by, in precedence order.
+     *                 Prefix any name with `-` to sort it in descending order.
+     */
+    byPropertiesOf<T extends object> (sortBy: Array<sortArg<T>>) {
+        function compareByProperty (arg: sortArg<T>) {
+            let key: keyof T
+            let sortOrder = 1
+            if (typeof arg === 'string' && arg.startsWith('-')) {
+                sortOrder = -1
+                // Typescript is not yet smart enough to infer that substring is keyof T
+                key = arg.substr(1) as keyof T
+            } else {
+                // Likewise it is not yet smart enough to infer that arg is not keyof T
+                key = arg as keyof T
+            }
+            return function (a: T, b: T) {
+                const result = a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
+
+                return result * sortOrder
+            }
+        }
+
+        return function (obj1: T, obj2: T) {
+            let i = 0
+            let result = 0
+            const numberOfProperties = sortBy?.length
+            while (result === 0 && i < numberOfProperties) {
+                result = compareByProperty(sortBy[i])(obj1, obj2)
+                i++
+            }
+
+            return result
+        }
+    }
+
+    /**
+     * Sorts an array of T by the specified properties of T.
+     *
+     * @param arr - the array to be sorted, all of the same type T
+     * @param sortBy - the names of the properties to sort by, in precedence order.
+     *                 Prefix any name with `-` to sort it in descending order.
+     */
+    sort<T extends object> (arr: T[], ...sortBy: Array<sortArg<T>>) {
+        arr.sort(this.byPropertiesOf<T>(sortBy))
+    }
 }
+

@@ -50,9 +50,13 @@ export interface IMyTvQDbShow {
     };
 
     /**
-     * next fetch date
+     * time to refresh data from web (next fetch date)
      */
     nextUpdateTime: number;
+    /**
+     * time when user marked an episode as seen
+     */
+    lastWatchedTime: number;
     unseenCount: number;
     totalEpisodes: number;
     totalSeasons: number;

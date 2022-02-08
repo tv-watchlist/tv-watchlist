@@ -51,6 +51,7 @@ export class EpisodeComponent implements OnInit {
             this.show.unseenCount++;
         }
         await this.episodeSvc.toggleSeen(this.episodeId, this.model.seen);
+        this.show.lastWatchedTime = new Date().getTime();
         await this.showSvc.save(this.show);
         this.seenToggled = this.model.seen;
         this.seenToggledChanged.emit(this.seenToggled);

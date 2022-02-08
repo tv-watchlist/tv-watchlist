@@ -20,6 +20,18 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 7) cd projects/pwa 
 8) npx pwa-asset-generator src/assets/myTvQ.png src/assets/icons -m src/manifest.webmanifest --padding "calc(50vh - 25%) calc(50vw - 25%)" -b "#F97316" -q 100 -i src/asset-generator-changes.html --favicon
 
+## TODO
+* mobile view first (use flat file as mock data)
+* use data from indexedDb
+* migration of old data from flat file
+* fetch data from web (tvmaze, tvdb etc)
+* search current page and web
+* show desktop view
+* on first time or empty data show trending shows where can also add.
+* add notification
+* add dropbox/drive cloud save
+* add cron/background job to update references and data.
+* Add Analytics and show live data as page (highlights will be most watched show, total users, trending episode etc)
 
 ## Development server
 

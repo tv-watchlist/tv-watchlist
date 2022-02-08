@@ -81,22 +81,30 @@ export class EpisodeService {
     }
 
     public async toggleSeen(episodeId: string, seen: boolean): Promise<void> {
-        const episode = await this.getEpisode(episodeId);
-        if (!!episode) {
-            episode.seen = seen;
-            await this.webDb.putObj('episodes',episode);
-        }
+       await this.toggleBulkSeen([episodeId], seen);
     }
 
     public async toggleBulkSeen(episodeIds: string[], seen: boolean): Promise<void> {
-        const ids = episodeIds.filter(o=>o).sort();
-        const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange('>= && <=',ids[0], ids[ids.length - 1]));
-        for (const episode of list) {
-            if(episodeIds.includes(episode.episodeId)){
+        if(episodeIds.length === 0) {
+            // nothing todo
+            console.warn('empty list, doing nothing');
+        } else if (episodeIds.length ===1) {
+            const episode = await this.getEpisode(episodeIds[0]);
+            if (!!episode) {
                 episode.seen = seen;
+                await this.webDb.putObj('episodes',episode);
             }
         }
-        await this.webDb.putList('episodes',list);
+        else {
+            const ids = episodeIds.filter(o=>o).sort();
+            const list = await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes',this.webDb.getKeyRange('>= && <=',ids[0], ids[ids.length - 1]));
+            for (const episode of list) {
+                if(episodeIds.includes(episode.episodeId)){
+                    episode.seen = seen;
+                }
+            }
+            await this.webDb.putList('episodes',list);
+        }
     }
 
     public async saveFileToDb(episodes: { [episodeId: string]: IMyTvQShowEpisodeFlatV5 }) {

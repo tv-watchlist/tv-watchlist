@@ -157,7 +157,8 @@ export class ShowDetailComponent implements OnInit {
     async setSeasonAsSeen(): Promise<void> {
         const list = this.episodeList[this.selectedSeasonNum].map(o=>o.episodeId);
         await this.episodeSvc.toggleBulkSeen(list, true);
-        await this.showSvc.updateShowReference(this.showId);
+        const lastWatchedTime = new Date().getTime();
+        await this.showSvc.updateShowReference(this.showId, {lastWatchedTime});
         this.seasonUnSeen[this.selectedSeasonNum] = 0;
         await this.populateEpisodeList();
     }
