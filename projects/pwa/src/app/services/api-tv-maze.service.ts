@@ -104,18 +104,18 @@ export class ApiTvMazeService {
 
     getShowAndEpisode(tvmazeId: string) {
         return forkJoin([
-            this.http.get<ITvMazeShow>(`http://api.tvmaze.com/shows/${tvmazeId}?embed=images`),
-            this.http.get<ITvMazeEpisode[]>(`http://api.tvmaze.com/shows/${tvmazeId}/episodes?specials=1`)
+            this.http.get<ITvMazeShow>(`https://api.tvmaze.com/shows/${tvmazeId}?embed=images`),
+            this.http.get<ITvMazeEpisode[]>(`https://api.tvmaze.com/shows/${tvmazeId}/episodes?specials=1`)
         ]).pipe(delay(1000)); // delay to avoid 429:Too Many Requests
     }
 
     getByThetvdb(thetvdbId:number) {
-        return this.http.get<ITvMazeShow>(`http://api.tvmaze.com/lookup/shows?thetvdb=${thetvdbId}`).pipe(
+        return this.http.get<ITvMazeShow>(`https://api.tvmaze.com/lookup/shows?thetvdb=${thetvdbId}`).pipe(
             switchMap(show => {
                 return forkJoin([
                     of(show),
                     this.http.get<ITvMazeImage[]>(`https://api.tvmaze.com/shows/${show.id}/images`),
-                    this.http.get<ITvMazeEpisode[]>(`http://api.tvmaze.com/shows/${show.id}/episodes?specials=1`)
+                    this.http.get<ITvMazeEpisode[]>(`https://api.tvmaze.com/shows/${show.id}/episodes?specials=1`)
                 ])
             })
         )
