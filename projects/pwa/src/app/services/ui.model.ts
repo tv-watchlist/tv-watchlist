@@ -87,8 +87,8 @@ export class UiEpisodeModel {
         this.episodeName = this.getEpisodeName() || 'TBA';
         this.dateFormatted = '';
         this.summary = episode.summary || '';
-        this.isUnaired = episode.localShowTime > today;
-        this.image = episode.poster;
+        this.isUnaired = (episode.localShowTime || 0) > today;
+        this.image = episode.poster || '';
         this.seen = episode.seen;
         this.expand = false;
         this.url = episode.url;

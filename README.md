@@ -26,7 +26,10 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 * migration of old data from flat file
 * fetch data from web (tvmaze, tvdb etc)
 * search current page and web
+* show loading gif
 * show desktop view
+* show countdown page
+* show schedule page
 * on first time or empty data show trending shows where can also add.
 * add notification
 * add dropbox/drive cloud save

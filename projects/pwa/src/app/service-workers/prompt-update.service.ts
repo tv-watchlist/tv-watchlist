@@ -5,7 +5,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class PromptUpdateService {
 
     constructor(updates: SwUpdate) {
-        updates.available.subscribe(event => {
+        updates.versionUpdates.subscribe(event => {
             console.log('updates.available... reloading..TBD');
             // if (promptUser(event)) {
             //     updates.activateUpdate().then(() => document.location.reload());

@@ -38,7 +38,7 @@ export class EpisodeService {
         if (!episode) {
             return 'TBA';
         }
-        return this.commonSvc.getDaysBetweenToEnglish(new Date(), new Date(episode.localShowTime));
+        return this.commonSvc.getDaysBetweenToEnglish(new Date(), new Date(episode.localShowTime||0));
     }
 
     getFormattedTime(localShowtime: number, status: number): string {

@@ -75,9 +75,9 @@ export class CommonService {
         }
     }
 
-    // sortFunction(x: any, y: any): number {
-    //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    // }
+    sortAscending(x: any, y: any): number {
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    }
 
     // https://stackoverflow.com/questions/68278850/how-to-extend-a-keyof-type-so-that-it-includes-modified-versions-of-the-keys-e/68279093#68279093
     /**

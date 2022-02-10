@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         const t0 = performance.now();
+        await this.showSvc.smartUpdateAllShows();
         await this.showSvc.updateAllShowReference();
         this.showIdList = (await this.settingSvc.get('showIdOrderList'));
         const t1 = performance.now();

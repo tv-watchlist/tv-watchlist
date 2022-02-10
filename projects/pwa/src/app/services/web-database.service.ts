@@ -1,8 +1,7 @@
-import { calcPossibleSecurityContexts } from '@angular/compiler/src/template_parser/binding_parser';
 import { Injectable } from '@angular/core';
 // https://github.com/jakearchibald/idb#typescript
 // examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
-import { IDBPDatabase, IDBPTransaction, IndexKey, IndexNames, openDB, unwrap } from 'idb';
+import { IDBPDatabase, IDBPTransaction, IndexNames, openDB, unwrap } from 'idb';
 import { IMyTvQDbSetting, IMyTvQDBv1, MyTvQStoreName } from './db.model';
 import { SettingService } from './setting.service';
 
@@ -29,13 +28,13 @@ export class WebDatabaseService {
                     const showStore = db.createObjectStore('shows', {
                         keyPath: 'showId',
                     });
-                    showStore.createIndex('nextUpdateTimeIndex', 'nextUpdateTime', { unique: false });
+                    showStore.createIndex('updateTimeIndex', 'updateTime', { unique: false });
 
                     const episodeStore = db.createObjectStore('episodes', {
                         keyPath: 'episodeId',
                     });
                     episodeStore.createIndex('showIdIndex', 'showId', { unique: false });
-                    episodeStore.createIndex('localShowtimeIndex', 'localShowTime', { unique: false });
+                    episodeStore.createIndex('localShowTimeIndex', 'localShowTime', { unique: false });
 
                     // and then initialize data
                     const settings: IMyTvQDbSetting = SettingService.default;
@@ -78,7 +77,7 @@ export class WebDatabaseService {
         });
     }
 
-    public getKeyRange(operator: '=' | '<' | '<=' | '>' | '>=' | '> && <' | '>= && <=' | '> && <=' | '>= && <', lower: string, upper?: string): IDBKeyRange {
+    public getKeyRange(operator: '=' | '<' | '<=' | '>' | '>=' | '> && <' | '>= && <=' | '> && <=' | '>= && <', lower: any, upper?: any): IDBKeyRange {
         switch (operator) {
             case '=':
                 return IDBKeyRange.only(lower);

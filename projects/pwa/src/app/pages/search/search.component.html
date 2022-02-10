@@ -17,7 +17,14 @@
         <img tvqDefault *ngIf="!!search.show.image?.medium" [src]="search.show.image.medium" alt="" class="relative inset-0 object-cover w-full border" />
     </div>
     <div class="w-8/12">
-        <h3 class="inline font-bold">{{search.show.name}}</h3> <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
+        <div>
+            <h3 class="inline font-bold">{{search.show.name}}</h3>
+            <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
+            <svg (click)="addShow(search.show.id)" *ngIf="!includes(search.show.id)"  class="float-right w-6 h-6 text-right text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+
         <div *ngIf="search.show.network">{{search.show.network.name}}, {{search.show.network.country?.name}}</div>
         <div *ngIf="search.show.webChannel">{{search.show.webChannel.name}}, {{search.show.webChannel.country?.name}}</div>
         <span>{{search.show.premiered}} {{search.show.schedule.days[0]}} {{search.show.schedule.time}} </span>

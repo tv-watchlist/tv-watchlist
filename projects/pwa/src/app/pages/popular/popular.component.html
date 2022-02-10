@@ -1,0 +1,25 @@
+
+<div class="flex mb-2" *ngFor="let show of result$ | async as list">
+    <div class="relative flex-none w-3/12 mr-2">
+        <img tvqDefault [src]="show.poster_path" alt="" class="relative inset-0 object-cover w-full border" />
+    </div>
+    <div class="w-8/12">
+        <div>
+            <h3 class="inline text-lg font-bold">{{show.name}}</h3>
+            <span class="ml-2 text-sm font-semibold text-gray-500">({{show.first_air_date}})</span>
+            <svg (click)="addShow(show.id, show.name)" *ngIf="!includes(show.name)"  class="float-right w-6 h-6 text-right text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        <div *ngIf="show.original_language !== 'en'">
+            {{show.original_name}}
+        </div>
+        <div>
+           {{show.origin_country}} - {{show.genres}}
+        </div>
+        <div>
+           User Score: {{show.vote_average}}/10 <span class="text-sm text-gray-500">Total Votes: {{show.vote_count}}</span>
+        </div>
+        <div class="text-sm" [innerHTML]="show.overview"></div>
+    </div>
+</div>

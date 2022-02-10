@@ -33,7 +33,7 @@ export class EpisodeComponent implements OnInit {
             throw (new Error('The required input [episodeId] was not provided'));
         }
         this.show = await this.showSvc.getShowByEpisodeId(this.episodeId);
-        this.model = await this.episodeSvc.getEpisodeModel(this.episodeId, this.show.channel.country.code);
+        this.model = await this.episodeSvc.getEpisodeModel(this.episodeId, this.show.channel.country?.code);
         // this.seenToggled = this.model.seen;
         this.cdRef.markForCheck();
     }

@@ -90,13 +90,13 @@ export class ShowDetailComponent implements OnInit {
             if (Object.prototype.hasOwnProperty.call(this.episodeDictionary, episodeId)) {
                 const episode = this.episodeDictionary[episodeId];
 
-                if (!isUnairedFlagSet && !this.latestEpisodeId && episode.localShowTime > today) {
+                if (!isUnairedFlagSet && !this.latestEpisodeId && (episode.localShowTime||0) > today) {
                     if (this.defaultMenuOption === 'Latest') {
                         this.selectedSeasonNum = episode.season;
                     }
                     this.latestEpisodeId = episode.episodeId;
                 }
-                if (episode.localShowTime > today) {
+                if ((episode.localShowTime||0) > today) {
                     // this.episodeList.push({'type':'label', 'text':`**UNAIRED**`});
                     isUnairedFlagSet = true;
                 }
@@ -190,5 +190,10 @@ export class ShowDetailComponent implements OnInit {
                 this.selectedSeasonNum = episode.season;
             }
         }
+    }
+    async refresh() {
+       const show = await this.showSvc.getShow(this.showId);
+       await this.showSvc.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string);
+       location.reload();
     }
 }

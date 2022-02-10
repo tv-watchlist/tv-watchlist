@@ -22,6 +22,7 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { NavigationComponent } from './widgets/navigation/navigation.component';
 import { AboutComponent } from './pages/about/about.component';
 import { SearchComponent } from './pages/search/search.component';
+import { PopularComponent } from './pages/popular/popular.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -49,6 +50,7 @@ export class HammerConfig extends HammerGestureConfig {
         NavigationComponent,
         AboutComponent,
         SearchComponent,
+        PopularComponent,
     ],
     imports: [
         BrowserModule,

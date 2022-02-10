@@ -1,20 +1,21 @@
 import { ViewportScroller } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, Router } from '@angular/router';
-import { CustomReuseStrategy } from './services/cache-route-reuse.strategy';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { AboutComponent } from './pages/about/about.component';
 import { SearchComponent } from './pages/search/search.component';
+import { PopularComponent } from './pages/popular/popular.component';
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
     { path: 'home', component: HomeComponent, data: { reuseRoute: true, index: 0 } },
-    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { index: 1 } },
-    { path: 'search', component: SearchComponent, data: { index: 2 } },
-    { path: 'setting', component: SettingComponent, data: { index: 3 } },
-    { path: 'about', component: AboutComponent, data: { index: 4 } },
+    { path: 'popular', component: PopularComponent, data: { index: 1 } },
+    { path: 'show-detail/:showId', component: ShowDetailComponent, data: { index: 2 } },
+    { path: 'search', component: SearchComponent, data: { index: 3 } },
+    { path: 'setting', component: SettingComponent, data: { index: 4 } },
+    { path: 'about', component: AboutComponent, data: { index: 5 } },
 ];
 
 @NgModule({
