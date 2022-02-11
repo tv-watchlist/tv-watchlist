@@ -26,6 +26,8 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 * migration of old data from flat file
 * fetch data from web (tvmaze, tvdb etc)
 * search current page and web
+* show version
+* show interactive step welcome/help
 * show loading gif
 * show desktop view
 * show countdown page

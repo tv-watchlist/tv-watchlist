@@ -11,10 +11,7 @@
                     (click)="clicked(option)"
                     [ngClass]="{'border-b':!last}">
                     <span class="inline-flex text-blue-500">
-                        <svg *ngIf="default === (option || ' ')" class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <!-- tick -->
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
+                        <tvq-svg-icon icon="check" size="6" classes="mr-2" *ngIf="default === (option || ' ')"></tvq-svg-icon>
                         {{option}}
                     </span>
                 </li>

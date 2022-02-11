@@ -23,6 +23,7 @@ import { NavigationComponent } from './widgets/navigation/navigation.component';
 import { AboutComponent } from './pages/about/about.component';
 import { SearchComponent } from './pages/search/search.component';
 import { PopularComponent } from './pages/popular/popular.component';
+import { WidgetsModule } from './widgets/widgets.module';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -40,14 +41,8 @@ export class HammerConfig extends HammerGestureConfig {
         ShowBannerCardComponent,
         HomeComponent,
         ShowDetailComponent,
-        BackButtonDirective,
-        DefaultImageDirective,
         EpisodeComponent,
-        SwitchComponent,
-        ToastComponent,
         SettingComponent,
-        OptionsMenuComponent,
-        NavigationComponent,
         AboutComponent,
         SearchComponent,
         PopularComponent,
@@ -59,7 +54,8 @@ export class HammerConfig extends HammerGestureConfig {
         FormsModule,
         AppRoutingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        WidgetsModule,
     ],
     providers: [
         DatePipe,

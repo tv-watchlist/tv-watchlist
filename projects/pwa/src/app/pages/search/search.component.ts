@@ -24,7 +24,7 @@ export class SearchComponent implements OnInit {
         this.searchList$ = this.searchSvc.searchShow(this.searchTxt)
             .pipe(
                 tap(result => {
-                    console.log('search', this.searchTxt, JSON.stringify(result));
+                    // console.log('search', this.searchTxt, JSON.stringify(result));
                 })
             );
     }

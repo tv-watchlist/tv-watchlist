@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { routeSliderStatePlusMinus } from './services/animations';
 import { NavigationService } from './services/navigation.service';
 import { TvWatchlistService } from './services/tv-watchlist.service';
+import { INavigation } from './widgets/navigation/navigation.component';
 
 @Component({
     selector: 'tvq-root',
@@ -26,9 +27,37 @@ export class AppComponent implements OnInit, OnDestroy {
             localStorage.removeItem('path');
             this.router.navigate([path]);
         }
+        this.naigationList = [
+            {
+                name:'Home',
+                icon:'home',
+                link:['/home']
+            },
+            {
+                name:'Search',
+                icon:'search',
+                link:['/search']
+            },
+            {
+                name:'Popular',
+                icon:'sparkles',
+                link:['/popular']
+            },
+            {
+                name:'Settings',
+                icon:'cog',
+                link:['/setting']
+            },
+            {
+                name:'About',
+                icon:'information-circle',
+                link:['/about']
+            }
+        ];
     }
     private subscriptions: Subscription[] = [];
     private scrollTop = 0;
+    naigationList: INavigation[];
     isHome = false;
     isReady = false;
     test = false;

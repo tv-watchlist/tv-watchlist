@@ -2,18 +2,14 @@
     <div class="flex flex-col min-h-screen gap-2 bg-gray-100">
         <header class="fixed top-0 left-0 right-0 z-10 flex justify-between px-2 text-white bg-orange-500 h-11 standalone:pt-safe-top standalone:h-safe-top-1">
             <button class="mt-1 focus:outline-none" tvqBackButton [class.invisible]="isHome">
-                <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                  </svg>
+                <tvq-svg-icon icon="chevron-left"></tvq-svg-icon>
             </button>
             <h2 class="mt-1 text-2xl cursor-pointer focus:outline-none" [routerLink]="['/home']">TV Watchlist</h2>
             <button class="focus:outline-none" (click)="nav.openMenu()">
-                <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-                  </svg>
+                <tvq-svg-icon icon="menu"></tvq-svg-icon>
             </button>
         </header>
-        <tvq-navigation #nav></tvq-navigation>
+        <tvq-navigation #nav [options]="naigationList"></tvq-navigation>
         <main *ngIf="isReady; else showLoader" [@routeSliderStatePlusMinus]="prepareRoute(outlet)"
             class="relative flex-1 mx-2 mt-12 mb-2 standalone:mt-safe-top-2 ">
             <router-outlet #outlet="outlet" (activate)="onActivate($event)" ></router-outlet>

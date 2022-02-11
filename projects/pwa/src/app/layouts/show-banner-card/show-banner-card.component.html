@@ -33,7 +33,7 @@
         </div>
         <div class="flex justify-center" *ngIf="!model.expand">
             <button class="focus:outline-none" (click)="model.expand = !model.expand">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
             </button>
         </div>
         <ng-container *ngIf="model.expand">
@@ -43,18 +43,12 @@
                     <span class="truncate">{{model.unseenEpisodeName || '**All Seen**'}}</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+                        <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
                     </button>
                 </span>
                 <button (click)="markAsSeen()" [class.invisible]="model.unseenCount===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
                     <!--Tick-->
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
                 </button>
             </div>
             <div class="flex justify-between w-full text-sm">
