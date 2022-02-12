@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from './common.service';
 import { SettingService } from './setting.service';
 import { UiShowModel } from './ui.model';
 import { EpisodeService } from './episode.service';
-import { IMyTvQDbEpisode, IMyTvQDbShow } from './db.model';
-import { WebDatabaseService } from './web-database.service';
-import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
-import { ApiTvMazeService, ITvMazeEpisode, ITvMazeShow } from './api-tv-maze.service';
 import { lastValueFrom, map, Observable, switchMap } from 'rxjs';
-import { ApiTheMovieDbService } from './api-the-movie-db.service';
+import { ApiTheMovieDbService } from '../api/api-the-movie-db.service';
+import { ApiTvMazeService, ITvMazeShow, ITvMazeEpisode } from '../api/api-tv-maze.service';
+import { CommonService } from '../common.service';
+import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
+import { WebDatabaseService } from '../storage/web-database.service';
+import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {
@@ -486,7 +486,6 @@ export class ShowService {
         } catch (error) {
             console.error('server rejected the request', error);
         }
-
     }
 
     async smartUpdateAllShows() {

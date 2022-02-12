@@ -6,7 +6,7 @@ export type SvgIconType = 'home' | 'search'| 'sparkles' |
                           'chevron-left' | 'menu' | 'check-circle' |
                           'chevron-down' | 'external-link' | 'solid-plus-circle' |
                           'chevron-right' | 'check' | 'refresh' | 'trash' | 'dots-vertical' |
-                          'exclamation-circle';
+                          'exclamation-circle' | 'x';
 
 @Component({
     selector: 'tvq-svg-icon',
@@ -17,7 +17,7 @@ export class SvgIconComponent implements OnChanges {
 
     @Input() icon: SvgIconType = 'home';
     @Input() size: '12' | '8' | '7' | '6' | '4' = '7';
-    @Input() classes: string = '';
+    @Input() classes: string = 'inline-block';
 
     classComposed = '';
     iconSizes: {[size: string]: string} = {
@@ -30,6 +30,6 @@ export class SvgIconComponent implements OnChanges {
 
     ngOnChanges(): void {
         // console.log(this.icon, this.classes , this.iconSizes[this.size]);
-        this.classComposed = this.classes + ' '+ this.iconSizes[this.size];
+        this.classComposed += this.classes + ' '+ this.iconSizes[this.size];
     }
 }

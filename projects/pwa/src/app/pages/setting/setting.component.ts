@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { IMyTvQFlatV5 } from '../../services/flat-file-v5.model';
-import { MigrationService } from '../../services/migration.service';
-import { SettingService } from '../../services/setting.service';
+import { IMyTvQFlatV5 } from '../../services/mytvq/flat-file-v5.model';
+import { MigrationService } from '../../services/mytvq/migration.service';
+import { SettingService } from '../../services/mytvq/setting.service';
+import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
 
 @Component({
     selector: 'tvq-setting',
@@ -11,6 +12,7 @@ export class SettingComponent implements OnInit {
     constructor(
         public settingSvc: SettingService,
         private migrateSvc: MigrationService,
+        private loaderSvc: LoaderScreenService,
         private cdRef: ChangeDetectorRef,
         ) { }
 
@@ -57,6 +59,7 @@ export class SettingComponent implements OnInit {
     }
 
     async ngOnInit(): Promise<void> {
+        this.loaderSvc.show();
         const settings = await this.settingSvc.getAll();
         console.log({settings});
         this._hideTba = settings.hideTba;
@@ -64,6 +67,7 @@ export class SettingComponent implements OnInit {
         this._showsOrder = settings.showsOrder;
         this._defaultEpisodes = settings.defaultEpisodes;
         this._hideTba = settings.hideTba;
+        this.loaderSvc.close();
         this.cdRef.detectChanges();
     }
 

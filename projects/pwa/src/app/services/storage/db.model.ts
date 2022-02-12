@@ -137,6 +137,23 @@ export interface IMyTvQDbSetting {
      */
     showIdOrderList: string[];
 }
+
+export class MyTvQDbSetting {
+    public static get default(): IMyTvQDbSetting {
+        return {
+            updateTime: (new Date()).getTime(),
+            showsOrder: 'airdate',
+            version: 5,
+            defaultEpisodes: 'bookmarked',
+            hideTba: true,
+            hideSeen: true,
+            defaultCountry: 'US',
+            showIdOrderList: [],
+            timezoneOffset: {US: 0}
+        }
+    }
+}
+
 /*
 // Old settings
 "advanced_css_hack": 0,

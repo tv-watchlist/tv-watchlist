@@ -1,27 +1,13 @@
 import { Injectable } from '@angular/core';
-import { IMyTvQDbSetting } from './db.model';
+import { IMyTvQDbSetting, MyTvQDbSetting } from '../storage/db.model';
+import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQSettingFlatV5 } from './flat-file-v5.model';
 import { IUiSetting } from './ui.model';
-import { WebDatabaseService } from './web-database.service';
 
 
 @Injectable({ providedIn: 'root' })
 export class SettingService {
     constructor(private webDb: WebDatabaseService) {
-    }
-
-    public static get default(): IMyTvQDbSetting {
-        return {
-            updateTime: (new Date()).getTime(),
-            showsOrder: 'airdate',
-            version: 5,
-            defaultEpisodes: 'bookmarked',
-            hideTba: true,
-            hideSeen: true,
-            defaultCountry: 'US',
-            showIdOrderList: [],
-            timezoneOffset: {US: 0}
-        }
     }
 
     async get<T>(key: keyof IMyTvQDbSetting) {
@@ -48,7 +34,7 @@ export class SettingService {
 
     public async saveFileToDb(settings?: IMyTvQSettingFlatV5) {
         if (!!settings) {
-            const defaults = SettingService.default;
+            const defaults = MyTvQDbSetting.default;
             const model: IMyTvQDbSetting = {
                 defaultCountry: settings.default_country || defaults.defaultCountry,
                 hideSeen: settings.hide_seen,

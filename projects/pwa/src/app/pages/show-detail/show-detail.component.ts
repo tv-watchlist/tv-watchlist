@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { SettingService } from '../../services/setting.service';
-import { ShowService } from '../../services/show.service';
-import { EpisodeService } from '../../services/episode.service';
+import { EpisodeService } from '../../services/mytvq/episode.service';
 import { CommonService } from '../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OptionsMenuComponent } from '../../widgets/options-menu/options-menu.component';
-import { UiShowModel } from '../../services/ui.model';
-import { IMyTvQDbEpisode } from '../../services/db.model';
+import { SettingService } from '../../services/mytvq/setting.service';
+import { ShowService } from '../../services/mytvq/show.service';
+import { UiShowModel } from '../../services/mytvq/ui.model';
+import { IMyTvQDbEpisode } from '../../services/storage/db.model';
+import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
 
 @Component({
     selector: 'tvq-show-detail',
@@ -22,6 +23,7 @@ export class ShowDetailComponent implements OnInit {
         private settingSvc: SettingService,
         private episodeSvc: EpisodeService,
         private router: Router,
+        private loaderSvc: LoaderScreenService,
         private activatedRoute: ActivatedRoute,
     ) { }
 
@@ -65,10 +67,12 @@ export class ShowDetailComponent implements OnInit {
     public showModel!: UiShowModel;
 
     async ngOnInit(): Promise<void> {
+        this.loaderSvc.show();
         this.activatedRoute.params.subscribe(async (p) => {
             this.showId = p.showId;
             this.pHideSeen = await this.settingSvc.get('hideSeen');
             await this.populateEpisodeList();
+            this.loaderSvc.close();
         });
     }
 

@@ -1,9 +1,8 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
-import { EpisodeService } from '../../services/episode.service';
-import { IMyTvQShowFlatV5 } from '../../services/flat-file-v5.model';
-import { UiEpisodeModel } from '../../services/ui.model';
-import { ShowService } from '../../services/show.service';
-import { IMyTvQDbShow } from '../../services/db.model';
+import { EpisodeService } from '../../services/mytvq/episode.service';
+import { ShowService } from '../../services/mytvq/show.service';
+import { UiEpisodeModel } from '../../services/mytvq/ui.model';
+import { IMyTvQDbShow } from '../../services/storage/db.model';
 
 @Component({
     selector: 'tvq-episode',

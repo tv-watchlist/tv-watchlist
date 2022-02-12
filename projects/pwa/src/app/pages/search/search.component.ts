@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { ApiTvMazeService, ITvMazeSearch } from '../../services/api-tv-maze.service';
-import { ShowService } from '../../services/show.service';
+import { ApiTvMazeService, ITvMazeSearch } from '../../services/api/api-tv-maze.service';
+import { ShowService } from '../../services/mytvq/show.service';
+import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
+import { ToastService } from '../../widgets/toast/toast.service';
 
 @Component({
     selector: 'tvq-search',
@@ -10,6 +12,8 @@ import { ShowService } from '../../services/show.service';
 export class SearchComponent implements OnInit {
     constructor(private searchSvc: ApiTvMazeService,
         private cdRef: ChangeDetectorRef,
+        private loaderSvc: LoaderScreenService,
+        private toastSvc: ToastService,
         private showSvc: ShowService) { }
 
     showIds: string[] = [];
@@ -17,7 +21,9 @@ export class SearchComponent implements OnInit {
     searchList$?: Observable<ITvMazeSearch[]>;
 
     async ngOnInit(): Promise<void> {
+        this.loaderSvc.show();
         this.showIds = (await this.showSvc.getAll()).map(o=>o.showId);
+        this.loaderSvc.close();
     }
 
     search() {
@@ -30,9 +36,10 @@ export class SearchComponent implements OnInit {
     }
 
     async addShow(tvmazeId: any) {
-        await this.showSvc.addUpdateTvMazeShow('tvmaze', tvmazeId);
         this.showIds.push('tvmaze'+ tvmazeId);
         this.cdRef.detectChanges();
+        await this.showSvc.addUpdateTvMazeShow('tvmaze', tvmazeId);
+        this.toastSvc.success(`show ${name} added!`);
     }
 
     goToUrl(url: string): void {

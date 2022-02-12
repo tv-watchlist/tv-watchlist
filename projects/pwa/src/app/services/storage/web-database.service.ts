@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 // https://github.com/jakearchibald/idb#typescript
 // examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
 import { IDBPDatabase, IDBPTransaction, IndexNames, openDB, unwrap } from 'idb';
-import { IMyTvQDbSetting, IMyTvQDBv1, MyTvQStoreName } from './db.model';
-import { SettingService } from './setting.service';
+import { IMyTvQDbSetting, IMyTvQDBv1, MyTvQDbSetting, MyTvQStoreName } from './db.model';
 
 @Injectable({ providedIn: 'root' })
 export class WebDatabaseService {
@@ -37,7 +36,7 @@ export class WebDatabaseService {
                     episodeStore.createIndex('localShowTimeIndex', 'localShowTime', { unique: false });
 
                     // and then initialize data
-                    const settings: IMyTvQDbSetting = SettingService.default;
+                    const settings: IMyTvQDbSetting = MyTvQDbSetting.default;
 
                     const promises = [];
                     for (const key in settings) {

@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { IMyTvQDbEpisode, IMyTvQDbShow } from './db.model';
-import { IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
+import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
 
 export interface IUiShowModel {
     id: string;

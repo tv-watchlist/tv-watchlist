@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { map, Observable, switchMap, tap } from 'rxjs';
-import { ApiTheMovieDbService, ITheMovieDbPopular } from '../../services/api-the-movie-db.service';
-import { ApiTvMazeService } from '../../services/api-tv-maze.service';
-import { ShowService } from '../../services/show.service';
+import { lastValueFrom, map, Observable, switchMap, tap } from 'rxjs';
+import { ApiTheMovieDbService } from '../../services/api/api-the-movie-db.service';
+import { ShowService } from '../../services/mytvq/show.service';
+import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
+import { ToastService } from '../../widgets/toast/toast.service';
 
 export interface IUITheMovieDbShow {
     first_air_date: string; //  "2022-01-28"
@@ -28,36 +29,42 @@ export interface IUITheMovieDbShow {
 export class PopularComponent implements OnInit {
     constructor(private svc: ApiTheMovieDbService,
         private cdRef: ChangeDetectorRef,
+        private loaderSvc: LoaderScreenService,
+        private toastSvc: ToastService,
         private showSvc: ShowService) { }
 
     showNames: string[] = [];
-    result$?: Observable<IUITheMovieDbShow[]>;
+    result?: IUITheMovieDbShow[];
 
     async ngOnInit(): Promise<void> {
-       const showList = await this.showSvc.getAll();
-       this.showNames = showList.map(s => s.name);
-       this.result$ = this.svc.getPopularWithReference().pipe(map(([config, genre, popular]) => {
-           const genreDict = genre.genres.reduce((prev:{[id: number]: string}, cur) => {
+        this.loaderSvc.show();
+        const showList = await this.showSvc.getAll();
+        this.showNames = showList.map(s => s.name);
+        const result$ = this.svc.getPopularWithReference().pipe(map(([config, genre, popular]) => {
+            const genreDict = genre.genres.reduce((prev: { [id: number]: string }, cur) => {
                 prev[cur.id] = cur.name;
                 return prev;
             }, {});
-           const baseUrl = config.images.secure_base_url;
+            const baseUrl = config.images.secure_base_url;
 
-           return popular.results.map(o => {
-                const newO: IUITheMovieDbShow = {...o} ;
+            return popular.results.map(o => {
+                const newO: IUITheMovieDbShow = { ...o };
                 newO.poster_path = baseUrl + 'w220_and_h330_face' + o.poster_path;
-                newO.genres = o.genre_ids.map(m=>genreDict[m]).join(', ');
+                newO.genres = o.genre_ids.map(m => genreDict[m]).join(', ');
 
                 return newO
-           });
+            });
         }));
+        this.result = await lastValueFrom(result$);
+        this.loaderSvc.close();
         this.cdRef.detectChanges();
     }
 
     async addShow(tmdbId: any, name: string) {
-        await this.showSvc.addUpdateTvMazeShow('tmdb', tmdbId);
         this.showNames.push(name);
         this.cdRef.detectChanges();
+        await this.showSvc.addUpdateTvMazeShow('tmdb', tmdbId);
+        this.toastSvc.success(`show ${name} added!`);
     }
 
     goToUrl(url: string): void {
