@@ -12,7 +12,7 @@
         <div>
             <h3 class="inline font-bold">{{search.show.name}}</h3>
             <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
-            <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(search.show.id)" *ngIf="!includes(search.show.id)" classes="float-right text-right text-green-500"></tvq-svg-icon>
+            <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(search.show.id, search.show.name)" *ngIf="!includes(search.show.id)" classes="float-right text-right text-green-500"></tvq-svg-icon>
         </div>
 
         <div *ngIf="search.show.network">{{search.show.network.name}}, {{search.show.network.country?.name}}</div>

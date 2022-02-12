@@ -35,11 +35,11 @@ export class SearchComponent implements OnInit {
             );
     }
 
-    async addShow(tvmazeId: any) {
+    async addShow(tvmazeId: any, name: string) {
         this.showIds.push('tvmaze'+ tvmazeId);
         this.cdRef.detectChanges();
         await this.showSvc.addUpdateTvMazeShow('tvmaze', tvmazeId);
-        this.toastSvc.success(`show ${name} added!`);
+        this.toastSvc.success(`Show '${name}' added to your TvWatchList!`);
     }
 
     goToUrl(url: string): void {

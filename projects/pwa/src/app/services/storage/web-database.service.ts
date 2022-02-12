@@ -264,12 +264,18 @@ export class WebDatabaseService {
     }
 
     public async putObj(storeName: MyTvQStoreName, obj: any, key?: string | IDBKeyRange | undefined): Promise<boolean> {
+        if(obj === undefined || obj === null) {
+            return false;
+        }
         const db = (await this.dbPromise);
         const transaction = db.transaction(storeName, 'readwrite');
         return await transaction.objectStore(storeName).put(obj, key).then(()=>true);
     }
 
     public async putKeyValueBulk(storeName: MyTvQStoreName, obj: { [key: string]: any }): Promise<boolean> {
+        if(obj === undefined || obj === null) {
+            return false;
+        }
         const db = (await this.dbPromise);
         const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
@@ -291,6 +297,9 @@ export class WebDatabaseService {
      * @returns
      */
     public async putList(storeName: MyTvQStoreName, list: any[], progress?: (counter: number, length: number, isComplete: boolean) => void) {
+        if(list === undefined || list === null || list.length === 0) {
+            return;
+        }
         const db = (await this.dbPromise);
 
         return new Promise((resolve, reject) => {
@@ -311,10 +320,6 @@ export class WebDatabaseService {
                 resolve(true);
             }
 
-            if (list.length == 0) {
-                transaction.abort();
-                return;
-            }
             const store = unwrap(transaction.objectStore(storeName)); // unwrapping to use onsuccess
             const putNext = () => {
                 if (count < list.length) {
@@ -331,7 +336,3 @@ export class WebDatabaseService {
         });
     }
 }
-
-/*
-
-*/

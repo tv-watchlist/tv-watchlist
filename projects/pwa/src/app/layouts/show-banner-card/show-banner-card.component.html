@@ -40,7 +40,8 @@
             <div class="flex justify-between w-full gap-1 mb-2">
                 <!-- dropdown next episode -->
                 <span class="flex justify-between w-10/12 px-1 my-auto text-sm truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
-                    <span class="truncate">{{model.unseenEpisodeName || '**All Seen**'}}</span>
+                    <span class="truncate" *ngIf="model.totalEpisodes > 0" >{{model.unseenEpisodeName || '**All Seen**'}}</span>
+                    <span *ngIf="model.totalEpisodes === 0" >**TBA**</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
                         <!--bottom arrow-->
                         <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>

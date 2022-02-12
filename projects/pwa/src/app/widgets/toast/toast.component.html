@@ -5,14 +5,14 @@
             <span *ngIf="toasts.length > 1" class="px-1 text-xs border rounded-full" [ngClass]="typeLablelClasses[toasts[index].type]">{{index+1}}/{{toasts.length}}</span>
         </span>
         <span class="inline-block w-3/12 py-0 text-center">
-            <tvq-svg-icon *ngIf="toasts.length > 1" icon="chevron-left" size="4" (click)="previous()"></tvq-svg-icon>
+            <tvq-svg-icon *ngIf="toasts.length > 1 && index > 0" icon="chevron-left" size="4" (click)="previous()"></tvq-svg-icon>
         </span>
         <span class="inline-block w-3/12 py-0 text-center">
-            <tvq-svg-icon *ngIf="toasts.length > 1" icon="chevron-right" size="4" (click)="next()" ></tvq-svg-icon>
+            <tvq-svg-icon *ngIf="toasts.length > 1 && index < toasts.length-1" icon="chevron-right" size="4" (click)="next()" ></tvq-svg-icon>
         </span>
         <span class="inline-block w-3/12 py-0 pr-2 text-right">
             <tvq-svg-icon icon="x" size="4" (click)="close()"></tvq-svg-icon>
         </span>
     </div>
-    <span class="block px-4 pt-2 pb-4">{{toasts[index].message}}</span>
+    <span class="block px-4 pb-4">{{toasts[index].message}}</span>
 </div>

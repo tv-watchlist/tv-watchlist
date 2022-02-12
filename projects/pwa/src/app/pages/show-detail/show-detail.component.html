@@ -14,9 +14,9 @@
             <img tvqDefault [src]="showModel.poster" alt="" class="relative inset-0 object-cover w-full" />
         </div>
         <ul class="flex flex-col w-8/12">
-            <li *ngIf="!!showModel.status">
+            <li *ngIf="!!showModel.statusText">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">status:</span>
-                <span [innerHTML]="showModel.status"></span>
+                <span [innerHTML]="showModel.statusText"></span>
             </li>
             <li *ngIf="!!showModel.channel">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
@@ -62,7 +62,7 @@
         <hr>
     </div>
 
-    <div class="flex my-2">
+    <div class="flex my-2" *ngIf="showModel.totalEpisodes > 0">
         <div class="flex w-10/12">
             <select class="w-11/12 mr-2 rounded focus:outline-none" [(ngModel)]="selectedSeasonNum">
                 <option [value]="seasonNum" *ngFor="let seasonNum of seasonNumList">Season {{seasonNum}}</option>
@@ -87,9 +87,10 @@
             (seenToggledChanged)="episodeToggled($event)"
             [latestEpisodeId]="latestEpisodeId" ></tvq-episode>
         </div>
-        <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700" *ngIf="!episodeList[selectedSeasonNum].length">
+        <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700" *ngIf="!episodeList[selectedSeasonNum]?.length">
             <tvq-svg-icon icon="exclamation-circle" size="12" classes="mx-auto text-gray-500 stroke-current" ></tvq-svg-icon>
-            <span>No unseen episodes!</span>
+            <span *ngIf="showModel.totalEpisodes > 0">No unseen episodes!</span>
+            <span *ngIf="showModel.totalEpisodes === 0">No episodes released yet!</span>
         </div>
         <div class="w-full mt-4 text-center" *ngIf="seasonUnSeen[selectedSeasonNum] !== seasonTotal[selectedSeasonNum]">
             <span class="inline-block px-4 py-2 border border-gray-500 rounded-lg focus:outline-none" (click)="displayHidden()">

@@ -32,6 +32,7 @@ export class UiShowModel {
         this.contentRating = show.contentRating;
         this.summary = show.summary;
         this.url = show.url;
+        this.statusText = show.status;
 
         this.totalSeasons = show.totalSeasons;
         this.unseenCount = show.unseenCount;
@@ -44,6 +45,7 @@ export class UiShowModel {
     premiered: string;
     channel: string;
     status = 0;
+    statusText: string;
     banner: string;
     poster: string;
     language: string;

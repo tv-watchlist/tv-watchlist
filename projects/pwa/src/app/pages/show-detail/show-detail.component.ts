@@ -139,6 +139,7 @@ export class ShowDetailComponent implements OnInit {
             this.selectedSeasonNum = this.seasonNumList[this.seasonNumList.length - 1];
         }
         this.episodeList = episodeList;
+        this.showDetails = totalEpisodes === 0;
         this.cdRef.markForCheck();
     }
 

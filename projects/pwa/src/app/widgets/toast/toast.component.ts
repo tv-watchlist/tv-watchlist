@@ -23,14 +23,14 @@ export class ToastComponent implements OnInit, OnDestroy {
     typeClasses = {
         success: 'text-white bg-green-600' ,
         info: 'text-white bg-gray-600' ,
-        warn: 'text-white bg-yellow-600' ,
+        warn: 'text-white bg-yellow-500' ,
         error: 'text-white bg-red-600' ,
     }
 
     typeLablelClasses = {
         success: 'text-white bg-green-800' ,
         info: 'text-white bg-gray-800' ,
-        warn: 'text-white bg-yellow-800' ,
+        warn: 'text-white bg-yellow-600' ,
         error: 'text-white bg-red-800' ,
     }
 
@@ -49,7 +49,7 @@ export class ToastComponent implements OnInit, OnDestroy {
 
     next() {
         this.index++;
-        if(this.toasts.length >= this.index) {
+        if(this.index >= this.toasts.length) {
             this.index = this.toasts.length - 1;
         }
         this.cdRef.markForCheck();
