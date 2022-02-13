@@ -115,6 +115,10 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 
+    reload(){
+        document.location.reload();
+    }
+
     prepareRoute(outlet: RouterOutlet): any {
         return outlet?.activatedRouteData?.index;
     }

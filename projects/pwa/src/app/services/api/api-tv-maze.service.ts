@@ -121,26 +121,13 @@ export class ApiTvMazeService {
         )
     }
 
-    // nsr.myTvQ.tvmaze.api.LookupByThetvdb = function(thetvdb_id, callback){
-    //     $.getJSON( "http://api.tvmaze.com/lookup/shows?thetvdb="+thetvdb_id, function(data) {
-    //         if (callback) {
-    //             callback(data);
-    //         }
-    //     }).fail(function(jqXHR, textStatus) {
-    //         console.log( "tvmaze.LookupByThetvdb",jqXHR );
-    //         if (callback) {
-    //             callback(false);
-    //         }
-    //     });
-    // }
-
     /**
      *
      * @param since
      * @returns {showId: timestamp}. need to multiply timestamp with 1000 for js date
      */
     getUpdates(since:'all'|'day'|'week'|'month'='all') {
-        let url = 'http://api.tvmaze.com/updates/shows';
+        let url = 'https://api.tvmaze.com/updates/shows';
         if( since !== 'all'){
             url += `?since=${since}`;
         }

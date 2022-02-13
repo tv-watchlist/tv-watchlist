@@ -36,7 +36,7 @@ export class ApiFanartTvService {
      * @returns
      */
     getShow(thetvdbId: number): Observable<IFanartTvShow> {
-        return this.http.get<IFanartTvShow>(`http://webservice.fanart.tv/v3/tv/${thetvdbId}?api_key=${this.apiKey}`);
+        return this.http.get<IFanartTvShow>(`https://webservice.fanart.tv/v3/tv/${thetvdbId}?api_key=${this.apiKey}`);
     }
 }
 

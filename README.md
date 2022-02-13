@@ -28,6 +28,7 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 * search current page and web
 * show version
 * show interactive step welcome/help
+* pull page for refresh https://medium.com/angularwave/rxjs-and-angular-pull-to-refresh-that-emulates-native-ios-and-android-rxjs-challenge-18-75408c53f66
 * show loading gif
 * show desktop view
 * show countdown page
