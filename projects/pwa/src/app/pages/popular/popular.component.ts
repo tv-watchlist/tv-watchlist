@@ -30,7 +30,6 @@ export class PopularComponent implements OnInit {
     constructor(private svc: ApiTheMovieDbService,
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
-        private toastSvc: ToastService,
         private showSvc: ShowService) { }
 
     showNames: string[] = [];
@@ -64,7 +63,6 @@ export class PopularComponent implements OnInit {
         this.showNames.push(name);
         this.cdRef.detectChanges();
         await this.showSvc.addUpdateTvMazeShow('tmdb', tmdbId);
-        this.toastSvc.success(`Show '${name}' added to your TvWatchList!`);
     }
 
     goToUrl(url: string): void {

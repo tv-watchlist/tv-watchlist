@@ -1,7 +1,7 @@
 <div class="container">
     <div class="flex flex-col min-h-screen gap-2 bg-gray-100">
         <header class="fixed top-0 left-0 right-0 z-10 flex justify-between px-2 text-white bg-orange-500 h-11 standalone:pt-safe-top standalone:h-safe-top-1">
-            <button class="mt-1 focus:outline-none" *ngIf="!isHome">
+            <button class="mt-1 focus:outline-none" tvqBackButton *ngIf="!isHome">
                 <tvq-svg-icon icon="chevron-left"></tvq-svg-icon>
             </button>
             <button class="mt-1 focus:outline-none" *ngIf="isHome" (click)="reload()">

@@ -5,7 +5,7 @@
     <nav *ngIf="visible" [@slideOutRightOnLeave] [@fadeOutOnLeave] [@slideInRightOnEnter]
         class="fixed top-0 right-0 z-20 w-1/4 min-h-screen text-white bg-orange-600 border border-orange-600 shadow-inner">
         <ul class="flex flex-col text-center standalone:pt-safe-top standalone:h-safe-top-1">
-            <li *ngFor="let item of options" class="py-4 m-auto focus:outline-none" (click)="closeMenu()" [routerLink]="item.link">
+            <li *ngFor="let item of options" class="mx-auto my-4 cursor-pointer focus:outline-none" (click)="closeMenu()" [routerLink]="item.link">
                <tvq-svg-icon [icon]="item.icon" size="12" [classes]="'mx-auto'"></tvq-svg-icon>
                <div>{{item.name}}</div>
             </li>

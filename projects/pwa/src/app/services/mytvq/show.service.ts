@@ -9,6 +9,7 @@ import { CommonService } from '../common.service';
 import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
 import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
+import { ToastService } from '../../widgets/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {
@@ -19,6 +20,7 @@ export class ShowService {
         private commonSvc: CommonService,
         private apiTvMazeSvc: ApiTvMazeService,
         private apiTmdbSvc: ApiTheMovieDbService,
+        private toastSvc: ToastService,
     ) { }
 
     private EndedRegex = /Pilot.?Rejected|Cancell?ed\/Ended|Cancell?ed|Ended/i;
@@ -483,7 +485,9 @@ export class ShowService {
             await this.webDb.putObj('shows', newObj.show);
             await this.webDb.deleteRange('episodes','showIdIndex',this.webDb.getKeyRange('=', showId));
             await this.webDb.putList('episodes', newObj.newEpisodeList);
+            this.toastSvc.success(`Show '${show.name || newObj.show.name}' ${!!show.name ? 'updated in':'added to'} your TvWatchList!`);
         } catch (error) {
+            this.toastSvc.error(`Something went wrong while ${!!show.name ? 'updating':'adding'} Show '${show.name || apiId}'`)
             console.error('server rejected the request', error);
         }
     }

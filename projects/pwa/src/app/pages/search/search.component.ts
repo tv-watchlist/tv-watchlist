@@ -13,7 +13,6 @@ export class SearchComponent implements OnInit {
     constructor(private searchSvc: ApiTvMazeService,
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
-        private toastSvc: ToastService,
         private showSvc: ShowService) { }
 
     showIds: string[] = [];
@@ -27,19 +26,20 @@ export class SearchComponent implements OnInit {
     }
 
     search() {
-        this.searchList$ = this.searchSvc.searchShow(this.searchTxt)
-            .pipe(
-                tap(result => {
-                    // console.log('search', this.searchTxt, JSON.stringify(result));
-                })
-            );
+        if(!!this.searchTxt) {
+            this.searchList$ = this.searchSvc.searchShow(this.searchTxt)
+                .pipe(
+                    tap(result => {
+                        // console.log('search', this.searchTxt, JSON.stringify(result));
+                    })
+                );
+        }
     }
 
     async addShow(tvmazeId: any, name: string) {
         this.showIds.push('tvmaze'+ tvmazeId);
         this.cdRef.detectChanges();
         await this.showSvc.addUpdateTvMazeShow('tvmaze', tvmazeId);
-        this.toastSvc.success(`Show '${name}' added to your TvWatchList!`);
     }
 
     goToUrl(url: string): void {

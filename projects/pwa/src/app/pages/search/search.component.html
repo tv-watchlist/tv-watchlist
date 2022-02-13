@@ -1,7 +1,7 @@
 <div class="relative flex flex-col pt-2 mb-4 text-gray-500">
-    <tvq-svg-icon icon="search" size="4" classes="text-gray-400 absolute top-5 left-2"></tvq-svg-icon>
+    <tvq-svg-icon icon="search" (click)="search()" size="4" classes="text-gray-400 absolute top-5 left-2"></tvq-svg-icon>
     <input [(ngModel)]="searchTxt" class="h-10 pl-8 text-sm bg-white border-gray-300 rounded-lg border-1 focus:outline-none"
-      type="search" name="search" placeholder="Search" enterkeyhint="search" (keyup.enter)="search()" >
+      type="search" name="search" placeholder="Search" enterkeyhint="search" autocapitalize="none" (keyup.enter)="search()" >
 </div>
 
 <div class="flex mb-2"  *ngFor="let search of searchList$ | async" >
