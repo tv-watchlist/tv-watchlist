@@ -1,35 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
 
-export interface IUiShowModel {
-    id: string;
-    name: string;
-    premiered: string;
-    channel: string;
-    status: number;
-    banner: string;
-    latestEpisodeName: string;
-    latestEpisodeDateFormatted: string;
-    latestEpisodeIn: string;
-    nextEpisodeName: string;
-    unseenEpisodes: number;
-    totalEpisodes: number;
-    expand: boolean;
-}
-
 export class UiShowModel {
     constructor(show: IMyTvQDbShow) {
         const today = new Date().getTime();
         this.id = show.showId;
+        this.apiSource = show.apiSource;
+        this.apiId = show.apiId[show.apiSource] as string;
         this.name = show.name;
         this.premiered = !!show.premiered ? show.premiered.substring(0, 4) : '';
         this.banner = show.image?.banner[0] || '';
         this.poster = show.image?.poster[0] || '';
         this.channel = show.channel.name || '';
         this.language = show.language;
-        this.genres = show.genres;
-        this.runtime = show.runtime;
-        this.contentRating = show.contentRating;
+        this.genres = show.showType + ' - ' + show.genres.join(', ');
+
+        this.schedule = `${(show.schedule?.days || []).join(', ')}${(show.schedule?.time ? ' at ' + show.schedule?.time :'')}${show.runtime ? ' ('+show.runtime+' mins)':''}`;
+        this.userRating = !!show.userRating ? `${show.userRating.average}/10 ${(show.userRating.count ? '('+show.userRating.count+'votes)':'')}`: '';
         this.summary = show.summary;
         this.url = show.url;
         this.statusText = show.status;
@@ -42,6 +29,8 @@ export class UiShowModel {
 
     id: string;
     name: string;
+    apiSource: string;
+    apiId: string;
     premiered: string;
     channel: string;
     status = 0;
@@ -51,9 +40,9 @@ export class UiShowModel {
     language: string;
     summary: string;
     url: string;
-    genres: string[];
-    runtime: number;
-    contentRating: string;
+    genres: string;
+    schedule: string;
+    userRating: string;
     totalEpisodes: number;
     unseenCount: number;
     totalSeasons: number;
@@ -61,24 +50,14 @@ export class UiShowModel {
     expand: boolean;
 
     // show which is coming up next
+    latestEpisodeId = '';
     latestEpisodeName = '';
     latestEpisodeDateFormatted = '';
     latestEpisodeInDays = '';
 
     // next unseen episode
+    unseenEpisodeId = '';
     unseenEpisodeName = '';
-}
-
-export interface IUiEpisodeModel {
-    id: string;
-    image: string;
-    episodeName: string;
-    dateFormatted: string;
-    summary: string;
-    isUnaired: boolean;
-    seen: boolean;
-    expand: boolean;
-    url: string;
 }
 
 export class UiEpisodeModel {
@@ -130,17 +109,4 @@ export class UiEpisodeModel {
             this.dateFormatted = 'n/a';
         }
     }
-}
-
-export interface IUiSetting {
-    updateTime: number;
-    showsOrder: string;
-    version: number;
-    defaultEpisodes: string;
-    hideTba: boolean;
-    hideSeen: boolean;
-    defaultCountry: string;
-    timezoneOffset: {
-        [country: string]: number;
-    };
 }

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { IMyTvQDbSetting, MyTvQDbSetting } from '../storage/db.model';
 import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQSettingFlatV5 } from './flat-file-v5.model';
-import { IUiSetting } from './ui.model';
 
 
 @Injectable({ providedIn: 'root' })

@@ -83,27 +83,14 @@ export class ShowDetailComponent implements OnInit {
         const today = new Date().getTime();
         this.seasonNumList.length = 0;
         this.commonSvc.clearObj(this.episodeList);
-        let isUnairedFlagSet = false;
         this.selectedSeasonNum = 0;
         this.nextUnseenEpisodeId = '';
         this.latestEpisodeId = '';
-        let totalEpisodes = 0;
 
         const episodeList: {[season: number]: {episodeId: string; seen:boolean}[]} = {};
         for (const episodeId in this.episodeDictionary ) {
             if (Object.prototype.hasOwnProperty.call(this.episodeDictionary, episodeId)) {
                 const episode = this.episodeDictionary[episodeId];
-
-                if (!isUnairedFlagSet && !this.latestEpisodeId && (episode.localShowTime||0) > today) {
-                    if (this.defaultMenuOption === 'Latest') {
-                        this.selectedSeasonNum = episode.season;
-                    }
-                    this.latestEpisodeId = episode.episodeId;
-                }
-                if ((episode.localShowTime||0) > today) {
-                    // this.episodeList.push({'type':'label', 'text':`**UNAIRED**`});
-                    isUnairedFlagSet = true;
-                }
 
                 if (!episodeList[episode.season]) {
                     episodeList[episode.season] = [];
@@ -111,16 +98,6 @@ export class ShowDetailComponent implements OnInit {
                     this.seasonTotal[episode.season] = 0;
                 }
 
-                if (!isUnairedFlagSet) {
-                    totalEpisodes++;
-                }
-
-                if (!this.nextUnseenEpisodeId && !this.nextUnseenEpisodeId && !episode.seen) {
-                    if (this.defaultMenuOption === 'Bookmarked') {
-                        this.selectedSeasonNum = episode.season;
-                    }
-                    this.nextUnseenEpisodeId = episode.episodeId;
-                }
                 if ((this.hideSeen && !episode.seen) || !this.hideSeen) {
                     episodeList[episode.season].push({episodeId:episode.episodeId, seen:episode.seen});
                 }
@@ -130,7 +107,17 @@ export class ShowDetailComponent implements OnInit {
                 }
             }
         }
-        this.showModel.totalEpisodes = totalEpisodes;
+
+        this.latestEpisodeId = this.showModel.latestEpisodeId;
+        this.nextUnseenEpisodeId = this.showModel.unseenEpisodeId;
+        if (this.defaultMenuOption === 'Latest' && !!this.latestEpisodeId) {
+            const episode = this.episodeDictionary[this.latestEpisodeId];
+            this.selectedSeasonNum = episode.season;
+        }
+        else if (this.defaultMenuOption === 'Bookmarked' && !!this.nextUnseenEpisodeId) {
+            const episode = this.episodeDictionary[this.nextUnseenEpisodeId];
+            this.selectedSeasonNum = episode.season;
+        }
         if(!!this.showModel) {
             this.showModel.totalSeasons = this.seasonNumList.length;
         }
@@ -139,7 +126,7 @@ export class ShowDetailComponent implements OnInit {
             this.selectedSeasonNum = this.seasonNumList[this.seasonNumList.length - 1];
         }
         this.episodeList = episodeList;
-        this.showDetails = totalEpisodes === 0;
+        this.showDetails = this.showModel.totalEpisodes === 0;
         this.cdRef.markForCheck();
     }
 

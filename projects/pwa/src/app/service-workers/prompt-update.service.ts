@@ -10,11 +10,13 @@ export class PromptUpdateService {
             if(event.type === 'VERSION_DETECTED'){
                 const evt = event as VersionDetectedEvent;
                 console.log('new Version Detected.', evt);
+                toastSvc.info('new Version Detected. Fetching...');
                 // maybe trigger a backup of data for safety
             }
             if(event.type === 'VERSION_INSTALLATION_FAILED'){
                 const evt = event as VersionInstallationFailedEvent;
                 console.log('new Version Install failed.', evt);
+                toastSvc.error('new Version Install failed.');
                 // log this to indexeddb for diagnostics
             }
             if(event.type === 'VERSION_READY'){

@@ -7,7 +7,7 @@
         <div class="absolute left-0 right-0 m-2 text-center bg-white rounded-lg standalone:mb-safe-bottom bottom-16">
             <ul class="flex flex-col justify-center">
                 <li *ngIf="!!header" class="px-1 py-2 text-sm font-semibold border-b" [innerHTML]="header"></li>
-                <li *ngFor="let option of options;let last = last" class="px-1 py-4"
+                <li *ngFor="let option of options;let last = last" class="px-1 py-4 cursor-pointer"
                     (click)="clicked(option)"
                     [ngClass]="{'border-b':!last}">
                     <span class="inline-flex text-blue-500">
@@ -17,6 +17,6 @@
                 </li>
             </ul>
         </div>
-        <div (click)="closeMenu()"  class="absolute bottom-0 left-0 right-0 p-4 m-2 text-center text-red-500 bg-white rounded-lg standalone:mb-safe-bottom">Cancel</div>
+        <div (click)="closeMenu()"  class="absolute bottom-0 left-0 right-0 p-4 m-2 text-center text-red-500 bg-white rounded-lg cursor-pointer standalone:mb-safe-bottom">Cancel</div>
     </div>
   </div>

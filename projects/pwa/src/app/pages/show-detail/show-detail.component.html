@@ -14,29 +14,33 @@
             <img tvqDefault [src]="showModel.poster" alt="" class="relative inset-0 object-cover w-full" />
         </div>
         <ul class="flex flex-col w-8/12">
+            <li *ngIf="!!showModel.channel">
+                <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
+                <span [innerHTML]="showModel.channel"></span>
+            </li>
+            <li *ngIf="!!showModel.schedule">
+                <span class="mr-2 font-semibold text-gray-400 uppercase">schedule:</span>
+                <span [innerHTML]="showModel.schedule"></span>
+            </li>
             <li *ngIf="!!showModel.statusText">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">status:</span>
                 <span [innerHTML]="showModel.statusText"></span>
             </li>
-            <li *ngIf="!!showModel.channel">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
-                <span [innerHTML]="showModel.channel"></span>
+            <li *ngIf="!!showModel.genres">
+                <span class="mr-2 font-semibold text-gray-400 uppercase">type:</span>
+                <span [innerHTML]="showModel.genres"></span>
             </li>
             <li *ngIf="!!showModel.language">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">language:</span>
                 <span [innerHTML]="showModel.language"></span>
             </li>
-            <li *ngIf="!!showModel.genres">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">genres:</span>
-                <span [innerHTML]="showModel.genres.join(', ')"></span>
+            <li *ngIf="!!showModel.userRating">
+                <span class="mr-2 font-semibold text-gray-400 uppercase">rating:</span>
+                <span [innerHTML]="showModel.userRating"></span>
             </li>
-            <li *ngIf="!!showModel.runtime">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">runtime:</span>
-                <span [innerHTML]="showModel.runtime + ' Mins'"></span>
-            </li>
-            <li *ngIf="!!showModel.contentRating">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">content rating:</span>
-                <span [innerHTML]="showModel.contentRating"></span>
+            <li *ngIf="!!showModel.apiId">
+                <span class="mr-2 font-semibold text-gray-400 uppercase">{{showModel.apiSource}}:</span>
+                <span [innerHTML]="showModel.apiId"></span>
             </li>
             <li>
                 <span class="mr-2 font-semibold text-gray-400 uppercase">Unseen:</span>

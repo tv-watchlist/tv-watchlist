@@ -1,8 +1,10 @@
-<div *ngIf="!!model"  class="relative flex flex-wrap mb-2 rounded-md shadow-md"
+<div *ngIf="!!model"  class="relative flex flex-wrap mb-2 rounded-md shadow-md" (click)="model.expand = true"
             [ngClass]="{
         'bg-red-500': model.status === -1,
         'bg-green-500': model.status === 0,
-        'bg-blue-500': model.status === 1}"
+        'bg-blue-500': model.status === 1,
+        'cursor-pointer':!model.expand}
+        "
     >
     <img *ngIf="!!model.banner" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="model.banner" alt="">
     <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!model.banner}">
@@ -32,14 +34,12 @@
             </ng-container>
         </div>
         <div class="flex justify-center" *ngIf="!model.expand">
-            <button class="focus:outline-none" (click)="model.expand = !model.expand">
-                <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
-            </button>
+            <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
         </div>
         <ng-container *ngIf="model.expand">
             <div class="flex justify-between w-full gap-1 mb-2">
                 <!-- dropdown next episode -->
-                <span class="flex justify-between w-10/12 px-1 my-auto text-sm truncate border border-white rounded cursor-pointer" (click)="goToShowDetails()">
+                <span class="flex justify-between w-11/12 p-1 my-auto text-sm truncate border border-white rounded shadow-lg cursor-pointer" (click)="goToShowDetails()">
                     <span class="truncate" *ngIf="model.totalEpisodes > 0" >{{model.unseenEpisodeName || '**All Seen**'}}</span>
                     <span *ngIf="model.totalEpisodes === 0" >**TBA**</span>
                     <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">

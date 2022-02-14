@@ -42,7 +42,6 @@ export class ShowService {
                 language: e.language,
                 genres: e.genres,
                 cast: e.cast,
-                contentRating: e.content_rating,
                 premiered: e.premiered,
                 schedule: e.schedule,
                 userRating: e.user_rating,
@@ -79,10 +78,12 @@ export class ShowService {
         const model = new UiShowModel(show);
         model.status = this.getShowStatus(show);
         if (!!latestEpisode) {
+            model.latestEpisodeId = latestEpisode.episodeId;
             model.latestEpisodeName = this.episodeSvc.getEpisodeName(latestEpisode) || 'TBA';
             model.latestEpisodeDateFormatted = this.episodeSvc.getFormattedTime(latestEpisode.localShowTime||0, model.status);
             model.latestEpisodeInDays = this.episodeSvc.getNextEpisodeDays(latestEpisode);
         }
+        model.unseenEpisodeId = show.unseenEpisode?.episodeId || '';
         model.unseenEpisodeName = this.episodeSvc.getEpisodeName(show.unseenEpisode);
         return model;
     }
@@ -139,7 +140,7 @@ export class ShowService {
             //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             // });
 
-            // console.log(tba_show_list);
+            // console.log(tbatvmShow_list);
             // completed && sort by desc
             const endedShowList = showList.filter((item, index) => {
                 return (item.status || '').match(this.EndedRegex);
@@ -275,7 +276,7 @@ export class ShowService {
             showIdOrder.splice(showIdOrder.findIndex(o => o === showId), 1);
             this.settingSvc.save('showIdOrderList', showIdOrder);
         });
-        // TODO: remove from other places too
+        // TODO: remove from other places too i.e. future storage like notification
     }
 
     async markAsSeen(show: IMyTvQDbShow, nextEpisodeId: string): Promise<void> {
@@ -297,197 +298,209 @@ export class ShowService {
         if(apiType === 'tmdb') {
             tvMazeShowAndEpisode$ = this.apiTmdbSvc.getExternal(apiId).pipe(
                 switchMap(ext => this.apiTvMazeSvc.getByThetvdb(ext.tvdb_id)),
-                map(([_show,_image,_episodeList]) => {
-                    _show._embedded = {images: _image};
-                    return [_show, _episodeList];
+                map(([tvmShow,_image,tvmEpisodeList]) => {
+                    tvmShow._embedded = {images: _image};
+                    return [tvmShow, tvmEpisodeList];
                 })
             );
-            apiType = 'tvmaze';
+        } else if(apiType === 'tvmaze') {
+            tvMazeShowAndEpisode$ = this.apiTvMazeSvc.getShowAndEpisode(apiId);
         } else {
-            tvMazeShowAndEpisode$ = this.apiTvMazeSvc.getShowAndEpisode(apiId)
+            throw new Error('API not recognized');
         }
 
-        const showId = apiType+apiId;
+        let tvmShow: ITvMazeShow;
+        let tvmEpisodeList: ITvMazeEpisode[];
+        try {
+            const [_tvmShow, _tvmEpisodeList] = await lastValueFrom(tvMazeShowAndEpisode$);
+            tvmShow = _tvmShow;
+            tvmEpisodeList = _tvmEpisodeList;
+        } catch (err) {
+            this.toastSvc.error(`Something went wrong while fetching data from TvMaze API`);
+            console.error('server rejected the request', err);
+            return;
+        }
+
+        const showId = 'tvmaze' + tvmShow.id;
         const show = await this.getShow(showId) || {};
-        console.log('addUpdateShow',(!!show.name ? 'Updating':'Adding'), showId);
+        const isAdding = !show.showId;
+
+        // update existing show from web
+        show.showId = showId;
+        show.apiSource = 'tvmaze';
+        show.apiId =  show.apiId || {};
+        show.apiId[apiType] = apiId;
+        show.apiId.tvmaze = tvmShow.id;
+        show.apiId.thetvdb = tvmShow.externals.thetvdb;
+        show.apiId.imdb = tvmShow.externals.imdb;
+
+        const channel = tvmShow.network || tvmShow.webChannel;
+        if(!!channel){
+            show.channel = show.channel || {};
+            show.channel.name = channel.name || '';
+            if(!!channel.country) {
+                show.channel.country = channel.country;
+            }
+        }
+
+        show.name = tvmShow.name;
+        show.url = tvmShow.url;
+        show.showType = tvmShow.type;
+        show.language = tvmShow.language;
+        show.genres = tvmShow.genres;
+        show.status = tvmShow.status; // (Running, Ended, To Be Determined, In Development)
+        show.runtime = tvmShow.averageRuntime || tvmShow.runtime;
+        show.premiered = tvmShow.premiered;
+        show.summary = tvmShow.summary;
+        show.schedule = tvmShow.schedule;
+        show.userRating = show.userRating || {};
+        show.userRating.average = tvmShow.rating.average;
+        // show.userRating.count = tvmShow.rating.count;
+        show.image = show.image || {poster:[], banner:[]};
+        if(!!tvmShow.image?.original && !show.image.poster.includes(tvmShow.image.original)) {
+            show.image.poster.push(tvmShow.image.original);
+        }
+        if(!!tvmShow._embedded?.images) {
+            // add banner
+            const banners = tvmShow._embedded?.images.filter(o => o.type === 'banner').map(o=>o.resolutions.original.url);
+            for (const banner of banners) {
+                if(!show.image.banner.includes(banner)){
+                    show.image.banner.push(banner);
+                }
+            }
+            // if not found then add background
+            if(show.image.banner.length === 0){
+                const background = tvmShow._embedded?.images.find(o => o.type === 'background')?.resolutions.original.url
+                if(!!background){
+                    show.image.banner.push(background);
+                }
+            }
+        }
+
+        show.updateTime = updateTime || new Date().getTime();
+        // set episodes
+        // first lets re-sort the order which have correct data
+        const knownEpisodeList = tvmEpisodeList.filter(e=>!!e.airstamp);
+        let unknownEpisodeList = tvmEpisodeList.filter(e=>!e.airstamp);
+
+        knownEpisodeList.sort((x, y) => {
+            var x1 = x.airstamp + '_' + this.commonSvc.zeroPad(x.season, 4) + '_' + this.commonSvc.zeroPad(x.number|| 0, 4);
+            var y1 = y.airstamp + '_' + this.commonSvc.zeroPad(y.season, 4) + '_' + this.commonSvc.zeroPad(y.number|| 0, 4);
+            return this.commonSvc.sortAscending(x1, y1);
+        });
+        let initSeason = knownEpisodeList.length > 0 ? knownEpisodeList[0].season : 1 ;
+        let cleanEpisodeList: ITvMazeEpisode[] = [];
+        knownEpisodeList.forEach((episode, index, episodeArray) => {
+            if(episode.season != initSeason){
+                cleanEpisodeList = cleanEpisodeList.concat(
+                    unknownEpisodeList.filter(item => item.season === initSeason)
+                );
+                unknownEpisodeList = unknownEpisodeList.filter(item => item.season !== initSeason)
+                initSeason = episode.season;
+            }
+            cleanEpisodeList.push(episode);
+        });
+        cleanEpisodeList = cleanEpisodeList.concat(unknownEpisodeList);
+
+        let normal_counter = 0;
+        let special_counter = 0;
+        let last_number = 0;
+        let newEpisodeList: IMyTvQDbEpisode[] = [];
+        cleanEpisodeList.forEach(_episode => {
+            // init episode
+            const episode: IMyTvQDbEpisode = {
+                showId: showId,
+                episodeId: '',
+                localShowTime: _episode.airstamp ? Date.parse(_episode.airstamp) : undefined,
+                name : _episode.name,
+                url : _episode.url,
+                iso8601 : _episode.airstamp,
+                runtime : _episode.runtime,
+                season : _episode.season,
+                number : _episode.number,
+                summary : _episode.summary,
+                apiSource  : apiType,
+                apiId: {tvmaze : _episode.id},
+                poster: !!_episode.image ? _episode.image.original: undefined,
+                counter: 0,
+                nextId: undefined,
+                previousId: undefined,
+                seen: false,
+                special: false
+            };
+            // set episodeId
+            if(_episode.number != null){
+                last_number = _episode.number;
+                episode.special = false;
+                episode.counter = ++normal_counter;
+                episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter)  ;
+            }else{
+                episode.special = true;
+                episode.counter = ++special_counter;
+                episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter, special_counter);
+            }
+            newEpisodeList.push(episode);
+        });
+
+        // set show references
         const episodeDict = await this.episodeSvc.getEpisodeDictionary(showId) || {};
-        const showAndEpisode$ = tvMazeShowAndEpisode$.pipe(
-            map(([_show, _episodeList]) => {
-            // set show
-            show.showId = showId;
-            show.apiSource = apiType;
-            show.apiId =  show.apiId || {};
-            show.apiId[apiType] = _show.id;
-            show.apiId.thetvdb = _show.externals.thetvdb;
-            show.apiId.imdb = _show.externals.imdb;
-            show.apiId.tvrage = _show.externals.tvrage;
-
-            const channel = _show.network || _show.webChannel;
-            if(!!channel){
-                show.channel = show.channel || {};
-                show.channel.name = channel.name || '';
-                if(!!channel.country) {
-                    show.channel.country = channel.country;
-                }
+        const now = (new Date()).getTime();
+        let unseenCount = 0;
+        show.futureEpisode = undefined;
+        show.pastEpisode = undefined;
+        show.unseenEpisode = undefined;
+        for(var i=0;i<newEpisodeList.length;i++){
+            // set previousId
+            if(i > 0) {
+                newEpisodeList[i].previousId = newEpisodeList[i - 1].episodeId;
             }
-
-            show.name = _show.name;
-            show.url = _show.url;
-            show.showType = _show.type;
-            show.language = _show.language;
-            show.genres = _show.genres;
-            show.status = _show.status; // (Running, Ended, To Be Determined, In Development)
-            show.runtime = _show.runtime;
-            show.premiered = _show.premiered;
-            show.summary = _show.summary;
-            show.schedule = _show.schedule;
-            show.userRating = show.userRating || {};
-            show.userRating.average = _show.rating.average;
-            show.image = show.image || {poster:[], banner:[]};
-            if(!!_show.image?.original && !show.image.poster.includes(_show.image.original)) {
-                show.image.poster.push(_show.image.original);
+            // set nextId
+            if(i <= newEpisodeList.length - 2){
+                newEpisodeList[i].nextId = newEpisodeList[i + 1].episodeId;
             }
-            if(!!_show._embedded?.images) {
-                // add banner
-                const banners = _show._embedded?.images.filter(o => o.type==='banner').map(o=>o.resolutions.original.url);
-                for (const banner of banners) {
-                    if(!show.image.banner.includes(banner)){
-                        show.image.banner.push(banner);
-                    }
-                }
-                // if not found then add background
-                if(show.image.banner.length === 0){
-                    const background = _show._embedded?.images.find(o => o.type==='background')?.resolutions.original.url
-                    if(!!background){
-                        show.image.banner.push(background);
-                    }
-                }
-            }
-
-            show.updateTime = updateTime || new Date().getTime();
-            // set episodes
-            // first lets re-sort the order which have correct data
-            const knownEpisodeList = _episodeList.filter(e=>!!e.airstamp);
-            let unknownEpisodeList = _episodeList.filter(e=>!e.airstamp);
-
-            knownEpisodeList.sort((x, y) => {
-                var x1 = x.airstamp + '_' + this.commonSvc.zeroPad(x.season, 4) + '_' + this.commonSvc.zeroPad(x.number|| 0, 4);
-                var y1 = y.airstamp + '_' + this.commonSvc.zeroPad(y.season, 4) + '_' + this.commonSvc.zeroPad(y.number|| 0, 4);
-                return this.commonSvc.sortAscending(x1, y1);
-            });
-            let initSeason = knownEpisodeList.length > 0 ? knownEpisodeList[0].season : 1 ;
-            let cleanEpisodeList: ITvMazeEpisode[] = [];
-            knownEpisodeList.forEach((episode, index, episodeArray) => {
-                if(episode.season != initSeason){
-                    cleanEpisodeList = cleanEpisodeList.concat(
-                        unknownEpisodeList.filter(item => item.season === initSeason)
-                    );
-                    unknownEpisodeList = unknownEpisodeList.filter(item => item.season !== initSeason)
-                    initSeason = episode.season;
-                }
-                cleanEpisodeList.push(episode);
-            });
-            cleanEpisodeList = cleanEpisodeList.concat(unknownEpisodeList);
-
-            let normal_counter = 0;
-            let special_counter = 0;
-            let last_number = 0;
-            let newEpisodeList: IMyTvQDbEpisode[] = [];
-            cleanEpisodeList.forEach(_episode => {
-                // init episode
-                const episode: IMyTvQDbEpisode = {
-                    showId: showId,
-                    episodeId: '',
-                    localShowTime: _episode.airstamp ? Date.parse(_episode.airstamp) : undefined,
-                    name : _episode.name,
-                    url : _episode.url,
-                    iso8601 : _episode.airstamp,
-                    runtime : _episode.runtime,
-                    season : _episode.season,
-                    number : _episode.number,
-                    summary : _episode.summary,
-                    apiSource  : apiType,
-                    apiId: {tvmaze : _episode.id},
-                    poster: !!_episode.image ? _episode.image.original: undefined,
-                    counter: 0,
-                    nextId: undefined,
-                    previousId: undefined,
-                    seen: false,
-                    special: false
-                };
-                // set episodeId
-                if(_episode.number != null){
-                    last_number = _episode.number;
-                    episode.special = false;
-                    episode.counter = ++normal_counter;
-                    episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter)  ;
-                }else{
-                    episode.special = true;
-                    episode.counter = ++special_counter;
-                    episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter, special_counter);
-                }
-                newEpisodeList.push(episode);
-            });
-
-            // set show references
-            const now = (new Date()).getTime();
-            let unseenCount = 0;
-            show.futureEpisode = undefined;
-            show.pastEpisode = undefined;
-            show.unseenEpisode = undefined;
-            for(var i=0;i<newEpisodeList.length;i++){
-                // set previousId
-                if(i > 0) {
-                    newEpisodeList[i].previousId = newEpisodeList[i - 1].episodeId;
-                }
-                // set nextId
-                if(i <= newEpisodeList.length - 2){
-                    newEpisodeList[i].nextId = newEpisodeList[i + 1].episodeId;
-                }
-                // set seen
-                if(!!episodeDict[newEpisodeList[i].episodeId]){
-                    newEpisodeList[i].seen = episodeDict[newEpisodeList[i].episodeId].seen;
-                } else{
-                    for (const key in episodeDict) {
-                        if (Object.prototype.hasOwnProperty.call(episodeDict, key)) {
-                            const oldEpisode = episodeDict[key];
-                            if(oldEpisode.season === newEpisodeList[i].season &&
-                                oldEpisode.number === newEpisodeList[i].number &&
-                                oldEpisode.name.toLowerCase() ===  newEpisodeList[i].name.toLowerCase())
-                            {
-                                newEpisodeList[i].seen = oldEpisode.seen;
-                                break;
-                            }
+            // set seen
+            if(!!episodeDict[newEpisodeList[i].episodeId]){
+                newEpisodeList[i].seen = episodeDict[newEpisodeList[i].episodeId].seen;
+            } else{
+                for (const key in episodeDict) {
+                    if (Object.prototype.hasOwnProperty.call(episodeDict, key)) {
+                        const oldEpisode = episodeDict[key];
+                        if(oldEpisode.season === newEpisodeList[i].season &&
+                            oldEpisode.number === newEpisodeList[i].number &&
+                            oldEpisode.name.toLowerCase() ===  newEpisodeList[i].name.toLowerCase())
+                        {
+                            newEpisodeList[i].seen = oldEpisode.seen;
+                            break;
                         }
                     }
                 }
-                // set show properties pastEpisode, futureEpisode, unseenEpisode
-                if (!!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) < now) {
-                    show.pastEpisode = newEpisodeList[i];
-                } else if (!show.futureEpisode && !!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) >= now) {
-                    show.futureEpisode = newEpisodeList[i];
-                }
+            }
+            // set show properties pastEpisode, futureEpisode, unseenEpisode
+            if (!!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) < now) {
+                show.pastEpisode = newEpisodeList[i];
+            } else if (!show.futureEpisode && !!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) >= now) {
+                show.futureEpisode = newEpisodeList[i];
+            }
 
-                if (!!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) < now && !newEpisodeList[i].seen) {
-                    unseenCount++;
-                    if (i === 0 || (i > 0 && newEpisodeList[i - 1].seen)) {
-                        show.unseenEpisode = newEpisodeList[i];
-                    }
+            if (!!newEpisodeList[i].localShowTime && (newEpisodeList[i].localShowTime || 0) < now && !newEpisodeList[i].seen) {
+                unseenCount++;
+                if (i === 0 || (i > 0 && newEpisodeList[i - 1].seen)) {
+                    show.unseenEpisode = newEpisodeList[i];
                 }
             }
-            show.totalSeasons = (show.futureEpisode || show.pastEpisode || { season: 0 }).season;
-            show.totalEpisodes = newEpisodeList.length;
-            show.unseenCount = unseenCount;
-            return {show, newEpisodeList};
-        }));
+        }
+        show.totalSeasons = (show.futureEpisode || show.pastEpisode || { season: 0 }).season;
+        show.totalEpisodes = newEpisodeList.length;
+        show.unseenCount = unseenCount;
+
         try {
-            const newObj = await lastValueFrom(showAndEpisode$);
-            await this.webDb.putObj('shows', newObj.show);
+            await this.webDb.putObj('shows', show);
             await this.webDb.deleteRange('episodes','showIdIndex',this.webDb.getKeyRange('=', showId));
-            await this.webDb.putList('episodes', newObj.newEpisodeList);
-            this.toastSvc.success(`Show '${show.name || newObj.show.name}' ${!!show.name ? 'updated in':'added to'} your TvWatchList!`);
+            await this.webDb.putList('episodes', newEpisodeList);
+            console.log('addUpdateShow', tvmShow.name, (!isAdding ? 'Updating':'Adding'));
+            this.toastSvc.success(`Show '${show.name}' ${(!isAdding ? 'updated in':'added to')} your TvWatchList!`);
         } catch (error) {
-            this.toastSvc.error(`Something went wrong while ${!!show.name ? 'updating':'adding'} Show '${show.name || apiId}'`)
+            this.toastSvc.error(`Something went wrong while saving Show '${show.name || apiId}'`)
             console.error('server rejected the request', error);
         }
     }

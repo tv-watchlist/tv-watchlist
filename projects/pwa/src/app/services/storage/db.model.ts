@@ -33,7 +33,6 @@ export interface IMyTvQDbShow {
         average: number;
         count: number
     };
-    contentRating: string;
     channel: {
         name: string;
         country: {

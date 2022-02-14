@@ -55,6 +55,7 @@ export class PopularComponent implements OnInit {
             });
         }));
         this.result = await lastValueFrom(result$);
+        // console.log('Popular',this.result);
         this.loaderSvc.close();
         this.cdRef.detectChanges();
     }
