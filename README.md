@@ -38,7 +38,9 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 * add dropbox/drive cloud save
 * add cron/background job to update references and data.
 * Add Analytics and show live data as page (highlights will be most watched show, total users, trending episode etc)
-
+* follow WCAG guideline 
+* support i18n For languages
+* dark mode or themable
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
