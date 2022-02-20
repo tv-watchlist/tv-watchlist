@@ -296,6 +296,7 @@ export class ShowService {
     async addUpdateTvMazeShow(apiType: string, apiId: any, updateTime?: number): Promise<void> {
         let tvMazeShowAndEpisode$: Observable<[ITvMazeShow, ITvMazeEpisode[]]>;
         if(apiType === 'tmdb') {
+            // convert tmdb to tvmaze
             tvMazeShowAndEpisode$ = this.apiTmdbSvc.getExternal(apiId).pipe(
                 switchMap(ext => this.apiTvMazeSvc.getByThetvdb(ext.tvdb_id)),
                 map(([tvmShow,_image,tvmEpisodeList]) => {
@@ -390,7 +391,7 @@ export class ShowService {
         });
         let initSeason = knownEpisodeList.length > 0 ? knownEpisodeList[0].season : 1 ;
         let cleanEpisodeList: ITvMazeEpisode[] = [];
-        knownEpisodeList.forEach((episode, index, episodeArray) => {
+        knownEpisodeList.forEach((episode) => {
             if(episode.season != initSeason){
                 cleanEpisodeList = cleanEpisodeList.concat(
                     unknownEpisodeList.filter(item => item.season === initSeason)
@@ -533,7 +534,12 @@ export class ShowService {
             const jsTime = ((update[apiId] || 0) * 1000);
             const showUpdateTime = show.updateTime || 0;
             if(!!update[apiId] && jsTime > showUpdateTime) {
-               await this.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string, jsTime);
+                if(show.apiSource === 'tvmaze'){
+                    await this.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string, jsTime);
+                } else {
+                    console.log(show.apiSource + ' Not supported yet!')
+
+                }
             }
             if(!update[apiId]) {
                 console.log('smartUpdateAllShows', apiId, show.name, new Date(showUpdateTime), 'NOT in API-Update list');

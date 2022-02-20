@@ -17,7 +17,7 @@ export class SvgIconComponent implements OnChanges {
 
     @Input() icon: SvgIconType = 'home';
     @Input() size: '12' | '8' | '7' | '6' | '4' = '7';
-    @Input() classes: string = 'inline-block';
+    @Input() classes: string = '';
 
     classComposed = '';
     iconSizes: {[size: string]: string} = {

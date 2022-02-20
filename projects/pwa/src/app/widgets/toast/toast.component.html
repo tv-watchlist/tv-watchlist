@@ -1,5 +1,6 @@
-<div [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave] *ngIf="toastsUI.length" [ngClass]="typeClasses[toastsUI[index].type]"
-    class="fixed bottom-0 left-0 right-0 h-auto pt-1 m-2 transform rounded shadow-lg">
+<div class="fixed bottom-0 w-full px-2">
+    <div [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave] *ngIf="toastsUI.length" [ngClass]="typeClasses[toastsUI[index].type]"
+    class="mx-auto max-w-[calc(640px-1rem)] mb-2 h-auto pt-1 rounded shadow-lg standalone:mb-[calc(0.5rem+env(safe-area-inset-bottom))]">
     <div class="flex" *ngIf="confirmToasts.length === 0">
         <span class="inline-block w-3/12 py-0 pl-2">
             <span *ngIf="toastsUI.length > 1" class="px-1 text-xs border rounded-full" [ngClass]="typeLablelClasses[toastsUI[index].type]">{{index+1}}/{{toastsUI.length}}</span>
@@ -24,4 +25,6 @@
             <button class="px-4 py-1 mt-2 text-xs text-white bg-green-500 border rounded-full" (click)="accept()">Yes</button>
         </div>
     </div>
+</div>
+
 </div>

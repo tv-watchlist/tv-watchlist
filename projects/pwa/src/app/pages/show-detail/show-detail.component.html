@@ -42,7 +42,7 @@
                 <span class="mr-2 font-semibold text-gray-400 uppercase">{{showModel.apiSource}}:</span>
                 <span [innerHTML]="showModel.apiId"></span>
             </li>
-            <li>
+            <li *ngIf="!!showModel.totalEpisodes">
                 <span class="mr-2 font-semibold text-gray-400 uppercase">Unseen:</span>
                 <span>{{showModel.unseenCount}} / {{showModel.totalEpisodes}}</span>
             </li>

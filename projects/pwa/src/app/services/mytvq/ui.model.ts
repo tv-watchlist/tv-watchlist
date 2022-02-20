@@ -16,7 +16,7 @@ export class UiShowModel {
         this.genres = show.showType + ' - ' + show.genres.join(', ');
 
         this.schedule = `${(show.schedule?.days || []).join(', ')}${(show.schedule?.time ? ' at ' + show.schedule?.time :'')}${show.runtime ? ' ('+show.runtime+' mins)':''}`;
-        this.userRating = !!show.userRating ? `${show.userRating.average}/10 ${(show.userRating.count ? '('+show.userRating.count+'votes)':'')}`: '';
+        this.userRating = !!show.userRating?.average ? `${show.userRating.average}/10 ${(show.userRating.count ? '('+show.userRating.count+'votes)':'')}`: '';
         this.summary = show.summary;
         this.url = show.url;
         this.statusText = show.status;
