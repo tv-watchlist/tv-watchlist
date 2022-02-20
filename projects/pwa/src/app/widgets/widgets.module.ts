@@ -15,6 +15,7 @@ import { LoaderBarComponent } from './loader/loader-bar.component';
 
 import { LoaderScreenService } from './loader/loader-screen.service';
 import { ToastService } from './toast/toast.service';
+import { ButtonComponent } from './button/button.component';
 
 const COMPONENTS: any[] = [
     BackButtonDirective,
@@ -26,6 +27,7 @@ const COMPONENTS: any[] = [
     SvgIconComponent,
     LoaderScreenComponent,
     LoaderBarComponent,
+    ButtonComponent,
 ]
 
 @NgModule({

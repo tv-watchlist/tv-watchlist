@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ActiveRequestService } from './services/active-request.http-interceptor';
 import { routeSliderStatePlusMinus } from './services/animations';
 import { ErrorService } from './services/error.handler';
+import { TvWatchlistService } from './services/mytvq/tv-watchlist.service';
 import { NavigationService } from './services/navigation.service';
 import { INavigation } from './widgets/navigation/navigation.component';
 import { ToastService } from './widgets/toast/toast.service';
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private navSvc: NavigationService,
         private activeReqSvc: ActiveRequestService,
         private toastSvc: ToastService,
+        private tvQSvc: TvWatchlistService,
         private errSvc: ErrorService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
@@ -66,6 +68,18 @@ export class AppComponent implements OnInit, OnDestroy {
     isHome = false;
     isReady = false;
     showloaderBar = false;
+
+    @HostListener('window:beforeinstallprompt', ['$event'])
+    onBeforeInstallPrompt(e:Event) {
+      console.log(e);
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      this.tvQSvc.deferredInstallPrompt = e as BeforeInstallPromptEvent;
+      this.tvQSvc.showInstallButton = true;
+    }
+
+
     ngOnInit(): void {
         this.isReady = true;
         this.cdRef.detectChanges();

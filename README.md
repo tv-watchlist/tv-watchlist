@@ -39,6 +39,7 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 * add cron/background job to update references and data.
 * Add Analytics and show live data as page (highlights will be most watched show, total users, trending episode etc)
 * follow WCAG guideline 
+* stop requests when offline
 * support i18n For languages
 * dark mode or themable
 ## Development server

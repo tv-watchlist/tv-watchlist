@@ -11,6 +11,10 @@ export class DefaultImageDirective {
 
     @HostListener('error') onError(): void {
         console.log('error fetching image, using default');
-        this.elem.nativeElement.src = this.default;
+        if(this.elem.nativeElement.src !== this.default) {
+            this.elem.nativeElement.src = this.default;
+        } else {
+            this.elem.nativeElement.src = '';
+        }
     }
 }

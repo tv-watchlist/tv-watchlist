@@ -1,37 +1,51 @@
-<div class="flex pb-2 mb-4 border-b">
-    <div class="relative w-4/12">
-        <img src="assets/myTvQ.png" alt="" class="relative inset-0 object-cover w-full">
-        <button class="block px-4 py-1 mx-auto mt-2 text-xs text-white bg-blue-500 border rounded-lg" (click)="checkforUpdate()" title="Check for Updates...">Check Updates</button>
-    </div>
-    <div class="w-8/12 my-auto ml-4">
-        <h1 class="text-3xl text-gray-500">TV Watchlist</h1>
-        <span class="inline-block mb-2 text-xs text-gray-500">({{version}})</span>
-        <p class="text-sm">Serverless, Progressive Web App (offline capable).
-            Uses third party APIs to fetch data and save locally in IndexedDb.
-            No User account needed. Bookmark app to home screen to not lose any data</p>
-    </div>
-</div>
-<ul class="flex flex-col mb-2 text-lg text-center text-gray-700 border-b">
-    <li class="mx-auto cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/tv-watchlist/tv-watchlist')">
-        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+<div class="flex flex-col pb-2 mb-4 border-b">
+    <img src="assets/myTvQ.png" class="mx-auto h-[115px]">
+    <h1 class="mx-auto text-3xl text-gray-500">TV Watchlist</h1>
+    <span class="inline-block mx-auto mb-2 text-xs text-gray-500">({{version}})</span>
+    <span class="mx-auto cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/tv-watchlist/tv-watchlist')">
+        <svg class="inline w-8 h-8" fill="currentColor" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
             <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
         </svg>
-    </li>
-    <li class="text-2xl">Author</li>
-    <li>Surya Nyayapati</li>
-    <li class="mt-4 text-2xl">API / Data</li>
+        <span class="ml-2">Surya Nyayapati</span>
+    </span>
+</div>
+<div class="flex justify-around mb-4">
+    <tvq-button (click)="checkforUpdate()" title="Check for Updates..." class="w-1/2 text-center">Check Updates</tvq-button>
+    <span class="w-1/2 text-center" *ngIf="!IsStandalone">
+        <tvq-button *ngIf="!IsIos">Install Web App</tvq-button>
+        <span *ngIf="IsIos">Install this web app on your device. <br/> Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to homescreen.</span>
+    </span>
+</div>
+
+<p class="px-2 mb-2 text-sm">
+    Serverless, Progressive Web App (offline capable).
+    Uses third party APIs to fetch data and save locally in IndexedDb.
+    No User account needed. Installing or adding to homescreen will keep data saved for longer.
+</p>
+
+<ul class="flex flex-col mb-2 text-lg text-gray-700 list-disc list-inside border-b">
+    <li class="mt-4 text-2xl list-none">API / Data</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://www.tvmaze.com/')">TvMaze</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://www.themoviedb.org/')">TMDB</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://thetvdb.com/')">TVDB</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://fanart.tv/')">Fanart TV</li>
 
-    <li class="mt-4 text-2xl">Tools</li>
+    <li class="mt-4 text-2xl list-none">Tools</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://angular.io/')">Angular 13</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://tailwindcss.com/')">Tailwindcss 3</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://heroicons.dev/')">Heroicons</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/filipows/angular-animations')">Angular-animations</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://hammerjs.github.io/')">HammerJs</li>
     <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/jakearchibald/idb')">IDB</li>
-
 </ul>
-
+<ul class="list-disc list-inside ">
+    <li class="mt-4 text-2xl list-none">Debugging</li>
+    <li>Screen: {{Screen}}</li>
+    <li>Standalone: {{IsStandalone}}</li>
+    <li>IsIOS: {{!!IsIos}}</li>
+    <li>Device: {{Platform}}</li>
+    <li>appName: {{appName}}</li>
+    <li [innerHTML]="Browser"></li>
+    <li>appVersion: {{appVersion}}</li>
+    <li>userAgent: {{userAgent}}</li>
+</ul>

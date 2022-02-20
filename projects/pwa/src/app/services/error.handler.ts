@@ -22,6 +22,7 @@ export class TvQAngularErrorsHandler implements ErrorHandler {
         console.error(response, navigator); // eslint-disable-line
 
         const svc = this.injector.get(ErrorService);
+
         if (!navigator.onLine || response.status === 0) {
             // Handle offline error
             svc.error('Server not reachable, Please check your internet.');
