@@ -22,6 +22,9 @@ import { ActiveRequestHttpInterceptor } from './services/active-request.http-int
 import { TvQAngularErrorsHandler } from './services/error.handler';
 import { DropboxRedirectComponent } from './pages/dropbox/redirect.component';
 import { RootComponent } from './root.component';
+import { SettingImportExportComponent } from './pages/setting/import-export.component';
+import { SettingDropboxComponent } from './pages/setting/dropbox.component';
+import { SettingsResetComponent } from './pages/setting/reset.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -46,6 +49,9 @@ export class HammerConfig extends HammerGestureConfig {
         SearchComponent,
         PopularComponent,
         DropboxRedirectComponent,
+        SettingImportExportComponent,
+        SettingDropboxComponent,
+        SettingsResetComponent,
     ],
     imports: [
         BrowserModule,

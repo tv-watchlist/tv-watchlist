@@ -1,0 +1,7 @@
+<ul class="flex flex-col mb-4 -mx-1 bg-white">
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span class="text-red-500 cursor-pointer" (click)="menu3.openMenu()">Remove all Shows and Reset Settings</span>
+    </li>
+</ul>
+
+<tvq-options-menu #menu3 (action)="clearDatabase()" [options]="['Yes']" header="This will clear all your Shows and settings, Are you sure? (Please take a backup first)"></tvq-options-menu>

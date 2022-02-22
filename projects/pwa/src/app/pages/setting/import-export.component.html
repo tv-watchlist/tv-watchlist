@@ -1,0 +1,11 @@
+
+<ul class="flex flex-col mb-4 -mx-1 bg-white">
+    <li class="relative flex justify-between px-4 py-2 border-b">
+        <span class="absolute text-blue-500 top-3 left-4">Import Backup</span>
+        <input type="file" class="w-full opacity-0 cursor-pointer" accept="application/JSON, .txt" (change)="handleFileInput($event)">
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b" (click)="export()">
+        <span class="text-blue-500 cursor-pointer">Export Backup</span>
+        <span class="my-auto text-xs text-gray-400">{{exportFileName}}</span>
+    </li>
+</ul>
