@@ -29,7 +29,12 @@ export class ActiveRequestService {
     private count: number;
 
     updateRequestCount(isActive: boolean){
-        this.subject.next(isActive ? ++this.count : --this.count);
+        let count = isActive ? ++this.count : --this.count;
+        if(count < 0) {
+            count = 0;
+            this.count = 0;
+        }
+        this.subject.next(count);
     }
 
     subscribe(next?: (value: number) => void, error?: (err:any)=>void) {
