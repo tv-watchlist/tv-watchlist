@@ -71,7 +71,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 link: ['/about']
             },
         ];
-        this.updateSvc.checkForUpdate();
     }
 
     private subscriptions: Subscription[] = [];
