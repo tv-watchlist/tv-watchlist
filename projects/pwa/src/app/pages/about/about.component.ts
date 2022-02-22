@@ -63,12 +63,10 @@ export class AboutComponent implements OnInit {
     }
 
     checkforUpdate() {
-        console.log('Checking for updates');
         this.updateSvc.checkForUpdate();
     }
 
     install() {
-        console.log('installing');
         this.tvqSvc.addToHomeScreen();
     }
 }

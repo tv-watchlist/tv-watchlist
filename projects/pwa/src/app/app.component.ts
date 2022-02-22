@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, } from 'rxjs';
+import { CheckForUpdateService } from './service-workers/check-for-update.service';
 import { ActiveRequestService } from './services/active-request.http-interceptor';
 import { routeSliderStatePlusMinus } from './services/animations';
 import { CloudDropboxService } from './services/api/cloud-dropbox.service';
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private errSvc: ErrorService,
         private migrateSvc: MigrationService,
         private cloudSvc: CloudDropboxService,
+        private updateSvc: CheckForUpdateService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {
@@ -69,6 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 link: ['/about']
             },
         ];
+        this.updateSvc.checkForUpdate();
     }
 
     private subscriptions: Subscription[] = [];
@@ -117,6 +120,7 @@ export class AppComponent implements OnInit, OnDestroy {
             }
         });
         this.subscriptions.push(sub3);
+
         // this.routeTrigger$ = this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd),
         //     map(() => this.activatedRoute.firstChild),

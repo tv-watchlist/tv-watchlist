@@ -10,11 +10,12 @@ export class WebDatabaseService {
     constructor() {
         // check for support
         if (!('indexedDB' in window)) {
-            console.log('This browser doesn\'t support IndexedDB');
+            console.warn('This browser doesn\'t support IndexedDB');
             return;
         }
 
-        this.createDb()
+        this.createDb();
+        console.log('IndexedDB initialized');
     }
 
     private async createDb(name = 'myTvQDB', version = 1): Promise<void> {

@@ -32,8 +32,8 @@ export class ShowDetailComponent implements OnInit {
     @ViewChild('menu') menu!: OptionsMenuComponent;
 
     public showDetails = false;
-    public menuOptions = ['Bookmarked', 'Latest'];
-    public defaultMenuOption: 'Bookmarked' | 'Latest' = 'Bookmarked';
+    public menuOptions = ['Seen', 'Latest'];
+    public defaultMenuOption: 'Seen' | 'Latest' = 'Seen';
     private pHideSeen!: boolean;
     public get hideSeen(): boolean {
         return this.pHideSeen || false;
@@ -73,6 +73,8 @@ export class ShowDetailComponent implements OnInit {
         this.activatedRoute.params.subscribe(async (p) => {
             this.showId = p.showId;
             this.pHideSeen = await this.settingSvc.get('hideSeen');
+            const defaultMenuOption = await this.settingSvc.get('episodesOrder');
+            this.defaultMenuOption = defaultMenuOption === 'latest'? 'Latest': 'Seen'
             await this.populateEpisodeList();
             this.loaderSvc.close();
         });
@@ -121,7 +123,7 @@ export class ShowDetailComponent implements OnInit {
             const episode = this.episodeDictionary[this.latestEpisodeId];
             this.selectedSeasonNum = episode.season;
         }
-        else if (this.defaultMenuOption === 'Bookmarked' && !!this.nextUnseenEpisodeId) {
+        else if (this.defaultMenuOption === 'Seen' && !!this.nextUnseenEpisodeId) {
             const episode = this.episodeDictionary[this.nextUnseenEpisodeId];
             this.selectedSeasonNum = episode.season;
         }
@@ -184,7 +186,7 @@ export class ShowDetailComponent implements OnInit {
                 episode = this.episodeDictionary[this.latestEpisodeId];
                 this.selectedSeasonNum = episode.season;
             }
-            if (this.defaultMenuOption === 'Bookmarked') {
+            if (this.defaultMenuOption === 'Seen') {
                 episode = this.episodeDictionary[this.nextUnseenEpisodeId];
                 this.selectedSeasonNum = episode.season;
             }
@@ -193,6 +195,6 @@ export class ShowDetailComponent implements OnInit {
     async refresh() {
        const show = await this.showSvc.getShow(this.showId);
        await this.showSvc.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string);
-       location.reload();
+       this.cdRef.markForCheck();
     }
 }

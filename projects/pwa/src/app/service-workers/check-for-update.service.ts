@@ -7,19 +7,25 @@ import { ToastService } from '../widgets/toast/toast.service';
 export class CheckForUpdateService {
 
     constructor(private appRef: ApplicationRef, private updates: SwUpdate, private toastSvc: ToastService) {
+        console.log('CheckForUpdateService constructor');
         // Allow the app to stabilize first, before starting polling for updates with `interval()`.
-        const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable === true), map(o => {
-            return {source:1, result:o};
-        }));
-        const everySixHours$ = interval(6 * 60 * 60 * 1000);
-        const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
-        console.log('CheckForUpdateService every 6 hours');
-        everySixHoursOnceAppIsStable$.subscribe(async () => await updates.checkForUpdate());
+        let appIsStable$ = appRef.isStable.pipe(
+            first(isStable => isStable === true),
+            map(o => {
+                console.log('appIsStable called');
+                return {source:1, result:o};
+            })
+        );
         const verUpdates$ = updates.versionUpdates.pipe(map(o => {
             return {source:2, result:o};
         }));
-        console.log('CheckForUpdateService versionUpdates');
-        concat(appIsStable$, verUpdates$).subscribe(data => {
+
+        const everySixHours$ = interval(6 * 60 * 60 * 1000).pipe(map(o => {
+            return {source:3, result:o};
+        }));
+
+        concat(appIsStable$, verUpdates$, everySixHours$).subscribe(async data => {
+            console.log('CheckForUpdateService', data.source);
             if(data.source === 2){
                 const event = data.result as VersionEvent;
                 if(event.type === 'VERSION_DETECTED'){
@@ -38,11 +44,23 @@ export class CheckForUpdateService {
                     const evt = event as VersionReadyEvent;
                     console.log('current version is', evt.currentVersion);
                     console.log('available version is', evt.latestVersion);
-                    toastSvc.confirm('New version has been downloaded and is ready for activation. Update?').subscribe(yn => {
+                    toastSvc.confirm('New version has been downloaded and is ready for activation. Update?').subscribe(async yn => {
                         if(!!yn){
-                            updates.activateUpdate().then(() => document.location.reload());
+                            try {
+                                await updates.activateUpdate().then(() => document.location.reload());
+                            } catch (_) {
+                                // not in pwa mode
+                            }
                         }
                     });
+                }
+            }
+            if(data.source === 1 || data.source === 3){
+                console.log('checking for updates');
+                try{
+                    await updates.checkForUpdate();
+                }catch(_){
+                    // not in pwa mode
                 }
             }
         });
@@ -50,6 +68,13 @@ export class CheckForUpdateService {
 
     checkForUpdate() {
         const appIsStable$ = this.appRef.isStable.pipe(first(isStable => isStable === true));
-        appIsStable$.subscribe(() => this.updates.checkForUpdate());
+        appIsStable$.subscribe(async () => {
+            console.log('checking for updates');
+            try {
+                await this.updates.checkForUpdate();
+            } catch (_) {
+                 // not in pwa mode
+            }
+        });
     }
 }
