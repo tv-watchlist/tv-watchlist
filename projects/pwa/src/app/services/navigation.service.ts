@@ -34,7 +34,7 @@ export class NavigationService {
         if (!!history) {
             this.location.back();
         } else {
-            this.router.navigateByUrl('/home');
+            this.router.navigateByUrl('/');
         }
     }
 }

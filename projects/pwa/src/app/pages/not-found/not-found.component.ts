@@ -9,4 +9,8 @@ export class PageNotFoundComponent implements OnInit {
     ngOnInit() {
 
     }
+
+    goHome(){
+        document.location.href = '/';
+    }
 }

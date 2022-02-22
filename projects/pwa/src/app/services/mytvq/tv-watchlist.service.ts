@@ -11,7 +11,6 @@ export class TvWatchlistService {
     }
     deferredInstallPrompt?: BeforeInstallPromptEvent;
     now: number;
-
     addToHomeScreen() {
         console.log('adding to homescreen');
         // Show the prompt

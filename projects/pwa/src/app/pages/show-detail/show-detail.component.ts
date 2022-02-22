@@ -145,7 +145,7 @@ export class ShowDetailComponent implements OnInit {
 
     removeShow(): void {
         this.showSvc.removeShow(this.showId);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
     }
 
     displayHidden(): void {

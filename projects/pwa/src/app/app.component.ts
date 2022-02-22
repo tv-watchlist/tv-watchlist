@@ -91,6 +91,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isReady = true;
         this.cdRef.detectChanges();
+        this.isHome = this.router.url === '/home';
         const sub1 = this.navSvc.onBack.subscribe(history => {
             this.isHome = history.url === '/home';
             console.log('pop history', history);

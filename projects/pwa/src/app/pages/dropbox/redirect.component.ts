@@ -10,4 +10,8 @@ export class DropboxRedirectComponent implements OnInit {
     ngOnInit() {
         CloudDropboxService.captureResponse(window.location);
     }
+
+    goHome(){
+        document.location.href = '/';
+    }
 }
