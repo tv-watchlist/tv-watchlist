@@ -23,8 +23,8 @@
              </span>
          </li>
         <li class="text-center" *ngIf="!isInStandaloneMode">
-            <tvq-button *ngIf="!isIOS">Install Web App</tvq-button>
-            <span *ngIf="isIOS">Install this web app on your device. Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to homescreen.</span>
+            <tvq-button *ngIf="!isIOS && showInstall" (clicked)="install()">Install Web App</tvq-button>
+            <span *ngIf="isIOS">Install this web app on your device. Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to Home Screen.</span>
         </li>
     </ul>
 

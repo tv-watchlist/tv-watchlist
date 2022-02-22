@@ -36,6 +36,10 @@ export class HomeComponent implements OnInit {
         return this.tvqSvc.IsInStandaloneMode;
     }
 
+    get showInstall() {
+        return !!this.tvqSvc.deferredInstallPrompt
+    }
+
     async ngOnInit(): Promise<void> {
         this.loaderSvc.show();
         const t0 = performance.now();
@@ -51,5 +55,10 @@ export class HomeComponent implements OnInit {
         console.log(`Call to updateAllShowReference took ${(t1 - t0)} milliseconds.`);
         this.loaderSvc.close();
         this.cdRef.markForCheck();
+    }
+
+    install() {
+        console.log('installing');
+        this.tvqSvc.addToHomeScreen();
     }
 }

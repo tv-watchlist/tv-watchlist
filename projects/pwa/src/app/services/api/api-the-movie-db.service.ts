@@ -57,7 +57,7 @@ export interface ITheMovieDbConfiguration
 @Injectable({ providedIn: 'root' })
 export class ApiTheMovieDbService {
     constructor(private http: HttpClient,) { }
-    private apiKey = '1313d18d670b66715fb862d8eff63c5c';
+    private apiKey = '1313d18d670b66715fb862d8eff63c5c'; // tied to https://tv-watchlist.github.io
 
     getPopularWithReference() {
         return forkJoin([

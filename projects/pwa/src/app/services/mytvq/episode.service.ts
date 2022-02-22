@@ -68,6 +68,14 @@ export class EpisodeService {
         return model;
     }
 
+    public async getAll() {
+        return await this.webDb.getAllAsArray<IMyTvQDbEpisode>('episodes');
+    }
+
+    public async saveAll(episodeList: IMyTvQDbEpisode[]) {
+       return await this.webDb.putList('episodes',episodeList);
+    }
+
     public async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
        return await this.webDb.getIndexedObject<'episodes', IMyTvQDbEpisode>('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
     }

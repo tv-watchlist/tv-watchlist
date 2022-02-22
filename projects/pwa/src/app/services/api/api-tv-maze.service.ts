@@ -114,10 +114,11 @@ export class ApiTvMazeService {
             switchMap(show => {
                 return forkJoin([
                     of(show),
-                    this.http.get<ITvMazeImage[]>(`https://api.tvmaze.com/shows/${show.id}/images`),
+                    this.getImages(show.id),
                     this.http.get<ITvMazeEpisode[]>(`https://api.tvmaze.com/shows/${show.id}/episodes?specials=1`)
                 ])
-            })
+            }),
+            delay(1000) // delay to avoid 429:Too Many Requests
         )
     }
 
@@ -134,7 +135,7 @@ export class ApiTvMazeService {
         return this.http.get<{[tvmazeId: number]:number}>(url);
     }
 
-    getImages(tvmazeId: string) {
+    getImages(tvmazeId: number) {
         return this.http.get<ITvMazeImage[]>(`https://api.tvmaze.com/shows/${tvmazeId}/images`);
     }
 }

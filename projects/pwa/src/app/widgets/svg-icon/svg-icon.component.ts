@@ -6,7 +6,7 @@ export type SvgIconType = 'home' | 'search'| 'sparkles' |
                           'chevron-left' | 'menu' | 'check-circle' |
                           'chevron-down' | 'external-link' | 'solid-plus-circle' |
                           'chevron-right' | 'check' | 'refresh' | 'trash' | 'dots-vertical' |
-                          'exclamation-circle' | 'x' | 'ios-share';
+                          'exclamation-circle' | 'x' | 'ios-share' | 'cloud-upload';
 
 @Component({
     selector: 'tvq-svg-icon',

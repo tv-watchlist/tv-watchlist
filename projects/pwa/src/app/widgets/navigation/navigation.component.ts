@@ -4,8 +4,9 @@ import { SvgIconType } from '../svg-icon/svg-icon.component';
 
 export interface INavigation {
     name: string;
-    icon:SvgIconType;
+    icon: SvgIconType;
     link: string[];
+    disabled?: boolean;
 }
 
 @Component({
@@ -20,7 +21,7 @@ export class NavigationComponent implements OnInit {
     visible = false;
 
     @Input() options: INavigation[] = []
-    @Output() action = new EventEmitter<string>();
+    @Output() action = new EventEmitter<INavigation>();
 
     ngOnInit(): void { }
 
@@ -32,7 +33,7 @@ export class NavigationComponent implements OnInit {
         this.visible = false;
     }
 
-    clicked(option: string): void {
+    clicked(option: INavigation): void {
         this.action.emit(option);
         this.closeMenu();
     }

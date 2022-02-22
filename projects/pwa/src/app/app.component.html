@@ -13,7 +13,7 @@
             </button>
         </header>
         <tvq-loader-bar [visible]="showloaderBar" class="relative top-[calc(2.7rem+env(safe-area-inset-top))]"></tvq-loader-bar>
-        <tvq-navigation #nav [options]="naigationList"></tvq-navigation>
+        <tvq-navigation #nav [options]="naigationList" (action)="onNavClick($event)"></tvq-navigation>
         <main [@routeSliderStatePlusMinus]="prepareRoute(outlet)"
             class="relative flex-1 mx-2 mt-12 mb-2 standalone:mt-safe-top-2 ">
             <router-outlet #outlet="outlet" (activate)="onActivate($event)" ></router-outlet>

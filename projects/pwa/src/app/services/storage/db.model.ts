@@ -110,7 +110,7 @@ export interface IMyTvQDbSetting {
     /**
      * show latest or only unwatched episodes in details landing page
      */
-    defaultEpisodes: string;
+    episodesOrder: string;
     /**
      * hide TBA shows in dashboard
      */
@@ -141,14 +141,14 @@ export class MyTvQDbSetting {
     public static get default(): IMyTvQDbSetting {
         return {
             updateTime: (new Date()).getTime(),
-            showsOrder: 'airdate',
-            version: 5,
-            defaultEpisodes: 'bookmarked',
+            showsOrder: "airdate",
+            version: 6,
+            episodesOrder: "seen",
             hideTba: true,
             hideSeen: true,
-            defaultCountry: 'US',
+            defaultCountry: "US",
             showIdOrderList: [],
-            timezoneOffset: {US: 0}
+            timezoneOffset: {"US": 0}
         }
     }
 }

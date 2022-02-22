@@ -3,17 +3,18 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ActiveRequestService } from './services/active-request.http-interceptor';
 import { routeSliderStatePlusMinus } from './services/animations';
+import { CloudDropboxService } from './services/api/cloud-dropbox.service';
 import { ErrorService } from './services/error.handler';
+import { MigrationService } from './services/mytvq/migration.service';
 import { TvWatchlistService } from './services/mytvq/tv-watchlist.service';
 import { NavigationService } from './services/navigation.service';
 import { INavigation } from './widgets/navigation/navigation.component';
 import { ToastService } from './widgets/toast/toast.service';
 
 @Component({
-    selector: 'tvq-root',
+    selector: 'tvq-app',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         routeSliderStatePlusMinus,
     ]
@@ -27,6 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private toastSvc: ToastService,
         private tvQSvc: TvWatchlistService,
         private errSvc: ErrorService,
+        private migrateSvc: MigrationService,
+        private cloudSvc: CloudDropboxService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {
@@ -55,10 +58,16 @@ export class AppComponent implements OnInit, OnDestroy {
                 link: ['/setting']
             },
             {
+                name: 'Save',
+                icon: 'cloud-upload',
+                link: [],
+                disabled: !this.cloudSvc.IsAuthenticated,
+            },
+            {
                 name: 'About',
                 icon: 'information-circle',
                 link: ['/about']
-            }
+            },
         ];
     }
 
@@ -69,16 +78,15 @@ export class AppComponent implements OnInit, OnDestroy {
     isReady = false;
     showloaderBar = false;
 
+    // this pwa specific
     @HostListener('window:beforeinstallprompt', ['$event'])
     onBeforeInstallPrompt(e:Event) {
-      console.log(e);
+      console.log('onBeforeInstallPrompt', e);
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
       // Stash the event so it can be triggered later.
       this.tvQSvc.deferredInstallPrompt = e as BeforeInstallPromptEvent;
-      this.tvQSvc.showInstallButton = true;
     }
-
 
     ngOnInit(): void {
         this.isReady = true;
@@ -126,6 +134,22 @@ export class AppComponent implements OnInit, OnDestroy {
                 // this scrollTop is only working inside setTimeout????
                 body.scrollTop = this.scrollTop;
             });
+        }
+    }
+
+    async onNavClick(nav: INavigation) {
+        console.log('onNavClick', nav);
+        if(nav.disabled) {
+            return;
+        }
+
+        if(nav.name === 'Save') {
+            const backup = await this.migrateSvc.export();
+            this.cloudSvc.upload(backup).subscribe(()=>{
+                this.toastSvc.success('Data was uploaded successfully!');
+            });
+        } else {
+            this.router.navigate(nav.link);
         }
     }
 

@@ -10,42 +10,57 @@
     </span>
 </div>
 <div class="flex justify-around mb-4">
-    <tvq-button (click)="checkforUpdate()" title="Check for Updates..." class="w-1/2 text-center">Check Updates</tvq-button>
-    <span class="w-1/2 text-center" *ngIf="!IsStandalone">
-        <tvq-button *ngIf="!IsIos">Install Web App</tvq-button>
+    <tvq-button (clicked)="checkforUpdate()" title="Check for Updates..." class="w-1/2 text-center">Check Updates</tvq-button>
+    <span class="w-1/2 text-center" *ngIf="!IsStandalone && (IsIos || (!IsIos && showInstall))">
+        <tvq-button *ngIf="!IsIos && showInstall" (clicked)="install()">Install Web App</tvq-button>
         <span *ngIf="IsIos">Install this web app on your device. <br/> Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to homescreen.</span>
     </span>
 </div>
-
 <p class="px-2 mb-2 text-sm">
     Serverless, Progressive Web App (offline capable).
     Uses third party APIs to fetch data and save locally in IndexedDb.
     No User account needed. Installing or adding to homescreen will keep data saved for longer.
 </p>
 
+<ul class="flex flex-col mb-2 text-lg text-gray-700 list-disc list-inside">
+    <li class="mt-4 text-2xl list-none">Change History</li>
+    <li class="text-lg list-none">2022-02-22</li>
+    <li class="ml-2">Import/Export v6 Data.</li>
+    <li class="ml-2">Added Dropbox Sync.</li>
+    <li class="ml-2">Reset Database support.</li>
+    <li class="ml-2">Added Welcome and install message for first time user.</li>
+    <li class="ml-2">Added notification popup UI.</li>
+    <li class="ml-2">Added loading screen and bar.</li>
+    <li class="text-lg list-none">Older</li>
+    <li class="ml-2">Added popular page from TMDB.</li>
+    <li class="ml-2">Added search page from TV Maze.</li>
+    <li class="ml-2">Added fetching from TV Maze as primary source.</li>
+    <li class="ml-2">Using IndexedDb to fetch and save data.</li>
+    <li class="ml-2">Stubbed screens using mock v5 data.</li>
+</ul>
+
 <ul class="flex flex-col mb-2 text-lg text-gray-700 list-disc list-inside border-b">
     <li class="mt-4 text-2xl list-none">API / Data</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://www.tvmaze.com/')">TvMaze</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://www.themoviedb.org/')">TMDB</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://thetvdb.com/')">TVDB</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://fanart.tv/')">Fanart TV</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://www.tvmaze.com/')">TvMaze</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://www.themoviedb.org/')">TMDB</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://thetvdb.com/')">TVDB</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://fanart.tv/')">Fanart TV</li>
 
     <li class="mt-4 text-2xl list-none">Tools</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://angular.io/')">Angular 13</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://tailwindcss.com/')">Tailwindcss 3</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://heroicons.dev/')">Heroicons</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/filipows/angular-animations')">Angular-animations</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://hammerjs.github.io/')">HammerJs</li>
-    <li class="cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/jakearchibald/idb')">IDB</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://angular.io/')">Angular 13</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://tailwindcss.com/')">Tailwindcss 3</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://heroicons.dev/')">Heroicons</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/filipows/angular-animations')">Angular-animations</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://hammerjs.github.io/')">HammerJs</li>
+    <li class="ml-2 cursor-pointer focus:outline-none" (click)="goToUrl('https://github.com/jakearchibald/idb')">IDB</li>
 </ul>
 <ul class="list-disc list-inside ">
     <li class="mt-4 text-2xl list-none">Debugging</li>
-    <li>Screen: {{Screen}}</li>
-    <li>Standalone: {{IsStandalone}}</li>
-    <li>IsIOS: {{!!IsIos}}</li>
-    <li>Device: {{Platform}}</li>
-    <li>appName: {{appName}}</li>
-    <li [innerHTML]="Browser"></li>
-    <li>appVersion: {{appVersion}}</li>
-    <li>userAgent: {{userAgent}}</li>
+    <li class="ml-2">Screen: {{Screen}}</li>
+    <li class="ml-2">Standalone: {{IsStandalone}}</li>
+    <li class="ml-2">IsIOS: {{!!IsIos}}</li>
+    <li class="ml-2">Device: {{Platform}}</li>
+    <li class="ml-2">appName: {{appName}}</li>
+    <li class="ml-2">appVersion: {{appVersion}}</li>
+    <li class="ml-2">userAgent: {{userAgent}}</li>
 </ul>

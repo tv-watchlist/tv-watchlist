@@ -240,7 +240,7 @@ export class WebDatabaseService {
         });
     }
 
-    public async clearAllStores(skipStores: string[] = []): Promise<number> {
+    public async clearAllStores(skipStores: MyTvQStoreName[] = []): Promise<number> {
         const storeNames = (await this.dbPromise).objectStoreNames;
         console.log(storeNames);
         const len = storeNames.length - skipStores.length;

@@ -9,13 +9,11 @@ export class TvWatchlistService {
     ) {
         this.now = new Date().getTime();
     }
-    showInstallButton = false;
     deferredInstallPrompt?: BeforeInstallPromptEvent;
     now: number;
 
     addToHomeScreen() {
-        // hide our user interface that shows our A2HS button
-        this.showInstallButton = false;
+        console.log('adding to homescreen');
         // Show the prompt
         this.deferredInstallPrompt?.prompt();
         // Wait for the user to respond to the prompt
@@ -40,7 +38,7 @@ export class TvWatchlistService {
         if ('standalone' in window.navigator) {
             return (window.navigator as any).standalone;
         }
-        return false;
+        return (window.matchMedia('(display-mode: standalone)').matches);
     }
 
     get Browser() {

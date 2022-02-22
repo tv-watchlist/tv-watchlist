@@ -37,7 +37,7 @@ export class SettingService {
             const model: IMyTvQDbSetting = {
                 defaultCountry: settings.default_country || defaults.defaultCountry,
                 hideSeen: settings.hide_seen,
-                defaultEpisodes: settings.default_episodes|| defaults.defaultEpisodes,
+                episodesOrder: settings.default_episodes|| defaults.episodesOrder,
                 hideTba: settings.hide_tba,
                 showsOrder: settings.shows_order || defaults.showsOrder,
                 updateTime: settings.update_time || defaults.updateTime,

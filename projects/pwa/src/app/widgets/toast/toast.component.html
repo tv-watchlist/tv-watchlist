@@ -1,30 +1,35 @@
 <div class="fixed bottom-0 w-full px-2">
-    <div [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave] *ngIf="toastsUI.length" [ngClass]="typeClasses[toastsUI[index].type]"
-    class="mx-auto max-w-[calc(640px-1rem)] mb-2 h-auto pt-1 rounded shadow-lg standalone:mb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-    <div class="flex" *ngIf="confirmToasts.length === 0">
-        <span class="inline-block w-3/12 py-0 pl-2">
-            <span *ngIf="toastsUI.length > 1" class="px-1 text-xs border rounded-full" [ngClass]="typeLablelClasses[toastsUI[index].type]">{{index+1}}/{{toastsUI.length}}</span>
-        </span>
-        <span class="inline-block w-3/12 py-0 text-center">
-            <tvq-svg-icon *ngIf="toastsUI.length > 1 && index > 0" icon="chevron-left" size="4" (click)="previous()" classes="cursor-pointer"></tvq-svg-icon>
-        </span>
-        <span class="inline-block w-3/12 py-0 text-center">
-            <tvq-svg-icon *ngIf="toastsUI.length > 1 && index < toastsUI.length-1" icon="chevron-right" size="4" (click)="next()" classes="cursor-pointer" ></tvq-svg-icon>
-        </span>
-        <span class="inline-block w-3/12 py-0 pr-2 text-right">
-            <tvq-svg-icon icon="x" size="4" (click)="close()" classes="cursor-pointer"></tvq-svg-icon>
-        </span>
-    </div>
-    <span class="block px-4 pb-4">{{toastsUI[index].message}}</span>
-    <div class="flex pb-1" *ngIf="!!confirmToasts[index]?.confirm$">
-        <div class="w-2/12 pl-2 text-left">
-            <button class="px-4 py-1 mt-2 text-xs text-white bg-red-500 border rounded-full" (click)="reject()">No</button>
+    <div [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave] *ngIf="toastsUI.length"
+        [ngClass]="typeClasses[toastsUI[index].type]"
+        class="mx-auto max-w-[calc(640px-1rem)] mb-2 h-auto max-h-[90vh] overflow-y-auto  pt-1 rounded shadow-lg standalone:mb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+        <div class="flex" *ngIf="confirmToasts.length === 0">
+            <span class="inline-block w-3/12 py-0 pl-2">
+                <span *ngIf="toastsUI.length > 1" class="px-1 text-xs border rounded-full"
+                    [ngClass]="typeLablelClasses[toastsUI[index].type]">{{index+1}}/{{toastsUI.length}}</span>
+            </span>
+            <span class="inline-block w-3/12 py-0 text-center">
+                <tvq-svg-icon *ngIf="toastsUI.length > 1 && index > 0" icon="chevron-left" size="4" (click)="previous()"
+                    classes="cursor-pointer"></tvq-svg-icon>
+            </span>
+            <span class="inline-block w-3/12 py-0 text-center">
+                <tvq-svg-icon *ngIf="toastsUI.length > 1 && index < toastsUI.length-1" icon="chevron-right" size="4"
+                    (click)="next()" classes="cursor-pointer"></tvq-svg-icon>
+            </span>
+            <span class="inline-block w-3/12 py-0 pr-2 text-right">
+                <tvq-svg-icon icon="x" size="4" (click)="close()" classes="cursor-pointer"></tvq-svg-icon>
+            </span>
         </div>
-        <div class="w-8/12"></div>
-        <div class="inline-block w-2/12 pr-2 text-right">
-            <button class="px-4 py-1 mt-2 text-xs text-white bg-green-500 border rounded-full" (click)="accept()">Yes</button>
+        <span class="block px-4 pb-4">{{toastsUI[index].message}}</span>
+        <div class="flex pb-1" *ngIf="!!confirmToasts[index]?.confirm$">
+            <div class="w-2/12 pl-2 text-left">
+                <button class="px-4 py-1 mt-2 text-xs text-white bg-red-500 border rounded-full"
+                    (click)="reject()">No</button>
+            </div>
+            <div class="w-8/12"></div>
+            <div class="inline-block w-2/12 pr-2 text-right">
+                <button class="px-4 py-1 mt-2 text-xs text-white bg-green-500 border rounded-full"
+                    (click)="accept()">Yes</button>
+            </div>
         </div>
     </div>
-</div>
-
 </div>

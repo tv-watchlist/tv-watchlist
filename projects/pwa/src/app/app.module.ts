@@ -20,6 +20,8 @@ import { PopularComponent } from './pages/popular/popular.component';
 import { WidgetsModule } from './widgets/widgets.module';
 import { ActiveRequestHttpInterceptor } from './services/active-request.http-interceptor';
 import { TvQAngularErrorsHandler } from './services/error.handler';
+import { DropboxRedirectComponent } from './pages/dropbox/redirect.component';
+import { RootComponent } from './root.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -33,6 +35,7 @@ export class HammerConfig extends HammerGestureConfig {
 
 @NgModule({
     declarations: [
+        RootComponent,
         AppComponent,
         ShowBannerCardComponent,
         HomeComponent,
@@ -42,6 +45,7 @@ export class HammerConfig extends HammerGestureConfig {
         AboutComponent,
         SearchComponent,
         PopularComponent,
+        DropboxRedirectComponent,
     ],
     imports: [
         BrowserModule,
@@ -68,7 +72,7 @@ export class HammerConfig extends HammerGestureConfig {
         //   }
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-    bootstrap: [AppComponent]
+    bootstrap: [RootComponent]
 })
 export class AppModule {
 }

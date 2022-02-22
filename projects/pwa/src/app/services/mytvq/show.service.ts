@@ -65,6 +65,10 @@ export class ShowService {
         await this.webDb.putList('shows', list);
     }
 
+    public async saveAll(showList: IMyTvQDbShow[]) {
+        return await this.webDb.putList('shows',showList);
+    }
+
     public async save(show: IMyTvQDbShow) {
         await this.webDb.putObj('shows', show);
     }
@@ -537,8 +541,7 @@ export class ShowService {
                 if(show.apiSource === 'tvmaze'){
                     await this.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string, jsTime);
                 } else {
-                    console.log(show.apiSource + ' Not supported yet!')
-
+                    console.log(show.apiSource + ' Not supported yet!');
                 }
             }
             if(!update[apiId]) {

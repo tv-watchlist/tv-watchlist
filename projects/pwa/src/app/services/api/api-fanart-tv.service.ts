@@ -24,12 +24,12 @@ export interface IFanartTvImage {
 }
 
 /**
- * https://www.tvmaze.com/api
+ * https://www.fanart.tv
  */
 @Injectable({ providedIn: 'root' })
 export class ApiFanartTvService {
     constructor(private http: HttpClient,) { }
-    apiKey = '42bb27eae079274bec6660446cd073b5';
+    apiKey = '42bb27eae079274bec6660446cd073b5'; // tied to https://tv-watchlist.github.io
     /**
      *
      * @param thetvdbId

@@ -9,6 +9,7 @@ import { ShowService } from '../../services/mytvq/show.service';
 import { UiShowModel } from '../../services/mytvq/ui.model';
 import { IMyTvQDbEpisode } from '../../services/storage/db.model';
 import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
+import { ToastService } from '../../widgets/toast/toast.service';
 
 @Component({
     selector: 'tvq-show-detail',
@@ -25,6 +26,7 @@ export class ShowDetailComponent implements OnInit {
         private router: Router,
         private loaderSvc: LoaderScreenService,
         private activatedRoute: ActivatedRoute,
+        private toastSvc: ToastService,
     ) { }
 
     @ViewChild('menu') menu!: OptionsMenuComponent;
@@ -77,8 +79,13 @@ export class ShowDetailComponent implements OnInit {
     }
 
     async populateEpisodeList(): Promise<void> {
-        this.showModel = await this.showSvc.getShowModel(this.showId);
-        this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(this.showId);
+        try {
+            this.showModel = await this.showSvc.getShowModel(this.showId);
+            this.episodeDictionary = await this.episodeSvc.getEpisodeDictionary(this.showId);
+        } catch (error) {
+            this.toastSvc.error(`Something went wrong. Show Id ${this.showId} doesn't exist!`);
+            return;
+        }
 
         const today = new Date().getTime();
         this.seasonNumList.length = 0;

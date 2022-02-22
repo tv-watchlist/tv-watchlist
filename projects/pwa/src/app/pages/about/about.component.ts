@@ -47,7 +47,11 @@ export class AboutComponent implements OnInit {
     }
 
     get IsIos() {
-        return this.tvqSvc.IsIos;
+        return !!this.tvqSvc.IsIos;
+    }
+
+    get showInstall() {
+        return !!this.tvqSvc.deferredInstallPrompt
     }
 
     get Browser() {
@@ -61,5 +65,10 @@ export class AboutComponent implements OnInit {
     checkforUpdate() {
         console.log('Checking for updates');
         this.updateSvc.checkForUpdate();
+    }
+
+    install() {
+        console.log('installing');
+        this.tvqSvc.addToHomeScreen();
     }
 }
