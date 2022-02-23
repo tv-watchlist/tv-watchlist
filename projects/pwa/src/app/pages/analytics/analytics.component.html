@@ -1,0 +1,39 @@
+<h1 class="mb-6 text-3xl text-center">Google Analytics Report for last 7 days</h1>
+
+<h3 class="mb-2 text-xl text-center">Most Watched Shows</h3>
+<table class="w-full mb-4 border border-collapse table-auto border-slate-500">
+    <tr>
+        <th class="p-2 border border-slate-600">Show Name</th>
+        <th class="p-2 border border-slate-600">Count</th>
+    </tr>
+    <tr *ngFor="let item of showList;">
+        <td class="p-2 border border-slate-400" [innerHTML]="item.name"></td>
+        <td class="p-2 border border-slate-400">{{item.count}}</td>
+    </tr>
+</table>
+
+<h3 class="mb-2 text-xl text-center">Most Watched Episode</h3>
+<table class="w-full mb-4 border border-collapse table-auto border-slate-500">
+    <tr>
+        <th class="p-2 border border-slate-600">Episode</th>
+        <th class="p-2 border border-slate-600">Show Name</th>
+        <th class="p-2 border border-slate-600">Count</th>
+    </tr>
+    <tr *ngFor="let item of episodeList;">
+        <td class="p-2 border border-slate-400" [innerHTML]="item.episodeName"></td>
+        <td class="p-2 border border-slate-400" [innerHTML]="item.showName"></td>
+        <td class="p-2 border border-slate-400">{{item.count}}</td>
+    </tr>
+</table>
+
+<h3 class="mb-2 text-xl text-center">Most Searched</h3>
+<table class="w-full mb-4 border border-collapse table-auto border-slate-500">
+    <tr>
+        <th class="p-2 border border-slate-600">Keyword</th>
+        <th class="p-2 border border-slate-600">Count</th>
+    </tr>
+    <tr *ngFor="let item of searchList;">
+        <td class="p-2 border border-slate-400" [innerHTML]="item.name"></td>
+        <td class="p-2 border border-slate-400">{{item.count}}</td>
+    </tr>
+</table>

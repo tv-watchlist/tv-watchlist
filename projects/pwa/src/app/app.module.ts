@@ -25,6 +25,7 @@ import { RootComponent } from './root.component';
 import { SettingImportExportComponent } from './pages/setting/import-export.component';
 import { SettingDropboxComponent } from './pages/setting/dropbox.component';
 import { SettingsResetComponent } from './pages/setting/reset.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -52,6 +53,7 @@ export class HammerConfig extends HammerGestureConfig {
         SettingImportExportComponent,
         SettingDropboxComponent,
         SettingsResetComponent,
+        AnalyticsComponent,
     ],
     imports: [
         BrowserModule,

@@ -10,6 +10,7 @@ import { PopularComponent } from './pages/popular/popular.component';
 import { DropboxRedirectComponent } from './pages/dropbox/redirect.component';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './pages/not-found/not-found.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
 
 const routes: Routes = [
     {
@@ -22,6 +23,7 @@ const routes: Routes = [
             { path: 'show-detail/:showId', component: ShowDetailComponent, data: { index: 2 } },
             { path: 'search', component: SearchComponent, data: { index: 3 } },
             { path: 'setting', component: SettingComponent, data: { index: 4 } },
+            { path: 'analytics', component: AnalyticsComponent, data: { index: 5 } },
             { path: 'about', component: AboutComponent, data: { index: 5 } },
             { path: '', pathMatch: 'full', redirectTo: '/home' },
         ]

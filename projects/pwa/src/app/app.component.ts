@@ -65,6 +65,11 @@ export class AppComponent implements OnInit, OnDestroy {
                 link: [],
                 disabled: !this.cloudSvc.IsAuthenticated,
             },
+            // {
+            //     name: 'Analytics',
+            //     icon: 'pie-chart',
+            //     link: ['/analytics']
+            // },
             {
                 name: 'About',
                 icon: 'information-circle',
