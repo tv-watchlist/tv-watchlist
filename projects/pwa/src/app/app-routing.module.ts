@@ -11,6 +11,7 @@ import { DropboxRedirectComponent } from './pages/dropbox/redirect.component';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './pages/not-found/not-found.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 const routes: Routes = [
     {
@@ -31,6 +32,10 @@ const routes: Routes = [
     {
         path: 'dropbox-redirect',
         component: DropboxRedirectComponent,
+    },
+    {
+        path: 'privacy-policy',
+        component: PrivacyPolicyComponent,
     },
     {
         path: '**', // wildcard path for 404
