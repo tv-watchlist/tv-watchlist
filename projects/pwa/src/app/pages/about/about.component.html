@@ -20,7 +20,7 @@
     Serverless, Progressive Web App (offline capable).
     Uses third party APIs to fetch data and save locally in IndexedDb.
     No User account needed. Installing or adding to homescreen will keep data saved for longer.
-    <a [routerLink]="['/privacy-policy']" target="_blank" class="text-blue-500">Privacy Policy</a>
+    <a (click)="goToUrl('/privacy-policy')" class="text-blue-500 cursor-pointer">Privacy Policy</a>
 </p>
 
 <ul class="flex flex-col mb-2 text-lg text-gray-700 list-disc list-inside">
