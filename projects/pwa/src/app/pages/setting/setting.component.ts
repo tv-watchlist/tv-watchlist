@@ -16,11 +16,11 @@ export class SettingComponent implements OnInit {
         public settingSvc: SettingService,
         private loaderSvc: LoaderScreenService,
         private cdRef: ChangeDetectorRef,
-        ) {
-        }
+    ) { }
 
     file?: File | null;
     version: number = 0;
+
     private _hideTba: boolean = false;
     get hideTba() {
         return this._hideTba;

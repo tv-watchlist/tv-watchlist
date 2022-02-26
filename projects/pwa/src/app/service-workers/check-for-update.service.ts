@@ -1,6 +1,6 @@
 import { ApplicationRef, Injectable } from '@angular/core';
 import { SwUpdate, VersionDetectedEvent, VersionEvent, VersionInstallationFailedEvent, VersionReadyEvent } from '@angular/service-worker';
-import { concat, interval, first, map } from 'rxjs';
+import { concat, interval, first, map, from, switchMap, catchError, of, tap } from 'rxjs';
 import { ToastService } from '../widgets/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
@@ -66,15 +66,11 @@ export class CheckForUpdateService {
         });
     }
 
-    checkForUpdate() {
-        const appIsStable$ = this.appRef.isStable.pipe(first(isStable => isStable === true));
-        appIsStable$.subscribe(async () => {
-            console.log('checking for updates');
-            try {
-                await this.updates.checkForUpdate();
-            } catch (_) {
-                 // not in pwa mode
-            }
-        });
+    async checkForUpdate() {
+        try{
+            return await this.updates.checkForUpdate();
+        }catch(_){
+            return false; // not in pwa mode
+        }
     }
 }

@@ -1,5 +1,6 @@
-<div class="m-4 prose standalone:pt-safe-top">
+<div class="relative m-4 prose standalone:pt-safe-top">
     <h1>Privacy Policy</h1>
+    <tvq-svg-icon icon="x" *ngIf="IsStandalone"  [routerLink]="['/home']" classes="absolute top-2 right-4 cursor-pointer"></tvq-svg-icon>
     <p>
         Based on the definitions in <a href="https://developer.chrome.com/docs/webstore/user_data/">https://developer.chrome.com/docs/webstore/user_data/</a>
     </p>

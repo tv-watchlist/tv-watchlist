@@ -1,15 +1,17 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 
 @Component({
     selector: 'tvq-button',
     templateUrl: 'button.component.html'
 })
 
-export class ButtonComponent implements OnInit {
+export class ButtonComponent implements OnChanges {
     constructor() { }
     @Output() clicked = new EventEmitter<MouseEvent>();
+    @Input() isDisabled = false;
+    ngOnChanges(): void {
 
-    ngOnInit(): void { }
+    }
 
     onClickButton(event: MouseEvent) {
         event.stopPropagation();

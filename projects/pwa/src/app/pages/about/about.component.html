@@ -10,9 +10,9 @@
     </span>
 </div>
 <div class="flex justify-around mb-4">
-    <tvq-button (clicked)="checkforUpdate()" title="Check for Updates..." class="w-1/2 text-center">Check Updates</tvq-button>
+    <tvq-button #btnUpdate (clicked)="checkforUpdate()" title="Check for Updates..." class="w-1/2 text-center">Check Updates</tvq-button>
     <span class="w-1/2 text-center" *ngIf="!IsStandalone && (IsIos || (!IsIos && showInstall))">
-        <tvq-button *ngIf="!IsIos && showInstall" (clicked)="install()">Install Web App</tvq-button>
+        <tvq-button #btnInstall *ngIf="!IsIos && showInstall" (clicked)="install()">Install Web App</tvq-button>
         <span *ngIf="IsIos">Install this web app on your device. <br/> Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to homescreen.</span>
     </span>
 </div>

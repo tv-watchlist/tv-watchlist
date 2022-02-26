@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private errSvc: ErrorService,
         private migrateSvc: MigrationService,
         private cloudSvc: CloudDropboxService,
-        private updateSvc: CheckForUpdateService,
+        private updateSvc: CheckForUpdateService,// inits CheckForUpdateService
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {

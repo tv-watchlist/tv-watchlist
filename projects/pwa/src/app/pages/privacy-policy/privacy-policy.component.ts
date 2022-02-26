@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { TvWatchlistService } from '../../services/mytvq/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-privacy-policy',
     templateUrl: 'privacy-policy.component.html'
 })
 export class PrivacyPolicyComponent implements OnInit {
-    constructor() { }
+    constructor(private tvqSvc: TvWatchlistService) { }
+
+    get IsStandalone() {
+        return this.tvqSvc.IsInStandaloneMode;
+    }
 
     ngOnInit() { }
 }

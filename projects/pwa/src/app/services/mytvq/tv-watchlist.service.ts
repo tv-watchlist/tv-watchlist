@@ -11,12 +11,12 @@ export class TvWatchlistService {
     }
     deferredInstallPrompt?: BeforeInstallPromptEvent;
     now: number;
-    addToHomeScreen() {
+    async addToHomeScreen() {
         console.log('adding to homescreen');
         // Show the prompt
-        this.deferredInstallPrompt?.prompt();
+        await this.deferredInstallPrompt?.prompt();
         // Wait for the user to respond to the prompt
-        this.deferredInstallPrompt?.userChoice
+        await this.deferredInstallPrompt?.userChoice
             .then((choiceResult: any) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('User accepted the A2HS prompt');
