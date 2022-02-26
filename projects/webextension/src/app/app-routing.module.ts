@@ -9,7 +9,6 @@ const routes: Routes = [
     {
         path: '', // default path
         component: AppComponent,
-        data: {},
         children: [
             { path: 'popup', component: PopupComponent, data: { reuseRoute: true, index: 0 } },
             { path: 'options', component: OptionsComponent, data: { reuseRoute: true, index: 0 } },

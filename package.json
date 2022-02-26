@@ -12,8 +12,9 @@
     "build:pwa:prod": "npm run git:version && ng build --configuration production",
     "build:pwa:prod:watch": "ng build --configuration production --watch",
     "build:ext:watch": "ng build webextension --watch",
+    "build:lib:watch":"ng build common --watch",
     "run:pwa": "http-server -p 4200 -c-1 dist/pwa",
-    "dev": "run-p build:prod:watch run:pwa",
+    "dev:pwa": "run-p build:prod:watch run:pwa",
     "deploy": "npx gh-pages -d dist/pwa"
   },
   "private": true,

@@ -13,4 +13,8 @@ export class PrivacyPolicyComponent implements OnInit {
     }
 
     ngOnInit() { }
+
+    goHome(){
+        document.location.href = '/';
+    }
 }
