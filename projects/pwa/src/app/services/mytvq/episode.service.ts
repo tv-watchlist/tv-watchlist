@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
-import { CommonService } from '../common.service';
 import { SettingService } from './setting.service';
 import { UiEpisodeModel } from './ui.model';
 import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQDbEpisode } from '../storage/db.model';
+import { CommonService } from 'common';
 
 @Injectable({ providedIn: 'root' })
 export class EpisodeService {

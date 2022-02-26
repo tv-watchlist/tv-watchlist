@@ -2,7 +2,7 @@
 // https://ga-dev-tools.web.app/query-explorer/?a=28414519&b=UA-28414519-1&c=55063102&ids=ga%3A55063102&start-date=7daysAgo&end-date=yesterday&metrics=ga%3AtotalEvents&dimensions=ga%3AeventCategory%2Cga%3AeventAction%2Cga%3AeventLabel&sort=ga%3AeventCategory%2C-ga%3AtotalEvents&d=0&include-empty-rows=1
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonService } from '../../services/common.service';
+import { CommonService } from 'common';
 
 export interface IGaQueryResult {
     kind: string;

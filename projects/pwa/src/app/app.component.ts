@@ -11,7 +11,6 @@ import { TvWatchlistService } from './services/mytvq/tv-watchlist.service';
 import { NavigationService } from './services/navigation.service';
 import { INavigation } from './widgets/navigation/navigation.component';
 import { ToastService } from './widgets/toast/toast.service';
-
 @Component({
     selector: 'tvq-app',
     templateUrl: './app.component.html',

@@ -5,11 +5,11 @@ import { EpisodeService } from './episode.service';
 import { lastValueFrom, map, Observable, switchMap } from 'rxjs';
 import { ApiTheMovieDbService } from '../api/api-the-movie-db.service';
 import { ApiTvMazeService, ITvMazeShow, ITvMazeEpisode } from '../api/api-tv-maze.service';
-import { CommonService } from '../common.service';
 import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
 import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
 import { ToastService } from '../../widgets/toast/toast.service';
+import { CommonService } from 'common';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {

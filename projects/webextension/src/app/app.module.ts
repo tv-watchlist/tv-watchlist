@@ -8,6 +8,7 @@ import { BackgroundComponent } from './background/background.component';
 import { PopupComponent } from './popup/popup.component';
 import { OptionsComponent } from './options/options.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { CommonModule } from 'common';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CommonModule
   ],
   providers: [
     // This is needed because the manifest loads the index.html file, followed by a #,

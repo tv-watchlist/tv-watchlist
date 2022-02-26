@@ -27,6 +27,7 @@ import { SettingDropboxComponent } from './pages/setting/dropbox.component';
 import { SettingsResetComponent } from './pages/setting/reset.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { CommonModule } from 'common';
 
 @Injectable()
 export class HammerConfig extends HammerGestureConfig {
@@ -66,6 +67,7 @@ export class HammerConfig extends HammerGestureConfig {
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         WidgetsModule.forRoot(),
+        CommonModule,
     ],
     providers: [
         DatePipe,

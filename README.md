@@ -34,7 +34,7 @@ https://tv-watchlist.github.io
 
 Taken from https://angular.io/guide/file-structure#multiple-projects
 
-0) Using Node 14.15.3 (includes npm 6.14.9) 
+0) Using Node v16.13.2 (includes yarn 1.22.17) 
 1) ng new tv-watchlist --createApplication="false"
     o strict = Yes
 2) cd tv-watchlist
@@ -52,9 +52,9 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. 
 The app will automatically reload if you change any of the source files.
 
-To test pwa use `npm run dev`. Navigate to `http://localhost:4200/`. 
+To test pwa use `yarn run dev`. Navigate to `http://localhost:4200/`. 
 
-For Production use `npm run build:prod`
+For Production use `yarn run build:prod`
 
 ## Analyze budget
 1) ng build --stats-json

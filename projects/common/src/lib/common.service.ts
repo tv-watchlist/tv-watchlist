@@ -5,6 +5,7 @@ export type sortArg<T> = keyof T | `-${string & keyof T}`
 @Injectable({ providedIn: 'root' })
 export class CommonService {
     constructor() {
+      console.log('Common lib initialized');
         this.now = new Date().getTime();
     }
     private now: number;
