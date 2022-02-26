@@ -15,16 +15,32 @@ export class LoaderScreenComponent implements OnInit, OnDestroy {
 
     message = '';
     visible = false;
-
+    showClose = false;
+    timerHandler?: any;
     ngOnInit(): void {
-        this.svc.subscribe(({message,status})=>{
+        this.svc.subscribe(({ message, status }) => {
             this.message = message;
             this.visible = status;
+            if (this.visible) {
+               this.timerHandler = setTimeout(() => {
+                    this.showClose = true;
+                    this.cdRef.markForCheck();
+                }, 1000 * 30);
+            } else {
+                if(this.timerHandler) {
+                    clearTimeout(this.timerHandler);}
+            }
+
             this.cdRef.markForCheck();
         });
     }
 
+    close() {
+        this.svc.close();
+    }
+
     ngOnDestroy(): void {
+
         this.svc.unsubscribe();
     }
 }
