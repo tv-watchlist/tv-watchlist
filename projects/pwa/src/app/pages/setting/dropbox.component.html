@@ -2,6 +2,8 @@
     <li class="flex justify-between px-4 py-2 border-b">
         <span class="text-blue-500 cursor-pointer" (click)="dropboxLogin()" *ngIf="!IsDropboxAuthenticated">Dropbox Login</span>
         <span class="text-blue-500 cursor-pointer" (click)="dropboxLogout()" *ngIf="IsDropboxAuthenticated">Dropbox Logout</span>
+        <a href="https://www.dropbox.com/referrals/AACBEHGVAR4t8l5ohrjPIEdwd_ul6edwJXI?src=global9" class="my-auto text-sm text-blue-500"
+        target="_blank" *ngIf="!IsDropboxAuthenticated">Signup (referral link)</a>
     </li>
     <li class="flex justify-between px-4 py-2 border-b" (click)="menu4.openMenu()" *ngIf="IsDropboxAuthenticated">
         <span class="text-blue-500 cursor-pointer">Load from cloud</span>
@@ -14,4 +16,3 @@
 </ul>
 
 <tvq-options-menu #menu4 (action)="dropboxLoad()" [options]="['Yes']" header="This will replace all your Shows and settings, Are you sure?"></tvq-options-menu>
-

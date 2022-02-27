@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Subscription, } from 'rxjs';
 import { CheckForUpdateService } from './service-workers/check-for-update.service';
 import { ActiveRequestService } from './services/active-request.http-interceptor';
 import { routeSliderStatePlusMinus } from './services/animations';
 import { CloudDropboxService } from './services/api/cloud-dropbox.service';
 import { ErrorService } from './services/error.handler';
+import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { MigrationService } from './services/mytvq/migration.service';
 import { TvWatchlistService } from './services/mytvq/tv-watchlist.service';
 import { NavigationService } from './services/navigation.service';
 import { INavigation } from './widgets/navigation/navigation.component';
 import { ToastService } from './widgets/toast/toast.service';
+
 @Component({
     selector: 'tvq-app',
     templateUrl: './app.component.html',
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private migrateSvc: MigrationService,
         private cloudSvc: CloudDropboxService,
         private updateSvc: CheckForUpdateService,// inits CheckForUpdateService
+        private gaSvc: GoogleAnalyticsService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {
@@ -123,6 +126,8 @@ export class AppComponent implements OnInit, OnDestroy {
             }
         });
         this.subscriptions.push(sub3);
+
+        this.gaSvc.init();
 
         // this.routeTrigger$ = this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd),

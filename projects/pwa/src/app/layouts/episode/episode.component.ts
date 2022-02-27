@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { EpisodeService } from '../../services/mytvq/episode.service';
 import { ShowService } from '../../services/mytvq/show.service';
 import { UiEpisodeModel } from '../../services/mytvq/ui.model';
@@ -13,6 +14,7 @@ export class EpisodeComponent implements OnInit {
     constructor(
         private showSvc: ShowService,
         private episodeSvc: EpisodeService,
+        private gaSvc: GoogleAnalyticsService,
         private cdRef: ChangeDetectorRef,
         ) {
             this.today = new Date().getTime();
@@ -46,6 +48,7 @@ export class EpisodeComponent implements OnInit {
 
         if(!this.model.seen) {
             this.show.unseenCount--;
+            this.gaSvc.trackSeen(this.show.name, this.model.episodeName);
         } else {
             this.show.unseenCount++;
         }

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { EpisodeService } from '../../services/mytvq/episode.service';
 import { ShowService } from '../../services/mytvq/show.service';
 import { UiShowModel } from '../../services/mytvq/ui.model';
@@ -13,7 +14,7 @@ import { UiShowModel } from '../../services/mytvq/ui.model';
 export class ShowBannerCardComponent implements OnInit {
     constructor(
         private showSvc: ShowService,
-        private episodeSvc: EpisodeService,
+        private gaSvc: GoogleAnalyticsService,
         private router: Router,
         private cdRef: ChangeDetectorRef,
         ) { }
@@ -37,6 +38,7 @@ export class ShowBannerCardComponent implements OnInit {
 
         if (!!show.unseenEpisode) {
             await this.showSvc.markAsSeen(show, show.unseenEpisode.episodeId);
+            this.gaSvc.trackSeen(show.name,show.unseenEpisode.name);
             this.model = await this.showSvc.getShowModel(this.showId);
             this.model.expand = true;
         }

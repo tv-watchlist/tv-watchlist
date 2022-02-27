@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiTvMazeService, ITvMazeSearch } from '../../services/api/api-tv-maze.service';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ShowService } from '../../services/mytvq/show.service';
 import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
 import { ToastService } from '../../widgets/toast/toast.service';
@@ -13,6 +14,7 @@ export class SearchComponent implements OnInit {
     constructor(private searchSvc: ApiTvMazeService,
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
+        private gaSvc: GoogleAnalyticsService,
         private showSvc: ShowService) { }
 
     showIds: string[] = [];
@@ -21,25 +23,27 @@ export class SearchComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.loaderSvc.show();
-        this.showIds = (await this.showSvc.getAll()).map(o=>o.showId);
+        this.showIds = (await this.showSvc.getAll()).map(o => o.showId);
         this.loaderSvc.close();
     }
 
     search() {
-        if(!!this.searchTxt) {
+        if (!!this.searchTxt) {
             this.searchList$ = this.searchSvc.searchShow(this.searchTxt)
                 .pipe(
                     tap(result => {
                         // console.log('search', this.searchTxt, JSON.stringify(result));
                     })
                 );
+            this.gaSvc.trackSearch(this.searchTxt);
         }
     }
 
     async addShow(tvmazeId: any, name: string) {
-        this.showIds.push('tvmaze'+ tvmazeId);
+        this.showIds.push('tvmaze' + tvmazeId);
         this.cdRef.detectChanges();
         await this.showSvc.addUpdateTvMazeShow('tvmaze', tvmazeId);
+        this.gaSvc.trackShowAdd(name, 'search');
     }
 
     goToUrl(url: string): void {
@@ -47,6 +51,6 @@ export class SearchComponent implements OnInit {
     }
 
     includes(tvmazeId: number) {
-        return this.showIds.includes('tvmaze'+tvmazeId);
+        return this.showIds.includes('tvmaze' + tvmazeId);
     }
 }

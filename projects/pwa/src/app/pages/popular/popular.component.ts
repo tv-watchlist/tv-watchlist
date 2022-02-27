@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { lastValueFrom, map, Observable, switchMap, tap } from 'rxjs';
 import { ApiTheMovieDbService } from '../../services/api/api-the-movie-db.service';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ShowService } from '../../services/mytvq/show.service';
 import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
 import { ToastService } from '../../widgets/toast/toast.service';
@@ -30,6 +31,7 @@ export class PopularComponent implements OnInit {
     constructor(private svc: ApiTheMovieDbService,
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
+        private gaSvc: GoogleAnalyticsService,
         private showSvc: ShowService) { }
 
     showNames: string[] = [];
@@ -69,6 +71,7 @@ export class PopularComponent implements OnInit {
         this.showNames.push(name);
         this.cdRef.detectChanges();
         await this.showSvc.addUpdateTvMazeShow('tmdb', tmdbId);
+        this.gaSvc.trackShowAdd(name, 'popular');
     }
 
     goToUrl(url: string): void {

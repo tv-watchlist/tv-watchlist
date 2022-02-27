@@ -10,6 +10,7 @@ import { IMyTvQDbEpisode } from '../../services/storage/db.model';
 import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
 import { ToastService } from '../../widgets/toast/toast.service';
 import { CommonService } from 'common';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
     selector: 'tvq-show-detail',
@@ -24,6 +25,7 @@ export class ShowDetailComponent implements OnInit {
         private settingSvc: SettingService,
         private episodeSvc: EpisodeService,
         private router: Router,
+        private gaSvc: GoogleAnalyticsService,
         private loaderSvc: LoaderScreenService,
         private activatedRoute: ActivatedRoute,
         private toastSvc: ToastService,
@@ -147,6 +149,7 @@ export class ShowDetailComponent implements OnInit {
 
     removeShow(): void {
         this.showSvc.removeShow(this.showId);
+        this.gaSvc.trackShowRemove(this.showModel.name);
         this.router.navigate(['/']);
     }
 
@@ -158,6 +161,7 @@ export class ShowDetailComponent implements OnInit {
     async setSeasonAsSeen(): Promise<void> {
         const list = this.episodeList[this.selectedSeasonNum].map(o=>o.episodeId);
         await this.episodeSvc.toggleBulkSeen(list, true);
+        this.gaSvc.trackSeen(this.showModel.name, 'Season ' + this.selectedSeasonNum);
         const lastWatchedTime = new Date().getTime();
         await this.showSvc.updateShowReference(this.showId, {lastWatchedTime});
         this.seasonUnSeen[this.selectedSeasonNum] = 0;
@@ -192,6 +196,7 @@ export class ShowDetailComponent implements OnInit {
             }
         }
     }
+
     async refresh() {
        const show = await this.showSvc.getShow(this.showId);
        await this.showSvc.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string);
