@@ -53,6 +53,7 @@ export class ShowService {
 
                 updateTime: (e.next_update_time * 1000),
                 lastWatchedTime: 0,
+                currentEpisodeTime: 0,
                 unseenCount: 0,
                 totalEpisodes: 0,
                 totalSeasons: 0,
@@ -66,7 +67,7 @@ export class ShowService {
     }
 
     public async saveAll(showList: IMyTvQDbShow[]) {
-        return await this.webDb.putList('shows',showList);
+        return await this.webDb.putList('shows', showList);
     }
 
     public async save(show: IMyTvQDbShow) {
@@ -84,7 +85,7 @@ export class ShowService {
         if (!!latestEpisode) {
             model.latestEpisodeId = latestEpisode.episodeId;
             model.latestEpisodeName = this.episodeSvc.getEpisodeName(latestEpisode) || 'TBA';
-            model.latestEpisodeDateFormatted = this.episodeSvc.getFormattedTime(latestEpisode.localShowTime||0, model.status);
+            model.latestEpisodeDateFormatted = this.episodeSvc.getFormattedTime(latestEpisode.localShowTime || 0, model.status);
             model.latestEpisodeInDays = this.episodeSvc.getNextEpisodeDays(latestEpisode);
         }
         model.unseenEpisodeId = show.unseenEpisode?.episodeId || '';
@@ -92,110 +93,90 @@ export class ShowService {
         return model;
     }
 
-    async updateAllShowReference() {
+    async updateAndSaveAllShowReference() {
+        // unseen or default airdate
+        const airdateSort = (showList: IMyTvQDbShow[])=> {
+            // first show future episodes in asc order
+            // then tba episodes in desc order
+            // finally complete episodes in desc order
+
+            // get future shows && sort by asc
+            const futureShowList = showList.filter((item) => {
+                return !!item.futureEpisode;
+            });
+            this.commonSvc.sort(futureShowList, 'currentEpisodeTime'); // futureEpisode?.localShowTime
+
+            // tba && sort by desc
+            const tbaShowList = showList.filter((item) => {
+                return !(item.status || '').match(this.EndedRegex) && !item.futureEpisode;
+            });
+            this.commonSvc.sort(tbaShowList, '-currentEpisodeTime'); // -pastEpisode?.localShowTime
+
+            // completed && sort by desc
+            const endedShowList = showList.filter((item) => {
+                return (item.status || '').match(this.EndedRegex);
+            });
+            this.commonSvc.sort(endedShowList, '-currentEpisodeTime'); // -pastEpisode.localShowTime
+
+            const tbaEnded = tbaShowList.concat(endedShowList);
+
+            return futureShowList.concat(tbaEnded);
+        };
+
         console.log('Updating show references...starting!');
         let showList = await this.getAll();
         const settings = await this.settingSvc.getAll();
         showList.forEach(async show => {
             const episodes = await this.episodeSvc.getEpisodeList(show.showId);
             // update show episode ref
-            this.updateReference(show, episodes);
+            this.updateShowReference(show, episodes);
             await this.webDb.putObj('shows', show);
         });
 
         if (settings.hideTba) {
+            // only show with future or unseen episodes
             showList = showList.filter(o => !!o && (o.unseenCount > 0 || !!o.futureEpisode));
         }
-
+        let newShowList: IMyTvQDbShow[] = [];
         let showIdOrder: string[] = [];
+
         if (settings.showsOrder === 'showname') {
-            // http://www.javascriptkit.com/javatutors/arraysort2.shtml
             if (showList.length) {
                 this.commonSvc.sort(showList, 'name');
-                // showList.sort((a, b) => {
-                //     const x = a.name.toLowerCase();
-                //     const y = b.name.toLowerCase();
-                //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-                // });
             }
+            newShowList = showList;
         }
-        else {
+        else if (settings.showsOrder === 'unseen') {
+            // sort by unseenCount asc, lastWatchedTime and  currentEpisodeTime desc
+            this.commonSvc.sort(showList, 'unseenCount', '-lastWatchedTime', '-currentEpisodeTime');
+            newShowList = showList;
+        } else if (settings.showsOrder === 'unseen_my_popular') {
+            // 1st pref: 0 unseen episode and unaired within 1 week
+            // 2nd pref: lastWatchedTime order by desc within 1 month
+            // 3rd pref: normal airdate
+            const first = showList.filter(o => o.unseenCount === 0 && !!o.futureEpisode &&
+                this.commonSvc.getDaysBetween(new Date(), new Date(o.currentEpisodeTime)) <= 7);
+            this.commonSvc.sort(first, 'currentEpisodeTime'); // currentEpisodeTime = futureEpisode.localShowTime
+            const firstShowIds = first.map(o => o.showId);
+            const second = showList.filter(o => !firstShowIds.includes(o.showId) && o.lastWatchedTime > 0 &&
+            this.commonSvc.getDaysBetween(new Date(), new Date(o.currentEpisodeTime)) <= 30);
+            // sort by lastWatchedTime if equal then currentEpisodeTime desc
+            this.commonSvc.sort(second, '-lastWatchedTime', '-currentEpisodeTime');
+            const secondShowIds = second.map(o => o.showId);
+            const third = showList.filter(o => !firstShowIds.includes(o.showId) && !secondShowIds.includes(o.showId));
+            newShowList = first.concat(second, airdateSort(third));
+        } else {
             // unseen or default airdate
-
-            // get future shows && sort by asc
-            const futureShowList = showList.filter((item) => {
-                return !!item.futureEpisode;
-            });
-            this.commonSvc.sort(futureShowList, '-futureEpisode');
-            // .sort((a, b) => {
-            //     const x = a.futureEpisode?.localShowTime || 0;
-            //     const y = b.futureEpisode?.localShowTime || 0;
-            //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            // });
-
-            // tba && sort by desc
-            const tbaShowList = showList.filter((item) => {
-                return !(item.status || '').match(this.EndedRegex) && !item.futureEpisode;
-            });
-            this.commonSvc.sort(tbaShowList, '-pastEpisode');
-            // .sort((a, b) => {
-            //     const x = b.pastEpisode?.localShowTime || 0;
-            //     const y = a.pastEpisode?.localShowTime || 0;
-            //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            // });
-
-            // console.log(tbatvmShow_list);
-            // completed && sort by desc
-            const endedShowList = showList.filter((item, index) => {
-                return (item.status || '').match(this.EndedRegex);
-            });
-            this.commonSvc.sort(endedShowList, '-pastEpisode');
-            // .sort((a, b) => {
-            //     const x = b.pastEpisode?.localShowTime || 0;
-            //     const y = a.pastEpisode?.localShowTime || 0;
-            //     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            // });
-
-            const tbaEnded = tbaShowList.concat(endedShowList);
-
-            let newShowList = futureShowList.concat(tbaEnded);
-
-            // Acecool - Add a new type of sorting...
-            // Note: Popular means it is either a NEW show with 0 aired, or you've seen ALL of the aired episodes meaning this will
-            // put the show at the very top of the list if 0 unseen and x hours before airtime...
-            // and at air-time, it'll be removed from the very top and it'll be at the very top anyway because it'll have 1 unseen episode...
-            // Acecool - Sort Ascending - ie the fewest episodes left to watch appear at the top because these are shows you pay more attention
-            // to or have gotten around to watching vs other shows with hundreds of episodes you haven't started with yet...
-            // Acecool
-            // - ensure upcoming shows
-            // - which have been fully-watched to 0 eps un-seen except unaired
-            // - are added to the unseen list. Shows with an air-date less than 24 hours from the current timestamp are added to the top of the list!
-            if (settings.showsOrder === 'unseen_my_popular') {
-                // TODO:
-            }
-
-            if (settings.showsOrder === 'unseen') {
-                const showListUnseen = newShowList.filter(show => {
-                    return show.unseenCount > 0;
-                }).sort((a, b) => {
-                    const x = b.unseenCount;
-                    const y = a.unseenCount;
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-                });
-
-                const showListSeen = newShowList.filter(show => {
-                    return show.unseenCount === 0;
-                });
-                newShowList = showListUnseen.concat(showListSeen);
-            }
-            showIdOrder = newShowList.map(o => o.showId);
+            newShowList = airdateSort(showList);
         }
 
-        this.settingSvc.save('showIdOrderList', showIdOrder);
+        showIdOrder = newShowList.map(o => o.showId);
+
+        await this.settingSvc.save('showIdOrderList', showIdOrder);
         console.log('Updating show references...complete!');
     }
 
-    async updateShowReference(showId: string, merge: {
+    async saveShowReference(showId: string, merge: {
         /**
         * time when user marked an episode as seen
         */
@@ -206,11 +187,11 @@ export class ShowService {
             show.lastWatchedTime = merge.lastWatchedTime;
         }
         const episodeList = await this.episodeSvc.getEpisodeList(showId);
-        this.updateReference(show, episodeList);
+        this.updateShowReference(show, episodeList);
         await this.webDb.putObj('shows', show);
     }
 
-    updateReference(show: IMyTvQDbShow, episodeList: IMyTvQDbEpisode[]) {
+    updateShowReference(show: IMyTvQDbShow, episodeList: IMyTvQDbEpisode[]) {
         // console.log(show,episodeList);
         const now = (new Date()).getTime();
         let unseenCount = 0;
@@ -232,6 +213,7 @@ export class ShowService {
                 }
             }
         });
+        show.currentEpisodeTime = (show.futureEpisode || show.pastEpisode || { localShowTime: 0 }).localShowTime;
         show.totalSeasons = (show.futureEpisode || show.pastEpisode || { season: 0 }).season;
         show.totalEpisodes = episodeList.length;
         show.unseenCount = unseenCount;
@@ -299,16 +281,16 @@ export class ShowService {
 
     async addUpdateTvMazeShow(apiType: string, apiId: any, updateTime?: number): Promise<void> {
         let tvMazeShowAndEpisode$: Observable<[ITvMazeShow, ITvMazeEpisode[]]>;
-        if(apiType === 'tmdb') {
+        if (apiType === 'tmdb') {
             // convert tmdb to tvmaze
             tvMazeShowAndEpisode$ = this.apiTmdbSvc.getExternal(apiId).pipe(
                 switchMap(ext => this.apiTvMazeSvc.getByThetvdb(ext.tvdb_id)),
-                map(([tvmShow,_image,tvmEpisodeList]) => {
-                    tvmShow._embedded = {images: _image};
+                map(([tvmShow, _image, tvmEpisodeList]) => {
+                    tvmShow._embedded = { images: _image };
                     return [tvmShow, tvmEpisodeList];
                 })
             );
-        } else if(apiType === 'tvmaze') {
+        } else if (apiType === 'tvmaze') {
             tvMazeShowAndEpisode$ = this.apiTvMazeSvc.getShowAndEpisode(apiId);
         } else {
             throw new Error('API not recognized');
@@ -333,17 +315,17 @@ export class ShowService {
         // update existing show from web
         show.showId = showId;
         show.apiSource = 'tvmaze';
-        show.apiId =  show.apiId || {};
+        show.apiId = show.apiId || {};
         show.apiId[apiType] = apiId;
         show.apiId.tvmaze = tvmShow.id;
         show.apiId.thetvdb = tvmShow.externals.thetvdb;
         show.apiId.imdb = tvmShow.externals.imdb;
 
         const channel = tvmShow.network || tvmShow.webChannel;
-        if(!!channel){
+        if (!!channel) {
             show.channel = show.channel || {};
             show.channel.name = channel.name || '';
-            if(!!channel.country) {
+            if (!!channel.country) {
                 show.channel.country = channel.country;
             }
         }
@@ -361,22 +343,22 @@ export class ShowService {
         show.userRating = show.userRating || {};
         show.userRating.average = tvmShow.rating.average;
         // show.userRating.count = tvmShow.rating.count;
-        show.image = show.image || {poster:[], banner:[]};
-        if(!!tvmShow.image?.original && !show.image.poster.includes(tvmShow.image.original)) {
+        show.image = show.image || { poster: [], banner: [] };
+        if (!!tvmShow.image?.original && !show.image.poster.includes(tvmShow.image.original)) {
             show.image.poster.push(tvmShow.image.original);
         }
-        if(!!tvmShow._embedded?.images) {
+        if (!!tvmShow._embedded?.images) {
             // add banner
-            const banners = tvmShow._embedded?.images.filter(o => o.type === 'banner').map(o=>o.resolutions.original.url);
+            const banners = tvmShow._embedded?.images.filter(o => o.type === 'banner').map(o => o.resolutions.original.url);
             for (const banner of banners) {
-                if(!show.image.banner.includes(banner)){
+                if (!show.image.banner.includes(banner)) {
                     show.image.banner.push(banner);
                 }
             }
             // if not found then add background
-            if(show.image.banner.length === 0){
+            if (show.image.banner.length === 0) {
                 const background = tvmShow._embedded?.images.find(o => o.type === 'background')?.resolutions.original.url
-                if(!!background){
+                if (!!background) {
                     show.image.banner.push(background);
                 }
             }
@@ -385,18 +367,18 @@ export class ShowService {
         show.updateTime = updateTime || new Date().getTime();
         // set episodes
         // first lets re-sort the order which have correct data
-        const knownEpisodeList = tvmEpisodeList.filter(e=>!!e.airstamp);
-        let unknownEpisodeList = tvmEpisodeList.filter(e=>!e.airstamp);
+        const knownEpisodeList = tvmEpisodeList.filter(e => !!e.airstamp);
+        let unknownEpisodeList = tvmEpisodeList.filter(e => !e.airstamp);
 
         knownEpisodeList.sort((x, y) => {
-            var x1 = x.airstamp + '_' + this.commonSvc.zeroPad(x.season, 4) + '_' + this.commonSvc.zeroPad(x.number|| 0, 4);
-            var y1 = y.airstamp + '_' + this.commonSvc.zeroPad(y.season, 4) + '_' + this.commonSvc.zeroPad(y.number|| 0, 4);
+            var x1 = x.airstamp + '_' + this.commonSvc.zeroPad(x.season, 4) + '_' + this.commonSvc.zeroPad(x.number || 0, 4);
+            var y1 = y.airstamp + '_' + this.commonSvc.zeroPad(y.season, 4) + '_' + this.commonSvc.zeroPad(y.number || 0, 4);
             return this.commonSvc.sortAscending(x1, y1);
         });
-        let initSeason = knownEpisodeList.length > 0 ? knownEpisodeList[0].season : 1 ;
+        let initSeason = knownEpisodeList.length > 0 ? knownEpisodeList[0].season : 1;
         let cleanEpisodeList: ITvMazeEpisode[] = [];
         knownEpisodeList.forEach((episode) => {
-            if(episode.season != initSeason){
+            if (episode.season != initSeason) {
                 cleanEpisodeList = cleanEpisodeList.concat(
                     unknownEpisodeList.filter(item => item.season === initSeason)
                 );
@@ -417,16 +399,16 @@ export class ShowService {
                 showId: showId,
                 episodeId: '',
                 localShowTime: _episode.airstamp ? Date.parse(_episode.airstamp) : undefined,
-                name : _episode.name,
-                url : _episode.url,
-                iso8601 : _episode.airstamp,
-                runtime : _episode.runtime,
-                season : _episode.season,
-                number : _episode.number,
-                summary : _episode.summary,
-                apiSource  : apiType,
-                apiId: {tvmaze : _episode.id},
-                poster: !!_episode.image ? _episode.image.original: undefined,
+                name: _episode.name,
+                url: _episode.url,
+                iso8601: _episode.airstamp,
+                runtime: _episode.runtime,
+                season: _episode.season,
+                number: _episode.number,
+                summary: _episode.summary,
+                apiSource: apiType,
+                apiId: { tvmaze: _episode.id },
+                poster: !!_episode.image ? _episode.image.original : undefined,
                 counter: 0,
                 nextId: undefined,
                 previousId: undefined,
@@ -434,12 +416,12 @@ export class ShowService {
                 special: false
             };
             // set episodeId
-            if(_episode.number != null){
+            if (_episode.number != null) {
                 last_number = _episode.number;
                 episode.special = false;
                 episode.counter = ++normal_counter;
-                episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter)  ;
-            }else{
+                episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter);
+            } else {
                 episode.special = true;
                 episode.counter = ++special_counter;
                 episode.episodeId = this.episodeSvc.createEpisodeId(showId, episode.season, last_number, normal_counter, special_counter);
@@ -454,26 +436,25 @@ export class ShowService {
         show.futureEpisode = undefined;
         show.pastEpisode = undefined;
         show.unseenEpisode = undefined;
-        for(var i=0;i<newEpisodeList.length;i++){
+        for (var i = 0; i < newEpisodeList.length; i++) {
             // set previousId
-            if(i > 0) {
+            if (i > 0) {
                 newEpisodeList[i].previousId = newEpisodeList[i - 1].episodeId;
             }
             // set nextId
-            if(i <= newEpisodeList.length - 2){
+            if (i <= newEpisodeList.length - 2) {
                 newEpisodeList[i].nextId = newEpisodeList[i + 1].episodeId;
             }
             // set seen
-            if(!!episodeDict[newEpisodeList[i].episodeId]){
+            if (!!episodeDict[newEpisodeList[i].episodeId]) {
                 newEpisodeList[i].seen = episodeDict[newEpisodeList[i].episodeId].seen;
-            } else{
+            } else {
                 for (const key in episodeDict) {
                     if (Object.prototype.hasOwnProperty.call(episodeDict, key)) {
                         const oldEpisode = episodeDict[key];
-                        if(oldEpisode.season === newEpisodeList[i].season &&
+                        if (oldEpisode.season === newEpisodeList[i].season &&
                             oldEpisode.number === newEpisodeList[i].number &&
-                            oldEpisode.name.toLowerCase() ===  newEpisodeList[i].name.toLowerCase())
-                        {
+                            oldEpisode.name.toLowerCase() === newEpisodeList[i].name.toLowerCase()) {
                             newEpisodeList[i].seen = oldEpisode.seen;
                             break;
                         }
@@ -500,10 +481,10 @@ export class ShowService {
 
         try {
             await this.webDb.putObj('shows', show);
-            await this.webDb.deleteRange('episodes','showIdIndex',this.webDb.getKeyRange('=', showId));
+            await this.webDb.deleteRange('episodes', 'showIdIndex', this.webDb.getKeyRange('=', showId));
             await this.webDb.putList('episodes', newEpisodeList);
-            console.log('addUpdateShow', tvmShow.name, (!isAdding ? 'Updating':'Adding'));
-            this.toastSvc.success(`Show '${show.name}' ${(!isAdding ? 'updated in':'added to')} your TvWatchList!`);
+            console.log('addUpdateShow', tvmShow.name, (!isAdding ? 'Updating' : 'Adding'));
+            this.toastSvc.success(`Show '${show.name}' ${(!isAdding ? 'updated in' : 'added to')} your TvWatchList!`);
         } catch (error) {
             this.toastSvc.error(`Something went wrong while saving Show '${show.name || apiId}'`)
             console.error('server rejected the request', error);
@@ -515,10 +496,10 @@ export class ShowService {
         const now = new Date();
         const days = this.commonSvc.getDaysBetween(new Date(smartUpdateTime), now);
         const smartUpdateFrequency = 1;
-        console.log('smartUpdateAllShows',days + ' days since last smart update...');
+        console.log('smartUpdateAllShows', days + ' days since last smart update...');
 
-        if(days < smartUpdateFrequency) {
-            console.log('smartUpdateAllShows','its not time to do smartUpdate yet');
+        if (days < smartUpdateFrequency) {
+            console.log('smartUpdateAllShows', 'its not time to do smartUpdate yet');
             return false;
         }
         let since: 'all' | 'day' | 'week' | 'month' = 'all';
@@ -532,25 +513,25 @@ export class ShowService {
         //     since = 'month'
         // }
         const update = await lastValueFrom(this.apiTvMazeSvc.getUpdates(since));
-        let showList = (await this.webDb.getIndexedList('shows','updateTimeIndex',this.webDb.getKeyRange('<',smartUpdateTime))) as IMyTvQDbShow[];
+        let showList = (await this.webDb.getIndexedList('shows', 'updateTimeIndex', this.webDb.getKeyRange('<', smartUpdateTime))) as IMyTvQDbShow[];
         showList.forEach(async show => {
             const apiId = show.apiId[show.apiSource] as number;
             const jsTime = ((update[apiId] || 0) * 1000);
             const showUpdateTime = show.updateTime || 0;
-            if(!!update[apiId] && jsTime > showUpdateTime) {
-                if(show.apiSource === 'tvmaze'){
+            if (!!update[apiId] && jsTime > showUpdateTime) {
+                if (show.apiSource === 'tvmaze') {
                     await this.addUpdateTvMazeShow(show.apiSource, show.apiId[show.apiSource] as string, jsTime);
                 } else {
                     console.log(show.apiSource + ' Not supported yet!');
                 }
             }
-            if(!update[apiId]) {
+            if (!update[apiId]) {
                 console.log('smartUpdateAllShows', apiId, show.name, new Date(showUpdateTime), 'NOT in API-Update list');
             } else {
-                console.log('smartUpdateAllShows', apiId, show.name, new Date(showUpdateTime), (jsTime > showUpdateTime ? 'UPDATED':'SKIPPED'), new Date(jsTime))
+                console.log('smartUpdateAllShows', apiId, show.name, new Date(showUpdateTime), (jsTime > showUpdateTime ? 'UPDATED' : 'SKIPPED'), new Date(jsTime))
             }
         });
-        await this.settingSvc.save('updateTime',now.getTime());
+        await this.settingSvc.save('updateTime', now.getTime());
         return true;
     }
 }

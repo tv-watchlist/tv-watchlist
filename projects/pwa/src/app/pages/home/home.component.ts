@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
             // maybe offline
         }
 
-        await this.showSvc.updateAllShowReference();
+        await this.showSvc.updateAndSaveAllShowReference();
         this.showIdList = (await this.settingSvc.get('showIdOrderList'));
         const t1 = performance.now();
         console.log(`Call to updateAllShowReference took ${(t1 - t0)} milliseconds.`);

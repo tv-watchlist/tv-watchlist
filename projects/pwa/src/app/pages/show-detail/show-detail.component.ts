@@ -163,7 +163,7 @@ export class ShowDetailComponent implements OnInit {
         await this.episodeSvc.toggleBulkSeen(list, true);
         this.gaSvc.trackSeen(this.showModel.name, 'Season ' + this.selectedSeasonNum);
         const lastWatchedTime = new Date().getTime();
-        await this.showSvc.updateShowReference(this.showId, {lastWatchedTime});
+        await this.showSvc.saveShowReference(this.showId, {lastWatchedTime});
         this.seasonUnSeen[this.selectedSeasonNum] = 0;
         await this.populateEpisodeList();
     }

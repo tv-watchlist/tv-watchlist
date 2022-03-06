@@ -45,7 +45,7 @@ export class MigrationService {
         model.show_list.forEach(async show => {
             await this.episodeSvc.saveFileToDb(show.episode_list);
         });
-        await this.showSvc.updateAllShowReference();
+        await this.showSvc.updateAndSaveAllShowReference();
         // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
     }
 
@@ -61,7 +61,7 @@ export class MigrationService {
         await this.settingSvc.saveAll(model.settings);
         await this.showSvc.saveAll(model.show_list);
         await this.episodeSvc.saveAll(model.episode_list);
-        await this.showSvc.updateAllShowReference();
+        await this.showSvc.updateAndSaveAllShowReference();
     }
 
     async export(): Promise<string> {

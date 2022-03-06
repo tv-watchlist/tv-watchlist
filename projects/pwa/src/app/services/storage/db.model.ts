@@ -56,6 +56,10 @@ export interface IMyTvQDbShow {
      * time when user marked an episode as seen
      */
     lastWatchedTime: number;
+    /**
+     * (futureEpisode || pastEpisode).localShowTime
+     */
+    currentEpisodeTime: number;
     unseenCount: number;
     totalEpisodes: number;
     totalSeasons: number;
