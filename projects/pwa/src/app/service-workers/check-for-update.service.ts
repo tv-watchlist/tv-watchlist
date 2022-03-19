@@ -1,7 +1,7 @@
 import { ApplicationRef, Injectable } from '@angular/core';
 import { SwUpdate, VersionDetectedEvent, VersionEvent, VersionInstallationFailedEvent, VersionReadyEvent } from '@angular/service-worker';
-import { concat, interval, first, map, from, switchMap, catchError, of, tap } from 'rxjs';
-import { ToastService } from '../widgets/toast/toast.service';
+import { ToastService } from 'common';
+import { concat, interval, first, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CheckForUpdateService {

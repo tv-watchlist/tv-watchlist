@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActiveRequestService } from '../../services/active-request.http-interceptor';
-import { MigrationService } from '../../services/mytvq/migration.service';
+import { ActiveRequestService, MigrationService } from 'common';
 
 @Component({
     selector: 'tvq-setting-import-export',

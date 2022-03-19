@@ -1,10 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { lastValueFrom, map, Observable, switchMap, tap } from 'rxjs';
-import { ApiTheMovieDbService } from '../../services/api/api-the-movie-db.service';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
-import { ToastService } from '../../widgets/toast/toast.service';
+import { ApiTheMovieDbService, LoaderScreenService, GoogleAnalyticsService, ShowService } from 'common';
+import { lastValueFrom, map } from 'rxjs';
 
 export interface IUITheMovieDbShow {
     first_air_date: string; //  "2022-01-28"
@@ -21,7 +17,6 @@ export interface IUITheMovieDbShow {
     vote_average: number; //  8.8
     vote_count: number; //  1017
 }
-
 
 @Component({
     selector: 'tvq-popular',

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
+import { ButtonComponent } from 'common';
 import { CheckForUpdateService } from '../../service-workers/check-for-update.service';
-import { TvWatchlistService } from '../../services/mytvq/tv-watchlist.service';
-import { ButtonComponent } from '../../widgets/button/button.component';
+import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-about',

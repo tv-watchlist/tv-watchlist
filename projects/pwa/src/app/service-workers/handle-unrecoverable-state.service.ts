@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { ToastService } from '../widgets/toast/toast.service';
+import { ToastService } from 'common';
 
 @Injectable({ providedIn: 'root' })
 export class HandleUnrecoverableStateService {

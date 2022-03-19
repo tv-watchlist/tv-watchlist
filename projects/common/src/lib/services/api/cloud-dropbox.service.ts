@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { environment } from "projects/pwa/src/environments/environment";
+import { Inject, Injectable } from "@angular/core";
 import { tap } from "rxjs";
 
 /**
@@ -8,7 +7,7 @@ import { tap } from "rxjs";
  */
 @Injectable({ providedIn: 'root' })
 export class CloudDropboxService {
-    constructor(private http: HttpClient,) {
+    constructor(private http: HttpClient, @Inject('environment') environment: {production:boolean}) {
         if (environment.production) {
             this.redirectUrl = 'https://tv-watchlist.github.io/dropbox-redirect';
         } else {

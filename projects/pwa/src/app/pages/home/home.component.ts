@@ -1,10 +1,8 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { slideInLeftOnEnterAnimation, slideInRightOnEnterAnimation, slideOutLeftOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { SettingService } from '../../services/mytvq/setting.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { TvWatchlistService } from '../../services/mytvq/tv-watchlist.service';
-import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
+import { SettingService, ShowService, LoaderScreenService } from 'common';
+import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-home',

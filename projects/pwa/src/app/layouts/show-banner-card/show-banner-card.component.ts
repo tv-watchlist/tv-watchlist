@@ -1,10 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { EpisodeService } from '../../services/mytvq/episode.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { UiShowModel } from '../../services/mytvq/ui.model';
+import { ShowService, GoogleAnalyticsService, UiShowModel } from 'common';
 
 @Component({
     selector: 'tvq-show-banner-card',

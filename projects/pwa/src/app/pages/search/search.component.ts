@@ -1,10 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ApiTvMazeService, LoaderScreenService, GoogleAnalyticsService, ShowService, ITvMazeSearch } from 'common';
 import { Observable, tap } from 'rxjs';
-import { ApiTvMazeService, ITvMazeSearch } from '../../services/api/api-tv-maze.service';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
-import { ToastService } from '../../widgets/toast/toast.service';
 
 @Component({
     selector: 'tvq-search',

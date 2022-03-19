@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActiveRequestService } from '../../services/active-request.http-interceptor';
-import { SettingService } from '../../services/mytvq/setting.service';
-import { MyTvQDbSetting } from '../../services/storage/db.model';
-import { WebDatabaseService } from '../../services/storage/web-database.service';
+import { SettingService, WebDatabaseService, ActiveRequestService, MyTvQDbSetting } from 'common';
 
 @Component({
     selector: 'tvq-setting-reset',

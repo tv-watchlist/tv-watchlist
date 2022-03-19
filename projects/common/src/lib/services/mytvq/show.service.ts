@@ -9,7 +9,7 @@ import { IMyTvQDbShow, IMyTvQDbEpisode } from '../storage/db.model';
 import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
 import { ToastService } from '../../widgets/toast/toast.service';
-import { CommonService } from 'common';
+import { CommonService } from '../common.service';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {

@@ -1,16 +1,7 @@
 import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { EpisodeService } from '../../services/mytvq/episode.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OptionsMenuComponent } from '../../widgets/options-menu/options-menu.component';
-import { SettingService } from '../../services/mytvq/setting.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { UiShowModel } from '../../services/mytvq/ui.model';
-import { IMyTvQDbEpisode } from '../../services/storage/db.model';
-import { LoaderScreenService } from '../../widgets/loader/loader-screen.service';
-import { ToastService } from '../../widgets/toast/toast.service';
-import { CommonService } from 'common';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { ShowService, CommonService, SettingService, EpisodeService, GoogleAnalyticsService, LoaderScreenService, ToastService, OptionsMenuComponent, IMyTvQDbEpisode, UiShowModel } from 'common';
 
 @Component({
     selector: 'tvq-show-detail',

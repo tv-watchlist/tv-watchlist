@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActiveRequestService } from '../../services/active-request.http-interceptor';
-import { CloudDropboxService } from '../../services/api/cloud-dropbox.service';
-import { IMyTvQFlatV6 } from '../../services/mytvq/flat-file-v6.model';
-import { MigrationService } from '../../services/mytvq/migration.service';
-import { ToastService } from '../../widgets/toast/toast.service';
+import { CloudDropboxService, MigrationService, ActiveRequestService, ToastService, IMyTvQFlatV6 } from 'common';
 
 @Component({
     selector: 'tvq-setting-dropbox',

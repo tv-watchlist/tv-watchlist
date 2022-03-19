@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TvWatchlistService } from '../../services/mytvq/tv-watchlist.service';
+import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-privacy-policy',

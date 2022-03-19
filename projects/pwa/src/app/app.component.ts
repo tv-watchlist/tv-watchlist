@@ -1,17 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { routeSliderStatePlusMinus, NavigationService, ActiveRequestService, ToastService, ErrorService, MigrationService, CloudDropboxService, GoogleAnalyticsService, INavigation } from 'common';
 import { Subscription, } from 'rxjs';
 import { CheckForUpdateService } from './service-workers/check-for-update.service';
-import { ActiveRequestService } from './services/active-request.http-interceptor';
-import { routeSliderStatePlusMinus } from './services/animations';
-import { CloudDropboxService } from './services/api/cloud-dropbox.service';
-import { ErrorService } from './services/error.handler';
-import { GoogleAnalyticsService } from './services/google-analytics.service';
-import { MigrationService } from './services/mytvq/migration.service';
-import { TvWatchlistService } from './services/mytvq/tv-watchlist.service';
-import { NavigationService } from './services/navigation.service';
-import { INavigation } from './widgets/navigation/navigation.component';
-import { ToastService } from './widgets/toast/toast.service';
+import { TvWatchlistService } from './services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-app',
@@ -32,7 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private errSvc: ErrorService,
         private migrateSvc: MigrationService,
         private cloudSvc: CloudDropboxService,
-        private updateSvc: CheckForUpdateService,// inits CheckForUpdateService
+        private updateSvc: CheckForUpdateService, // inits CheckForUpdateService
         private gaSvc: GoogleAnalyticsService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');

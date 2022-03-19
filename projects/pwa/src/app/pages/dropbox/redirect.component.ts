@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CloudDropboxService } from '../../services/api/cloud-dropbox.service';
+import { CloudDropboxService } from 'common';
 
 @Component({
     selector: 'tvq-dropbox-redirect',

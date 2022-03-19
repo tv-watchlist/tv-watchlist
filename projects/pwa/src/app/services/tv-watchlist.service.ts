@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of, map, tap, forkJoin } from 'rxjs';
 
 // import { IMyTvQFlatV5 } from './flat-file-v5.model';
 @Injectable({ providedIn: 'root' })

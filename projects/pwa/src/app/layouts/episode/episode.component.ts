@@ -1,9 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { EpisodeService } from '../../services/mytvq/episode.service';
-import { ShowService } from '../../services/mytvq/show.service';
-import { UiEpisodeModel } from '../../services/mytvq/ui.model';
-import { IMyTvQDbShow } from '../../services/storage/db.model';
+import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IMyTvQDbShow } from 'common';
 
 @Component({
     selector: 'tvq-episode',

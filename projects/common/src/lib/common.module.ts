@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonComponent } from './common.component';
-
-
+import { CommonComponent } from './components/common.component';
 
 @NgModule({
   declarations: [

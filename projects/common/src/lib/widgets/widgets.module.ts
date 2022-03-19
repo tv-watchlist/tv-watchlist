@@ -46,12 +46,12 @@ const COMPONENTS: any[] = [
 export class WidgetsModule {
     static forRoot(): ModuleWithProviders<WidgetsModule> {
         return {
-          ngModule: WidgetsModule,
-          providers: [
-            LoaderScreenService,
-            ToastService,
-            DatePipe,
-          ]
+            ngModule: WidgetsModule,
+            providers: [
+                LoaderScreenService,
+                ToastService,
+                DatePipe,
+            ]
         };
-      }
+    }
 }
