@@ -29,10 +29,6 @@ export class ShowNotificationService {
         return this.subject.subscribe({next, error});
     }
 
-    unsubscribe(): void {
-        this.subject.unsubscribe();
-    }
-
     async displayShowNotifications(now = new Date()) {
         const settings = await this.settingSvc.getAll();
 

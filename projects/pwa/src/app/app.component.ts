@@ -122,9 +122,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscriptions.push(sub3);
 
         this.gaSvc.init();
-        this.showNotifySvc.subscribe(obj => {
+        const sub4 = this.showNotifySvc.subscribe(obj => {
             this.toastSvc.info(`${obj.showName}\n(${obj.time})\n${obj.episodeName}`);
         });
+        this.subscriptions.push(sub4);
         // this.routeTrigger$ = this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd),
         //     map(() => this.activatedRoute.firstChild),
@@ -172,6 +173,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
-        this.showNotifySvc.unsubscribe();
     }
 }

@@ -72,8 +72,4 @@ export class ToastService {
     subscribe(next?: (value: ToastModel) => void, error?: (err:any)=>void) {
         return this.subject.subscribe({next, error});
     }
-
-    unsubscribe(): void {
-        this.subject.unsubscribe();
-    }
 }

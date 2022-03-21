@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
+import { Subscription } from 'rxjs';
 import { ToastModel, ToastService } from './toast.service';
 /**
  * This is going to be a singleton component. That's why including Service to show and hide.
@@ -36,9 +37,9 @@ export class ToastComponent implements OnInit, OnDestroy {
         warn: 'text-white bg-yellow-600' ,
         error: 'text-white bg-red-800' ,
     };
-
+    private toastSubscription?: Subscription;
     ngOnInit(): void {
-        this.toastSvc.subscribe((value: ToastModel) => {
+        this.toastSubscription = this.toastSvc.subscribe((value: ToastModel) => {
             if(!value.confirm$) {
                 this.toasts.push(value);
             } else {
@@ -108,6 +109,6 @@ export class ToastComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.toastSvc.unsubscribe()
+        this.toastSubscription?.unsubscribe();
     }
 }
