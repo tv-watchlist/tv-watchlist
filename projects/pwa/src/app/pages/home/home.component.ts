@@ -1,7 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { slideInLeftOnEnterAnimation, slideInRightOnEnterAnimation, slideOutLeftOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { SettingService, ShowService, LoaderScreenService } from 'common';
+import { SettingService, ShowService, LoaderScreenService, ShowNotificationService } from 'common';
 import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
     constructor(
         private settingSvc: SettingService,
         private showSvc: ShowService,
+        private notifySvc: ShowNotificationService,
         private loaderSvc: LoaderScreenService,
         private tvqSvc: TvWatchlistService,
         private cdRef: ChangeDetectorRef) {
@@ -52,6 +53,7 @@ export class HomeComponent implements OnInit {
         const t1 = performance.now();
         console.log(`Call to updateAllShowReference took ${(t1 - t0)} milliseconds.`);
         this.loaderSvc.close();
+        this.notifySvc.displayShowNotifications();
         this.cdRef.markForCheck();
     }
 

@@ -5,6 +5,7 @@ import { EpisodeService } from './episode.service';
 import { IMyTvQFlatV5, IMyTvQShowEpisodeFlatV5 } from './flat-file-v5.model';
 import { IMyTvQFlatV6 } from './flat-file-v6.model';
 import { SettingService } from './setting.service';
+import { ShowNotificationService } from './show-notification.service';
 import { ShowService } from './show.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,6 +14,7 @@ export class MigrationService {
         private settingSvc: SettingService,
         private episodeSvc: EpisodeService,
         private showSvc: ShowService,
+        private notifySvc: ShowNotificationService,
         private webDb: WebDatabaseService,
     ) {
         this.now = new Date().getTime();
@@ -46,7 +48,11 @@ export class MigrationService {
             await this.episodeSvc.saveFileToDb(show.episode_list);
         });
         await this.showSvc.updateAndSaveAllShowReference();
-        // nsr.myTvQ.notify.AddShowNotifications(show, episode_list)
+        const showList = await this.showSvc.getAll();
+        showList.forEach(async show => {
+            const episodeList = await this.episodeSvc.getEpisodeList(show.showId);
+            await this.notifySvc.addShowNotifications(show, episodeList);
+        });
     }
 
     public async importV6(model: IMyTvQFlatV6): Promise<void> {
@@ -62,6 +68,11 @@ export class MigrationService {
         await this.showSvc.saveAll(model.show_list);
         await this.episodeSvc.saveAll(model.episode_list);
         await this.showSvc.updateAndSaveAllShowReference();
+        const showList = await this.showSvc.getAll();
+        showList.forEach(async show => {
+            const episodeList = await this.episodeSvc.getEpisodeList(show.showId);
+            await this.notifySvc.addShowNotifications(show, episodeList);
+        });
     }
 
     async export(): Promise<string> {

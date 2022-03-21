@@ -44,6 +44,8 @@ export class SettingService {
                 timezoneOffset: settings.timezone_offset|| defaults.timezoneOffset,
                 version: defaults.version,
                 showIdOrderList: defaults.showIdOrderList,
+                enableNotification: defaults.enableNotification,
+                notifyBeforeMin:defaults.notifyBeforeMin
             }
             this.webDb.putKeyValueBulk('settings', model);
         }

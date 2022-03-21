@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { routeSliderStatePlusMinus, NavigationService, ActiveRequestService, ToastService, ErrorService, MigrationService, CloudDropboxService, GoogleAnalyticsService, INavigation } from 'common';
+import { routeSliderStatePlusMinus, NavigationService, ActiveRequestService,
+    ToastService, ErrorService, MigrationService, CloudDropboxService,
+    GoogleAnalyticsService, INavigation, ShowNotificationService, IUIShowNotification } from 'common';
 import { Subscription, } from 'rxjs';
 import { CheckForUpdateService } from './service-workers/check-for-update.service';
 import { TvWatchlistService } from './services/tv-watchlist.service';
-
 @Component({
     selector: 'tvq-app',
     templateUrl: './app.component.html',
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private cloudSvc: CloudDropboxService,
         private updateSvc: CheckForUpdateService, // inits CheckForUpdateService
         private gaSvc: GoogleAnalyticsService,
+        private showNotifySvc: ShowNotificationService,
         private cdRef: ChangeDetectorRef) {
         const path = localStorage.getItem('path');
         if (path) {
@@ -120,7 +122,9 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscriptions.push(sub3);
 
         this.gaSvc.init();
-
+        this.showNotifySvc.subscribe(obj => {
+            this.toastSvc.info(`${obj.showName}\n(${obj.time})\n${obj.episodeName}`);
+        });
         // this.routeTrigger$ = this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd),
         //     map(() => this.activatedRoute.firstChild),
@@ -168,5 +172,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.showNotifySvc.unsubscribe();
     }
 }

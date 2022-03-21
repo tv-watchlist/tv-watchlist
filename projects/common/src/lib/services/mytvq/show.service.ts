@@ -10,6 +10,7 @@ import { WebDatabaseService } from '../storage/web-database.service';
 import { IMyTvQShowFlatV5 } from './flat-file-v5.model';
 import { ToastService } from '../../widgets/toast/toast.service';
 import { CommonService } from '../common.service';
+import { ShowNotificationService } from './show-notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class ShowService {
@@ -18,6 +19,7 @@ export class ShowService {
         private episodeSvc: EpisodeService,
         private webDb: WebDatabaseService,
         private commonSvc: CommonService,
+        private notifySvc: ShowNotificationService,
         private apiTvMazeSvc: ApiTvMazeService,
         private apiTmdbSvc: ApiTheMovieDbService,
         private toastSvc: ToastService,
@@ -132,7 +134,6 @@ export class ShowService {
             this.updateShowReference(show, episodes);
             await this.webDb.putObj('shows', show);
         });
-
         if (settings.hideTba) {
             // only show with future or unseen episodes
             showList = showList.filter(o => !!o && (o.unseenCount > 0 || !!o.futureEpisode));
@@ -255,14 +256,14 @@ export class ShowService {
         }
     }
 
-    removeShow(showId: string): void {
-        this.webDb.deleteObj('shows', showId);
-        this.webDb.deleteRange('episodes', 'showIdIndex', this.webDb.getKeyRange('=', showId));
-        this.settingSvc.get<string[]>('showIdOrderList').then(showIdOrder => {
+    async removeShow(showId: string): Promise<void> {
+        await this.webDb.deleteObj('shows', showId);
+        await this.episodeSvc.deleteEpisodes(showId);
+        this.settingSvc.get<string[]>('showIdOrderList').then(async showIdOrder => {
             showIdOrder.splice(showIdOrder.findIndex(o => o === showId), 1);
-            this.settingSvc.save('showIdOrderList', showIdOrder);
+            await this.settingSvc.save('showIdOrderList', showIdOrder);
         });
-        // TODO: remove from other places too i.e. future storage like notification
+        await this.notifySvc.deleteShowNotifications(showId);
     }
 
     async markAsSeen(show: IMyTvQDbShow, nextEpisodeId: string): Promise<void> {
@@ -483,6 +484,7 @@ export class ShowService {
             await this.webDb.putObj('shows', show);
             await this.webDb.deleteRange('episodes', 'showIdIndex', this.webDb.getKeyRange('=', showId));
             await this.webDb.putList('episodes', newEpisodeList);
+            await this.notifySvc.addShowNotifications(show, newEpisodeList);
             console.log('addUpdateShow', tvmShow.name, (!isAdding ? 'Updating' : 'Adding'));
             this.toastSvc.success(`Show '${show.name}' ${(!isAdding ? 'updated in' : 'added to')} your TvWatchList!`);
         } catch (error) {

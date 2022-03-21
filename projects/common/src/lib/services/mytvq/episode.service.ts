@@ -76,6 +76,10 @@ export class EpisodeService {
        return await this.webDb.putList('episodes',episodeList);
     }
 
+    public async deleteEpisodes(showId: string) {
+        await this.webDb.deleteRange('episodes', 'showIdIndex', this.webDb.getKeyRange('=', showId));
+    }
+
     public async getEpisodeDictionary(showId: string): Promise<{[episodeId: string]: IMyTvQDbEpisode}> {
        return await this.webDb.getIndexedObject<'episodes', IMyTvQDbEpisode>('episodes','showIdIndex',this.webDb.getKeyRange('=',showId));
     }

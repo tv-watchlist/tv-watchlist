@@ -1,6 +1,6 @@
 import { DBSchema } from 'idb'; // https://github.com/jakearchibald/idb#typescript
 
-export type MyTvQStoreName = 'settings' | 'shows' | 'episodes';
+export type MyTvQStoreName = 'settings' | 'shows' | 'episodes' | 'showsNotifications';
 
 export interface IMyTvQDBv1 extends DBSchema {
     settings: {key: string, value: any};
@@ -10,6 +10,13 @@ export interface IMyTvQDBv1 extends DBSchema {
     episodes: {key: string, value: IMyTvQDbEpisode, indexes: {
         'showIdIndex': string,
         'localShowTimeIndex': number }
+    };
+}
+
+export interface IMyTvQDBv2 extends IMyTvQDBv1 {
+    showsNotifications: {key: string, value: IMyTvQDbShowNotification, indexes: {
+        'showIdIndex': string,
+        'notifyTimeIndex': number }
     };
 }
 
@@ -128,6 +135,7 @@ export interface IMyTvQDbSetting {
      * User's default country for timezone calculations
      */
     defaultCountry: string;
+
     /**
      * Country offset to show correct time (maybe due to daytime savings)
      */
@@ -136,9 +144,29 @@ export interface IMyTvQDbSetting {
     };
 
     /**
-     * the list of shows to show in dashboard
+     * The list of shows to show in dashboard
      */
     showIdOrderList: string[];
+
+    /**
+     * Enable Notification
+     */
+    enableNotification: boolean;
+
+    /**
+     * Display notification before x mins to episode airtime.
+     */
+    notifyBeforeMin: number;
+}
+
+export interface IMyTvQDbShowNotification
+{
+    id: string, // key
+    notifyTime: number, // index
+    showId: string, // index
+    showName: string,
+    episode: IMyTvQDbEpisode,
+    country: string
 }
 
 export class MyTvQDbSetting {
@@ -152,12 +180,23 @@ export class MyTvQDbSetting {
             hideSeen: true,
             defaultCountry: "US",
             showIdOrderList: [],
-            timezoneOffset: {"US": 0}
+            timezoneOffset: {"US": 0},
+            enableNotification: true,
+            notifyBeforeMin: 24 * 60,
         }
     }
 }
 
 /*
+<label for="enable_notification" class="boldText"> Enable Notification </label>
+    <select id="notify_before">
+        <option value="">every day</option>
+        <option value="5">before 5 mins</option>
+        <option value="10">before 10 mins</option>
+        <option value="15">before 15 mins</option>
+        <option value="30">before 30 mins</option>
+        <option value="60">before 1 hour</option>
+    </select> for each show. <br />
 // Old settings
 "advanced_css_hack": 0,
 "animate_icon": 1,

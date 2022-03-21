@@ -23,6 +23,7 @@ https://tv-watchlist.github.io
 - [ ] show countdown page
 - [ ] show schedule page
 - [ ] add cron/background job to update references and data.
+- [ ] add Movie Watchlist
 
 - [ ] follow WCAG guideline 
 - [ ] support i18n For languages

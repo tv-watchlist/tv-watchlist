@@ -11,13 +11,15 @@ export * from './lib/services/api/api-the-movie-db.service';
 export * from './lib/services/api/api-tv-maze.service';
 export * from './lib/services/api/cloud-dropbox.service';
 
-export * from './lib/services/mytvq/episode.service';
 export * from './lib/services/mytvq/flat-file-v5.model';
 export * from './lib/services/mytvq/flat-file-v6.model';
+export * from './lib/services/mytvq/ui.model';
+
+export * from './lib/services/mytvq/episode.service';
 export * from './lib/services/mytvq/migration.service';
 export * from './lib/services/mytvq/setting.service';
 export * from './lib/services/mytvq/show.service';
-export * from './lib/services/mytvq/ui.model';
+export * from './lib/services/mytvq/show-notification.service';
 
 export * from './lib/services/storage/db.model';
 export * from './lib/services/storage/web-database.service';
