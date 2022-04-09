@@ -45,7 +45,12 @@ export class PopularComponent implements OnInit {
 
             return popular.results.map(o => {
                 const newO: IUITheMovieDbShow = { ...o };
-                newO.poster_path = baseUrl + 'w220_and_h330_face' + o.poster_path;
+                if(!!o.poster_path) {
+                    newO.poster_path = baseUrl + 'w220_and_h330_face' + o.poster_path;
+                } else {
+                    newO.poster_path = 'assets/icons/apple-icon-180.png';
+                }
+
                 newO.genres = o.genre_ids.map(m => genreDict[m]).join(', ');
 
                 return newO

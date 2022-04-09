@@ -8,14 +8,22 @@ import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, fadeOutOnLeave
         slideOutDownOnLeaveAnimation({ duration: 400 }),
         fadeOutOnLeaveAnimation({ duration: 400 })]
 })
-export class OptionsMenuComponent implements OnInit {
+export class OptionsMenuComponent<T> implements OnInit {
     constructor() { }
 
     visible = false;
     @Input() header = '';
-    @Input() options: string[] = [];
-    @Input() default = '';
-    @Output() action = new EventEmitter<string>();
+    @Input() options: T[] = [];
+    /**
+     * if T is object then the property which can be used as the Id
+     */
+    @Input() optionsKey?: keyof T;
+    /**
+     * if T is object then the property which can be used as Label
+     */
+    @Input() optionsLabel?: (obj: T) => string;
+    @Input() default?:T;
+    @Output() action = new EventEmitter<T>();
 
     ngOnInit(): void { }
 
@@ -27,7 +35,23 @@ export class OptionsMenuComponent implements OnInit {
         this.visible = false;
     }
 
-    clicked(option: string): void {
+    getLabel(option: T) {
+        if(!!this.optionsLabel && !!option){
+            return this.optionsLabel(option);
+        }
+
+        return option;
+    }
+
+    getKey(option?: T) {
+        if(!!this.optionsKey && !!option && this.optionsKey in option){
+            return option[this.optionsKey];
+        }
+
+        return option;
+    }
+
+    clicked(option: T): void {
         this.action.emit(option);
         this.closeMenu();
     }

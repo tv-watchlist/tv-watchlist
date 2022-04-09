@@ -1,6 +1,17 @@
 <h4 class="text-lg text-center text-gray-700">Settings</h4>
 <ul class="flex flex-col mb-4 -mx-1 bg-white">
     <li class="flex justify-between px-4 py-2 border-b">
+        <span>Show Notification</span>
+        <tvq-switch [(state)]="enableNotification"></tvq-switch>
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b">
+        <span>Notification Before</span>
+        <span class="my-auto text-sm text-gray-500 cursor-pointer" (click)="menu3.openMenu()">
+            {{notifyBeforeMin}} Mins
+            <tvq-svg-icon icon="chevron-right" size="4" classes="inline-block"></tvq-svg-icon>
+        </span>
+    </li>
+    <li class="flex justify-between px-4 py-2 border-b">
         <span class="my-auto">Hide Seen TBA/Complete Shows</span>
         <tvq-switch [(state)]="hideTba"></tvq-switch>
     </li>
@@ -33,3 +44,4 @@
 <div class="text-xs text-center text-gray-400">Data version: {{version}}</div>
 <tvq-options-menu #menu1 (action)="showsOrder=$event" [default]="showsOrder" [options]="['airdate','unseen','unseen_my_popular','name']"></tvq-options-menu>
 <tvq-options-menu #menu2 (action)="episodesOrder=$event" [default]="episodesOrder" [options]="['seen','latest']"></tvq-options-menu>
+<tvq-options-menu #menu3 (action)="notifyBeforeMin=$event" [default]="notifyBeforeMin" [options]="[5,15,30,60,24*60]"></tvq-options-menu>

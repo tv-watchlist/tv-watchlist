@@ -11,8 +11,8 @@
                     (click)="clicked(option)"
                     [ngClass]="{'border-b':!last}">
                     <span class="inline-flex text-blue-500">
-                        <tvq-svg-icon icon="check" size="6" classes="mr-2" *ngIf="default === (option || ' ')"></tvq-svg-icon>
-                        {{option}}
+                        <tvq-svg-icon icon="check" size="6" classes="mr-2" *ngIf="getKey(default) === getKey(option)"></tvq-svg-icon>
+                        {{getLabel(option)}}
                     </span>
                 </li>
             </ul>

@@ -33,15 +33,16 @@ export class ShowNotificationService {
         const settings = await this.settingSvc.getAll();
 
         const enabled = settings.enableNotification;
-        if (enabled) {
-            const list = await this.getUntilNotifications(now.getTime());
-            if (list.length > 0) {
-                console.log('GetNotifications:', list);
-                list.forEach(async (notify) => {
-                    let episode = notify.episode;
-                    let gap = Math.abs(this.commonSvc.getDaysBetween(new Date(now.getFullYear(), now.getMonth(), now.getDate()),
-                        new Date(notify.notifyTime)));
-                    if (now >= new Date(notify.notifyTime) && gap < 1) {
+
+        const list = await this.getUntilNotifications(now.getTime());
+        if (list.length > 0) {
+            console.log('GetNotifications:', list);
+            list.forEach(async (notify) => {
+                let episode = notify.episode;
+                let gap = Math.abs(this.commonSvc.getDaysBetween(new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+                    new Date(notify.notifyTime)));
+                if (now >= new Date(notify.notifyTime) && gap < 1) {
+                    if (enabled) {
                         let timezone_offset = settings.timezoneOffset || {};
                         let offset_next_date = !!episode.localShowTime ? new Date(episode.localShowTime) : new Date();
                         if (timezone_offset[notify.country]) {
@@ -70,12 +71,13 @@ export class ShowNotificationService {
 
                         await this.deleteByIdNotification(notify.id);
                     }
-                    if (gap >= 1) {
-                        await this.deleteByIdNotification(notify.id);
-                    }
-                });
-            }
+                }
+                if (gap >= 1) {
+                    await this.deleteByIdNotification(notify.id);
+                }
+            });
         }
+
         console.log('enable_notification:', enabled);
     }
 

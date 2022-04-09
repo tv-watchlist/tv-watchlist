@@ -24,6 +24,8 @@ https://tv-watchlist.github.io
 - [ ] show schedule page
 - [ ] add cron/background job to update references and data.
 - [ ] add Movie Watchlist
+- [ ] From Search/Popular navigate to details if already exists
+- [ ] Click pics to show more pics
 
 - [ ] follow WCAG guideline 
 - [ ] support i18n For languages

@@ -22,7 +22,7 @@ export class ShowDetailComponent implements OnInit {
         private toastSvc: ToastService,
     ) { }
 
-    @ViewChild('menu') menu!: OptionsMenuComponent;
+    @ViewChild('menu') menu!: OptionsMenuComponent<string>;
 
     public showDetails = false;
     public menuOptions = ['Seen', 'Latest'];
