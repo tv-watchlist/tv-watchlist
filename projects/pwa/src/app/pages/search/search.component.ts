@@ -1,10 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ApiTvMazeService, LoaderScreenService, GoogleAnalyticsService, ShowService, ITvMazeSearch } from 'common';
+import { FormsModule } from '@angular/forms';
+import { ApiTvMazeService, LoaderScreenService, GoogleAnalyticsService, ShowService, ITvMazeSearch,SvgIconComponent } from 'common';
 import { Observable, tap } from 'rxjs';
 
 @Component({
     selector: 'tvq-search',
-    templateUrl: 'search.component.html'
+    standalone: true,
+    templateUrl: 'search.component.html',
+    imports: [CommonModule, FormsModule, SvgIconComponent]
 })
 export class SearchComponent implements OnInit {
     constructor(private searchSvc: ApiTvMazeService,

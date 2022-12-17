@@ -3,6 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonService } from 'common';
+import { CommonModule } from '@angular/common';
 
 export interface IGaQueryResult {
     kind: string;
@@ -41,7 +42,9 @@ export interface IGaQueryResult {
 
 @Component({
     selector: 'tvq-analytics',
-    templateUrl: 'analytics.component.html'
+    standalone: true,
+    templateUrl: 'analytics.component.html',
+    imports:[CommonModule]
 })
 export class AnalyticsComponent implements OnInit {
     constructor(private http: HttpClient, private commonSvc: CommonService) { }

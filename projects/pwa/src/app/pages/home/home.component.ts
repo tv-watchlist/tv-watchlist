@@ -1,11 +1,15 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { slideInLeftOnEnterAnimation, slideInRightOnEnterAnimation, slideOutLeftOnLeaveAnimation, slideOutRightOnLeaveAnimation } from 'angular-animations';
-import { SettingService, ShowService, LoaderScreenService, ShowNotificationService } from 'common';
+import { SettingService, ShowService, LoaderScreenService, ShowNotificationService,SvgIconComponent,ButtonComponent } from 'common';
 import { TvWatchlistService } from '../../services/tv-watchlist.service';
+import { ShowBannerCardComponent } from "../../layouts/show-banner-card/show-banner-card.component";
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'tvq-home',
+    standalone: true,
     templateUrl: 'home.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
@@ -13,7 +17,8 @@ import { TvWatchlistService } from '../../services/tv-watchlist.service';
         slideInRightOnEnterAnimation({ anchor: 'enterRight', duration: 400 }),
         slideOutLeftOnLeaveAnimation({ anchor: 'leaveLeft', duration: 400 }),
         slideOutRightOnLeaveAnimation({ anchor: 'leaveRight', duration: 400 }),
-    ]
+    ],
+    imports: [RouterModule,CommonModule, ShowBannerCardComponent, SvgIconComponent, ButtonComponent]
 })
 export class HomeComponent implements OnInit {
     constructor(

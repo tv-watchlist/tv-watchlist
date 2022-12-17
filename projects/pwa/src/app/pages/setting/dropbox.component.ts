@@ -1,9 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CloudDropboxService, MigrationService, ActiveRequestService, ToastService, IMyTvQFlatV6 } from 'common';
+import { CloudDropboxService, MigrationService, ActiveRequestService, ToastService, IMyTvQFlatV6,
+    OptionsMenuComponent
+ } from 'common';
 
 @Component({
     selector: 'tvq-setting-dropbox',
-    templateUrl: 'dropbox.component.html'
+    standalone: true,
+    templateUrl: 'dropbox.component.html',
+    imports: [CommonModule, OptionsMenuComponent]
 })
 
 export class SettingDropboxComponent implements OnInit {

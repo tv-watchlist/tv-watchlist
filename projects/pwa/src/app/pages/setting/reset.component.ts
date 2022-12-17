@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingService, WebDatabaseService, ActiveRequestService, MyTvQDbSetting } from 'common';
+import { SettingService, WebDatabaseService, ActiveRequestService, MyTvQDbSetting,OptionsMenuComponent
+ } from 'common';
 
 @Component({
     selector: 'tvq-setting-reset',
-    templateUrl: 'reset.component.html'
+    standalone: true,
+    templateUrl: 'reset.component.html',
+    imports: [OptionsMenuComponent]
 })
 export class SettingsResetComponent implements OnInit {
     constructor(

@@ -3,6 +3,7 @@ import { CloudDropboxService } from 'common';
 
 @Component({
     selector: 'tvq-dropbox-redirect',
+    standalone: true,
     templateUrl: 'redirect.component.html'
 })
 export class DropboxRedirectComponent implements OnInit {

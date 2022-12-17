@@ -33,11 +33,11 @@ https://tv-watchlist.github.io
 
 ## Initial Steps to create project
 
-[Angular CLI](https://github.com/angular/angular-cli) version 13.2.0
+[Angular CLI](https://github.com/angular/angular-cli) version 15.0.4
 
 Taken from https://angular.io/guide/file-structure#multiple-projects
 
-0) Using Node v16.13.2 (includes yarn 1.22.17) 
+0) Using Node v18.12.1 (includes yarn 1.22.17) 
 1) ng new tv-watchlist --createApplication="false"
     o strict = Yes
 2) cd tv-watchlist

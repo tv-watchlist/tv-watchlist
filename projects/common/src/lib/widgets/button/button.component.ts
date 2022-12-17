@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 
 @Component({
     selector: 'tvq-button',
+    standalone: true,
     templateUrl: 'button.component.html'
 })
 

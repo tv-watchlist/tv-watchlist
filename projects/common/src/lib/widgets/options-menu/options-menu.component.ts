@@ -1,12 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation, fadeOutOnLeaveAnimation } from 'angular-animations';
+import { SvgIconComponent } from "../svg-icon/svg-icon.component";
 
 @Component({
     selector: 'tvq-options-menu',
+    standalone: true,
     templateUrl: 'options-menu.component.html',
     animations: [slideInUpOnEnterAnimation({ duration: 400 }),
         slideOutDownOnLeaveAnimation({ duration: 400 }),
-        fadeOutOnLeaveAnimation({ duration: 400 })]
+        fadeOutOnLeaveAnimation({ duration: 400 })],
+    imports: [CommonModule, SvgIconComponent]
 })
 export class OptionsMenuComponent<T> implements OnInit {
     constructor() { }

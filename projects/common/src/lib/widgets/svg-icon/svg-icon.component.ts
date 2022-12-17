@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output } from '@angular/core';
 
 // https://heroicons.dev/
@@ -11,7 +12,9 @@ export type SvgIconType = 'home' | 'search'| 'sparkles' |
 
 @Component({
     selector: 'tvq-svg-icon',
-    templateUrl: 'svg-icon.component.html'
+    standalone: true,
+    templateUrl: 'svg-icon.component.html',
+    imports: [CommonModule]
 })
 export class SvgIconComponent implements OnChanges {
     constructor() { }

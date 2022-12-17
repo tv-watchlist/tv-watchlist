@@ -2,15 +2,19 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { fadeOutOnLeaveAnimation, slideInUpOnEnterAnimation, slideOutDownOnLeaveAnimation } from 'angular-animations';
 import { Subscription } from 'rxjs';
 import { ToastModel, ToastService } from './toast.service';
+import { SvgIconComponent } from "../svg-icon/svg-icon.component";
+import { CommonModule } from '@angular/common';
 /**
  * This is going to be a singleton component. That's why including Service to show and hide.
  */
 @Component({
     selector: 'tvq-toast',
+    standalone: true,
     templateUrl: 'toast.component.html',
     animations: [slideInUpOnEnterAnimation({ duration: 400 }),
-    slideOutDownOnLeaveAnimation({ duration: 400 }),
-    fadeOutOnLeaveAnimation({ duration: 400 })]
+        slideOutDownOnLeaveAnimation({ duration: 400 }),
+        fadeOutOnLeaveAnimation({ duration: 400 })],
+    imports: [SvgIconComponent, CommonModule]
 })
 export class ToastComponent implements OnInit, OnDestroy {
     constructor(private toastSvc: ToastService,

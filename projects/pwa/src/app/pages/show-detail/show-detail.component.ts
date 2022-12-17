@@ -1,12 +1,20 @@
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ShowService, CommonService, SettingService, EpisodeService, GoogleAnalyticsService, LoaderScreenService, ToastService, OptionsMenuComponent, IMyTvQDbEpisode, UiShowModel } from 'common';
+import { ShowService, CommonService, SettingService, EpisodeService, GoogleAnalyticsService,
+    LoaderScreenService, ToastService, OptionsMenuComponent, IMyTvQDbEpisode, UiShowModel ,
+    SvgIconComponent
+} from 'common';
+import { EpisodeComponent } from '../../layouts/episode/episode.component';
 
 @Component({
     selector: 'tvq-show-detail',
+    standalone: true,
     templateUrl: 'show-detail.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, FormsModule, DatePipe, SvgIconComponent, EpisodeComponent, OptionsMenuComponent]
 })
 export class ShowDetailComponent implements OnInit {
     constructor(

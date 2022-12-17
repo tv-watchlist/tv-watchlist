@@ -1,8 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'tvq-switch',
-    templateUrl: 'switch.component.html'
+    standalone: true,
+    templateUrl: 'switch.component.html',
+    imports: [CommonModule, FormsModule]
 })
 export class SwitchComponent implements OnInit {
     constructor() { }

@@ -1,5 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ApiTheMovieDbService, LoaderScreenService, GoogleAnalyticsService, ShowService } from 'common';
+import { ApiTheMovieDbService, LoaderScreenService, GoogleAnalyticsService, ShowService, SvgIconComponent } from 'common';
 import { lastValueFrom, map } from 'rxjs';
 
 export interface IUITheMovieDbShow {
@@ -20,7 +21,9 @@ export interface IUITheMovieDbShow {
 
 @Component({
     selector: 'tvq-popular',
-    templateUrl: 'popular.component.html'
+    standalone: true,
+    templateUrl: 'popular.component.html',
+    imports: [CommonModule, SvgIconComponent]
 })
 export class PopularComponent implements OnInit {
     constructor(private svc: ApiTheMovieDbService,

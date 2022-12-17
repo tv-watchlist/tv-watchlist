@@ -1,9 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { SettingService, LoaderScreenService, ShowService, ShowNotificationService } from 'common';
+import { SettingService, LoaderScreenService, ShowService, ShowNotificationService,
+    OptionsMenuComponent,SvgIconComponent,SwitchComponent
+} from 'common';
+import { SettingImportExportComponent } from "./import-export.component";
+import { SettingDropboxComponent } from "./dropbox.component";
+import { SettingsResetComponent } from "./reset.component";
 
 @Component({
     selector: 'tvq-setting',
-    templateUrl: 'setting.component.html'
+    standalone: true,
+    templateUrl: 'setting.component.html',
+    imports: [SwitchComponent, SvgIconComponent, SettingImportExportComponent, SettingDropboxComponent, SettingsResetComponent, OptionsMenuComponent]
 })
 export class SettingComponent implements OnInit {
     constructor(

@@ -1,13 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { SwPush } from '@angular/service-worker';
-import { ButtonComponent } from 'common';
+import { ButtonComponent, SvgIconComponent } from 'common';
 import { CheckForUpdateService } from '../../service-workers/check-for-update.service';
 import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-about',
-    templateUrl: 'about.component.html'
+    standalone: true,
+    templateUrl: 'about.component.html',
+    imports: [CommonModule, ButtonComponent, SvgIconComponent]
 })
 export class AboutComponent implements OnInit {
     constructor(

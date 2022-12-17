@@ -1,6 +1,4 @@
-import { ViewportScroller } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule, Router } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { SettingComponent } from './pages/setting/setting.component';
@@ -12,8 +10,9 @@ import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './pages/not-found/not-found.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { NgModule } from '@angular/core';
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: '', // default path
         component: AppComponent,
@@ -53,32 +52,4 @@ const routes: Routes = [
     // }],
     exports: [RouterModule]
 })
-export class AppRoutingModule {
-    constructor(router: Router, viewportScroller: ViewportScroller) {
-        const body = window.document.scrollingElement;
-        // router.events.pipe(
-        //     filter((e): e is Scroll => e instanceof Scroll)
-        // ).subscribe((e: Scroll) => {
-        //     console.log('backward navigation', e.routerEvent.urlAfterRedirects, e.position, e.anchor);
-        //     if (e.position) {
-        //         // backward navigation
-        //         console.log('backward navigation');
-        //         // if (!!body) {
-        //         //     const position = e.position;
-        //         //     setTimeout(() => {
-        //         //         viewportScroller.scrollToPosition(position);
-        //         //         // body.scrollTop = position[1];
-        //         //     }, 500);
-        //         // }
-        //     } else if (e.anchor) {
-        //         // anchor navigation
-        //         console.log('anchor navigation');
-        //         // viewportScroller.scrollToAnchor(e.anchor);
-        //     } else {
-        //         // forward navigation
-        //         console.log('forward navigation');
-        //         // viewportScroller.scrollToPosition([0, 0]);
-        //     }
-        // });
-    }
-}
+export class AppRoutingModule { }

@@ -1,18 +1,26 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { routeSliderStatePlusMinus, NavigationService, ActiveRequestService,
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
+import {
+    routeSliderStatePlusMinus, NavigationService, ActiveRequestService,
     ToastService, ErrorService, MigrationService, CloudDropboxService,
-    GoogleAnalyticsService, INavigation, ShowNotificationService, IUIShowNotification } from 'common';
+    GoogleAnalyticsService, INavigation, ShowNotificationService, LoaderScreenComponent,
+    ButtonComponent, SvgIconComponent, ToastComponent, LoaderBarComponent, NavigationComponent
+} from 'common';
 import { Subscription, } from 'rxjs';
 import { CheckForUpdateService } from './service-workers/check-for-update.service';
 import { TvWatchlistService } from './services/tv-watchlist.service';
+
 @Component({
     selector: 'tvq-app',
+    standalone: true,
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     animations: [
         routeSliderStatePlusMinus,
-    ]
+    ],
+    imports: [CommonModule, RouterModule, ButtonComponent, SvgIconComponent, ToastComponent,
+        NavigationComponent, LoaderBarComponent, LoaderScreenComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
     constructor(
@@ -83,15 +91,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // this pwa specific
     @HostListener('window:beforeinstallprompt', ['$event'])
-    onBeforeInstallPrompt(e:Event) {
-      console.log('onBeforeInstallPrompt', e);
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      this.tvQSvc.deferredInstallPrompt = e as BeforeInstallPromptEvent;
+    onBeforeInstallPrompt(e: Event) {
+        console.log('onBeforeInstallPrompt', e);
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        this.tvQSvc.deferredInstallPrompt = e as BeforeInstallPromptEvent;
     }
 
     ngOnInit(): void {
+        console.log('The AppComponent loading');
         this.isReady = true;
         this.cdRef.detectChanges();
         this.isHome = this.router.url === '/home';
@@ -149,13 +158,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
     async onNavClick(nav: INavigation) {
         console.log('onNavClick', nav);
-        if(nav.disabled) {
+        if (nav.disabled) {
             return;
         }
 
-        if(nav.name === 'Save') {
+        if (nav.name === 'Save') {
             const backup = await this.migrateSvc.export();
-            this.cloudSvc.upload(backup).subscribe(()=>{
+            this.cloudSvc.upload(backup).subscribe(() => {
                 this.toastSvc.success('Data was uploaded successfully!');
             });
         } else {
@@ -163,7 +172,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 
-    reload(){
+    reload() {
         document.location.reload();
     }
 

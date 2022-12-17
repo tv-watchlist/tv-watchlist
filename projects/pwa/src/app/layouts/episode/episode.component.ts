@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
-import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IMyTvQDbShow } from 'common';
+import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IMyTvQDbShow,SvgIconComponent } from 'common';
 
 @Component({
     selector: 'tvq-episode',
+    standalone: true,
     templateUrl: 'episode.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, SvgIconComponent]
 })
 export class EpisodeComponent implements OnInit {
     constructor(

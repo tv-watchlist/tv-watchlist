@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LoaderScreenService {
     constructor() {
        this.subject = new Subject<{message: string; status: boolean}>();

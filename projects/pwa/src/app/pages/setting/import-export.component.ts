@@ -4,6 +4,7 @@ import { ActiveRequestService, MigrationService } from 'common';
 
 @Component({
     selector: 'tvq-setting-import-export',
+    standalone: true,
     templateUrl: 'import-export.component.html'
 })
 export class SettingImportExportComponent implements OnInit {

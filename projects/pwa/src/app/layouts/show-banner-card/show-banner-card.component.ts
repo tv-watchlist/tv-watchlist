@@ -1,12 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ShowService, GoogleAnalyticsService, UiShowModel } from 'common';
+import { ShowService, GoogleAnalyticsService, UiShowModel, SvgIconComponent } from 'common';
 
 @Component({
     selector: 'tvq-show-banner-card',
+    standalone: true,
     templateUrl: 'show-banner-card.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, SvgIconComponent]
 })
 export class ShowBannerCardComponent implements OnInit {
     constructor(

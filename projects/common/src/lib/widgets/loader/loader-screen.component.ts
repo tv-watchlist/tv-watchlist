@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { fadeOutOnLeaveAnimation } from 'angular-animations';
 import { LoaderScreenService } from './loader-screen.service';
@@ -7,6 +8,8 @@ import { LoaderScreenService } from './loader-screen.service';
  */
 @Component({
     selector: 'tvq-loader-screen',
+    standalone: true,
+    imports: [CommonModule],
     templateUrl: 'loader-screen.component.html',
     animations: [fadeOutOnLeaveAnimation({ duration: 400 })]
 })
