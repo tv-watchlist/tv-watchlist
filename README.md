@@ -33,11 +33,11 @@ https://tv-watchlist.github.io
 
 ## Initial Steps to create project
 
-[Angular CLI](https://github.com/angular/angular-cli) version 15.0.4
+[Angular CLI](https://github.com/angular/angular-cli) version 13.2.0
 
 Taken from https://angular.io/guide/file-structure#multiple-projects
 
-0) Using Node v18.12.1 (includes yarn 1.22.17) 
+0) Using Node v16.13.2 (includes yarn 1.22.17) 
 1) ng new tv-watchlist --createApplication="false"
     o strict = Yes
 2) cd tv-watchlist
@@ -49,10 +49,16 @@ Taken from https://angular.io/guide/file-structure#multiple-projects
 7) cd projects/pwa 
 8) npx pwa-asset-generator src/assets/myTvQ.png src/assets/icons -m src/manifest.webmanifest --padding "calc(50vh - 25%) calc(50vw - 25%)" -b "#F97316" -q 100 -i src/asset-generator-changes.html --favicon
 
+## library upgrade history
+
+1) 2022-12-17
+    Upgraded nodejs 16.13.2 -> 18.12.1
+    Upgraded angular 13.2.0 -> 15.0.4
+
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. 
+Run `ng serve pwa` for a dev server. Navigate to `http://localhost:4200/`. 
 The app will automatically reload if you change any of the source files.
 
 To test pwa use `yarn run dev`. Navigate to `http://localhost:4200/`. 
