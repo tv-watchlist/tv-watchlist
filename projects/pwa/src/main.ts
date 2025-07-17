@@ -7,7 +7,7 @@ import { RootComponent } from './app/root.component';
 import { provideRouter, RouterModule, withDebugTracing } from '@angular/router';
 import { AppRoutingModule, routes } from './app/app-routing';
 import { CommonModule, DatePipe } from '@angular/common';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ActiveRequestHttpInterceptor, TvQAngularErrorsHandler } from 'common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FormsModule } from '@angular/forms';

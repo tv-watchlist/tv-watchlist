@@ -15,12 +15,16 @@
       "prefix": "tvq",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/pwa",
+            "outputPath": {
+              "base": "dist/pwa",
+              "browser": ""
+            },
             "index": "projects/pwa/src/index.html",
-            "main": "projects/pwa/src/main.ts",
-            "polyfills": "projects/pwa/src/polyfills.ts",
+            "polyfills": [
+              "projects/pwa/src/polyfills.ts"
+            ],
             "tsConfig": "projects/pwa/tsconfig.app.json",
             "assets": [
               "projects/pwa/src/404.html",
@@ -40,12 +44,11 @@
             "allowedCommonJsDependencies": [
                 "hammerjs"
             ],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "projects/pwa/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -60,8 +63,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -74,8 +75,7 @@
                   "maximumError": "10kb"
                 }
               ],
-              "serviceWorker": true,
-              "ngswConfigPath": "projects/pwa/ngsw-config.json"
+              "serviceWorker": "projects/pwa/ngsw-config.json"
             }
           },
           "defaultConfiguration": ""
@@ -150,12 +150,16 @@
       "prefix": "tvq",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/webextension",
+            "outputPath": {
+              "base": "dist/webextension",
+              "browser": ""
+            },
             "index": "projects/webextension/src/index.html",
-            "main": "projects/webextension/src/main.ts",
-            "polyfills": "projects/webextension/src/polyfills.ts",
+            "polyfills": [
+              "projects/webextension/src/polyfills.ts"
+            ],
             "tsConfig": "projects/webextension/tsconfig.app.json",
             "assets": [
               "projects/webextension/src/favicon.ico",
@@ -167,12 +171,11 @@
               "projects/webextension/src/styles.css"
             ],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "projects/webextension/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -187,8 +190,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
