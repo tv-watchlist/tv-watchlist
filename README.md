@@ -3,6 +3,22 @@
 https://tv-watchlist.github.io
 
 ## TODO
+- [ ] add push notification
+- [ ] add cron/background job to update references and data.
+
+- [ ] Add Analytics and show live data as page (highlights will be most watched show, total users, trending episode etc)
+- [ ] show interactive step welcome/help
+- [ ] pull page for refresh https://medium.com/angularwave/rxjs-and-angular-pull-to-refresh-that-emulates-native-ios-and-android-rxjs-challenge-18-75408c53f66
+- [ ] show desktop view
+- [ ] show countdown page
+- [ ] show schedule page
+- [ ] add Movie Watchlist
+- [ ] From Search/Popular navigate to details if already exists
+- [ ] Click pics to show more pics
+
+- [ ] follow WCAG guideline 
+- [ ] support i18n For languages
+- [ ] dark mode or themable
 - [x] mobile view first (use flat file as mock data)
 - [x] use data from indexedDb
 - [x] migration of old data from flat file
@@ -15,21 +31,7 @@ https://tv-watchlist.github.io
 - [x] on first time or empty data show trending shows where can also add.
 - [x] add notification
 - [x] add dropbox/drive cloud save
-- [ ] Add Analytics and show live data as page (highlights will be most watched show, total users, trending episode etc)
-- [ ] add push notification
-- [ ] show interactive step welcome/help
-- [ ] pull page for refresh https://medium.com/angularwave/rxjs-and-angular-pull-to-refresh-that-emulates-native-ios-and-android-rxjs-challenge-18-75408c53f66
-- [ ] show desktop view
-- [ ] show countdown page
-- [ ] show schedule page
-- [ ] add cron/background job to update references and data.
-- [ ] add Movie Watchlist
-- [ ] From Search/Popular navigate to details if already exists
-- [ ] Click pics to show more pics
 
-- [ ] follow WCAG guideline 
-- [ ] support i18n For languages
-- [ ] dark mode or themable
 
 ## Initial Steps to create project
 
