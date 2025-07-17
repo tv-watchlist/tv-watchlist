@@ -1,4 +1,5 @@
-<div *ngIf="!!model"  class="relative flex flex-wrap mb-2 rounded-md shadow-md" (click)="model.expand = true"
+@if (!!model) {
+  <div  class="relative flex flex-wrap mb-2 rounded-md shadow-md" (click)="model.expand = true"
             [ngClass]="{
         'bg-red-500': model.status === -1,
         'bg-green-500': model.status === 0,
@@ -6,59 +7,80 @@
         'cursor-pointer':!model.expand}
         "
     >
-    <img *ngIf="!!model.banner" class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="model.banner" alt="">
+    @if (!!model.banner) {
+      <img class="absolute inset-0 object-cover w-full h-full rounded-md" [src]="model.banner" alt="">
+    }
     <div class="relative inset-0 w-full h-full p-2 text-white rounded-md" [ngClass]="{'bg-black bg-opacity-50 ':!!model.banner}">
-        <div class="flex justify-between w-full">
-            <!-- show name - status -->
-            <span>
-                <span [innerHTML]="model.name" class="mr-2 font-bold"></span>
-                <span [innerHTML]="model.premiered" class="text-sm"></span>
-            </span>
+      <div class="flex justify-between w-full">
+        <!-- show name - status -->
+        <span>
+          <span [innerHTML]="model.name" class="mr-2 font-bold"></span>
+          <span [innerHTML]="model.premiered" class="text-sm"></span>
+        </span>
             <span class="px-1 my-auto text-xs" [ngClass]="{
                 'bg-red-500': model.status === -1,
                 'bg-green-500': model.status === 0,
                 'bg-blue-500': model.status === 1}">
-                <ng-container [ngSwitch]="model.status">
-                    <span class="truncate" *ngSwitchCase="0">{{model.latestEpisodeDateFormatted}}</span>
-                    <span *ngSwitchCase="1">TBA</span>
-                    <span *ngSwitchDefault>Completed</span>
-                </ng-container>
-            </span>
+          @switch (model.status) {
+            @case (0) {
+              <span class="truncate">{{model.latestEpisodeDateFormatted}}</span>
+            }
+            @case (1) {
+              <span>TBA</span>
+            }
+            @default {
+              <span>Completed</span>
+            }
+          }
+        </span>
+      </div>
+      <!-- latest/previous/last episode -->
+      <div class="flex justify-between w-full" [ngClass]="{'mb-2':model.expand}">
+        @if (model.status === 0) {
+          <span class="w-full" [innerHTML]="model.latestEpisodeName"></span>
+        }
+        @if (model.status !== 0) {
+          <span class="w-9/12 truncate" [ngClass]="{'w-9/12':model.latestEpisodeDateFormatted.length > 3, 'w-11/12':model.latestEpisodeDateFormatted.length <= 3}" [innerHTML]="model.latestEpisodeName"></span>
+          <span class="px-1 my-auto text-xs text-right" [innerHTML]="model.latestEpisodeDateFormatted"></span>
+        }
+      </div>
+      @if (!model.expand) {
+        <div class="flex justify-center">
+          <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
         </div>
-        <!-- latest/previous/last episode -->
-        <div class="flex justify-between w-full" [ngClass]="{'mb-2':model.expand}">
-            <span *ngIf="model.status === 0" class="w-full" [innerHTML]="model.latestEpisodeName"></span>
-            <ng-container *ngIf="model.status !== 0">
-                <span class="w-9/12 truncate" [ngClass]="{'w-9/12':model.latestEpisodeDateFormatted.length > 3, 'w-11/12':model.latestEpisodeDateFormatted.length <= 3}" [innerHTML]="model.latestEpisodeName"></span>
-                <span class="px-1 my-auto text-xs text-right" [innerHTML]="model.latestEpisodeDateFormatted"></span>
-            </ng-container>
+      }
+      @if (model.expand) {
+        <div class="flex justify-between w-full gap-1 mb-2">
+          <!-- dropdown next episode -->
+          <span class="flex justify-between w-11/12 p-1 my-auto text-sm truncate border border-white rounded shadow-lg cursor-pointer" (click)="goToShowDetails()">
+            @if (model.totalEpisodes > 0) {
+              <span class="truncate" >{{model.unseenEpisodeName || '**All Seen**'}}</span>
+            }
+            @if (model.totalEpisodes === 0) {
+              <span >**TBA**</span>
+            }
+            <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
+              <!--bottom arrow-->
+              <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
+            </button>
+          </span>
+          <button (click)="markAsSeen()" [class.invisible]="model.unseenCount===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
+            <!--Tick-->
+            <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
+          </button>
         </div>
-        <div class="flex justify-center" *ngIf="!model.expand">
-            <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
+        <div class="flex justify-between w-full text-sm">
+          <div class="w-11/12">
+            <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
+            @if (model.unseenCount) {
+              <span class="my-auto mr-4">Unseen: {{model.unseenCount}}</span>
+            }
+            @if (model.status === 0) {
+              <span class="my-auto mr-4">Next: {{model.latestEpisodeInDays}}</span>
+            }
+          </div>
         </div>
-        <ng-container *ngIf="model.expand">
-            <div class="flex justify-between w-full gap-1 mb-2">
-                <!-- dropdown next episode -->
-                <span class="flex justify-between w-11/12 p-1 my-auto text-sm truncate border border-white rounded shadow-lg cursor-pointer" (click)="goToShowDetails()">
-                    <span class="truncate" *ngIf="model.totalEpisodes > 0" >{{model.unseenEpisodeName || '**All Seen**'}}</span>
-                    <span *ngIf="model.totalEpisodes === 0" >**TBA**</span>
-                    <button class="inline-flex justify-center my-auto text-white focus:outline-none" title="More">
-                        <!--bottom arrow-->
-                        <tvq-svg-icon icon="chevron-down" size="4"></tvq-svg-icon>
-                    </button>
-                </span>
-                <button (click)="markAsSeen()" [class.invisible]="model.unseenCount===0" class="inline-flex justify-center text-white focus:outline-none" title="Watched">
-                    <!--Tick-->
-                    <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
-                </button>
-            </div>
-            <div class="flex justify-between w-full text-sm">
-                <div class="w-11/12">
-                    <span class="my-auto mr-4" [innerHTML]="model.channel"></span>
-                    <span class="my-auto mr-4" *ngIf="model.unseenCount">Unseen: {{model.unseenCount}}</span>
-                    <span class="my-auto mr-4" *ngIf="model.status === 0">Next: {{model.latestEpisodeInDays}}</span>
-                </div>
-            </div>
-        </ng-container>
+      }
     </div>
-</div>
+  </div>
+}

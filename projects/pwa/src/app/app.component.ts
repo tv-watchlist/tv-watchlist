@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import {
@@ -18,8 +18,7 @@ import { TvWatchlistService } from './services/tv-watchlist.service';
     animations: [
         routeSliderStatePlusMinus,
     ],
-    imports: [CommonModule, RouterModule, ButtonComponent, SvgIconComponent, ToastComponent,
-        NavigationComponent, LoaderBarComponent, LoaderScreenComponent]
+    imports: [RouterModule, ButtonComponent, SvgIconComponent, ToastComponent, NavigationComponent, LoaderBarComponent, LoaderScreenComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
     constructor(

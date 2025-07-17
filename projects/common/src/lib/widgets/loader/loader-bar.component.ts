@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { ApplicationRef, ChangeDetectorRef, Component, EventEmitter, Injectable, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { fadeOutOnLeaveAnimation } from 'angular-animations';
 import { concat, first, interval, Subscription } from 'rxjs';
 
 @Component({
     selector: 'tvq-loader-bar',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: 'loader-bar.component.html',
     animations: [fadeOutOnLeaveAnimation({ duration: 400 })]
 })

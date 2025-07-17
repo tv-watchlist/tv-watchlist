@@ -1,24 +1,31 @@
 <div class="relative flex flex-col pt-2 mb-4 text-gray-500">
-    <tvq-svg-icon icon="search" (click)="search()" size="4" classes="text-gray-400 absolute top-5 left-2"></tvq-svg-icon>
-    <input [(ngModel)]="searchTxt" class="h-10 pl-8 text-sm bg-white border-gray-300 rounded-lg border-1 focus:outline-none"
-      type="search" name="search" placeholder="Search" enterkeyhint="search" autocapitalize="none" (keyup.enter)="search()" >
+  <tvq-svg-icon icon="search" (click)="search()" size="4" classes="text-gray-400 absolute top-5 left-2"></tvq-svg-icon>
+  <input [(ngModel)]="searchTxt" class="h-10 pl-8 text-sm bg-white border-gray-300 rounded-lg border-1 focus:outline-none"
+    type="search" name="search" placeholder="Search" enterkeyhint="search" autocapitalize="none" (keyup.enter)="search()" >
 </div>
 
-<div class="flex mb-2"  *ngFor="let search of searchList$ | async" >
+@for (search of searchList$ | async; track search) {
+  <div class="flex mb-2"  >
     <div class="relative flex-none w-3/12 mr-2">
-        <img tvqDefault [src]="search.show.image.medium" alt="" class="relative inset-0 object-cover w-full border" />
+      <img tvqDefault [src]="search.show.image.medium" alt="" class="relative inset-0 object-cover w-full border" />
     </div>
     <div class="w-8/12">
-        <div>
-            <h3 class="inline font-bold">{{search.show.name}}</h3>
-            <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
-            <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(search.show.id, search.show.name)" *ngIf="!includes(search.show.id)" classes="float-right text-right text-green-500 cursor-pointer"></tvq-svg-icon>
-        </div>
-
-        <div *ngIf="search.show.network">{{search.show.network.name}}, {{search.show.network.country.name}}</div>
-        <div *ngIf="search.show.webChannel">{{search.show.webChannel.name}}, {{search.show.webChannel.country?.name}}</div>
-        <span>{{search.show.premiered}} {{search.show.schedule.days[0]}} {{search.show.schedule.time}} </span>
-        <div class="text-sm" [innerHTML]="search.show.summary"></div>
+      <div>
+        <h3 class="inline font-bold">{{search.show.name}}</h3>
+        <span class="ml-2 text-sm font-semibold text-gray-500">({{search.show.status}})</span>
+        @if (!includes(search.show.id)) {
+          <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(search.show.id, search.show.name)" classes="float-right text-right text-green-500 cursor-pointer"></tvq-svg-icon>
+        }
+      </div>
+      @if (search.show.network) {
+        <div>{{search.show.network.name}}, {{search.show.network.country.name}}</div>
+      }
+      @if (search.show.webChannel) {
+        <div>{{search.show.webChannel.name}}, {{search.show.webChannel.country?.name}}</div>
+      }
+      <span>{{search.show.premiered}} {{search.show.schedule.days[0]}} {{search.show.schedule.time}} </span>
+      <div class="text-sm" [innerHTML]="search.show.summary"></div>
     </div>
-</div>
+  </div>
+}
 

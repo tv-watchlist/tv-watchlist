@@ -1,114 +1,148 @@
-<div *ngIf="!!showModel;else showElseTmpl">
+@if (!!showModel) {
+  <div>
     <div class="flex justify-between">
-        <div>
-            <span [innerHTML]="showModel.name" class="mr-2 text-2xl font-bold"></span>
-            <span [innerHTML]="showModel.premiered | date:'MMM dd, y' || 'n/a'" class="text-sm"></span>
-        </div>
-        <button (click)="showDetails=!showDetails" class="ml-2 focus:outline-none">
-            <!-- Info -->
-            <tvq-svg-icon icon="information-circle" size="6"></tvq-svg-icon>
-        </button>
+      <div>
+        <span [innerHTML]="showModel.name" class="mr-2 text-2xl font-bold"></span>
+        <span [innerHTML]="showModel.premiered | date:'MMM dd, y' || 'n/a'" class="text-sm"></span>
+      </div>
+      <button (click)="showDetails=!showDetails" class="ml-2 focus:outline-none">
+        <!-- Info -->
+        <tvq-svg-icon icon="information-circle" size="6"></tvq-svg-icon>
+      </button>
     </div>
-    <div *ngIf="showDetails" class="flex mb-2">
+    @if (showDetails) {
+      <div class="flex mb-2">
         <div class="relative flex-none w-4/12 mr-2">
-            <img tvqDefault [src]="showModel.poster" alt="" class="relative inset-0 object-cover w-full" />
+          <img tvqDefault [src]="showModel.poster" alt="" class="relative inset-0 object-cover w-full" />
         </div>
         <ul class="flex flex-col w-8/12">
-            <li *ngIf="!!showModel.channel">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
-                <span [innerHTML]="showModel.channel"></span>
+          @if (!!showModel.channel) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">channel:</span>
+              <span [innerHTML]="showModel.channel"></span>
             </li>
-            <li *ngIf="!!showModel.schedule">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">schedule:</span>
-                <span [innerHTML]="showModel.schedule"></span>
+          }
+          @if (!!showModel.schedule) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">schedule:</span>
+              <span [innerHTML]="showModel.schedule"></span>
             </li>
-            <li *ngIf="!!showModel.statusText">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">status:</span>
-                <span [innerHTML]="showModel.statusText"></span>
+          }
+          @if (!!showModel.statusText) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">status:</span>
+              <span [innerHTML]="showModel.statusText"></span>
             </li>
-            <li *ngIf="!!showModel.genres">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">type:</span>
-                <span [innerHTML]="showModel.genres"></span>
+          }
+          @if (!!showModel.genres) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">type:</span>
+              <span [innerHTML]="showModel.genres"></span>
             </li>
-            <li *ngIf="!!showModel.language">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">language:</span>
-                <span [innerHTML]="showModel.language"></span>
+          }
+          @if (!!showModel.language) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">language:</span>
+              <span [innerHTML]="showModel.language"></span>
             </li>
-            <li *ngIf="!!showModel.userRating">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">rating:</span>
-                <span [innerHTML]="showModel.userRating"></span>
+          }
+          @if (!!showModel.userRating) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">rating:</span>
+              <span [innerHTML]="showModel.userRating"></span>
             </li>
-            <li *ngIf="!!showModel.apiId">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">{{showModel.apiSource}}:</span>
-                <span [innerHTML]="showModel.apiId"></span>
+          }
+          @if (!!showModel.apiId) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">{{showModel.apiSource}}:</span>
+              <span [innerHTML]="showModel.apiId"></span>
             </li>
-            <li *ngIf="!!showModel.totalEpisodes">
-                <span class="mr-2 font-semibold text-gray-400 uppercase">Unseen:</span>
-                <span>{{showModel.unseenCount}} / {{showModel.totalEpisodes}}</span>
+          }
+          @if (!!showModel.totalEpisodes) {
+            <li>
+              <span class="mr-2 font-semibold text-gray-400 uppercase">Unseen:</span>
+              <span>{{showModel.unseenCount}} / {{showModel.totalEpisodes}}</span>
             </li>
+          }
         </ul>
-    </div>
-    <div class="w-full mt-2 text-sm" *ngIf="showDetails && !!showModel.summary">
+      </div>
+    }
+    @if (showDetails && !!showModel.summary) {
+      <div class="w-full mt-2 text-sm">
         <div class="block mb-1" [innerHTML]="showModel.summary"></div>
         <div class="flex justify-around mb-1">
-            <button (click)="goToUrl()" class="inline-flex justify-center my-auto text-blue-500 focus:outline-none" title="External">
-                <!--Link-->
-                <tvq-svg-icon icon="external-link" size="7"></tvq-svg-icon>
-            </button>
-            <button (click)="refresh()" class="inline-flex justify-center my-auto text-green-500 focus:outline-none">
-                <tvq-svg-icon icon="refresh" size="7"></tvq-svg-icon>
-            </button>
-            <button (click)="menuRemove.openMenu()" class="inline-flex justify-center my-auto text-red-500 focus:outline-none" title="Trash">
-                <!--Trash-->
-                <tvq-svg-icon icon="trash" size="7"></tvq-svg-icon>
-            </button>
+          <button (click)="goToUrl()" class="inline-flex justify-center my-auto text-blue-500 focus:outline-none" title="External">
+            <!--Link-->
+            <tvq-svg-icon icon="external-link" size="7"></tvq-svg-icon>
+          </button>
+          <button (click)="refresh()" class="inline-flex justify-center my-auto text-green-500 focus:outline-none">
+            <tvq-svg-icon icon="refresh" size="7"></tvq-svg-icon>
+          </button>
+          <button (click)="menuRemove.openMenu()" class="inline-flex justify-center my-auto text-red-500 focus:outline-none" title="Trash">
+            <!--Trash-->
+            <tvq-svg-icon icon="trash" size="7"></tvq-svg-icon>
+          </button>
         </div>
         <hr>
-    </div>
-
-    <div class="flex my-2" *ngIf="showModel.totalEpisodes > 0">
-        <div class="flex w-10/12">
+        </div>
+      }
+      @if (showModel.totalEpisodes > 0) {
+        <div class="flex my-2">
+          <div class="flex w-10/12">
             <select class="w-11/12 mr-2 rounded focus:outline-none" [(ngModel)]="selectedSeasonNum">
-                <option [value]="seasonNum" *ngFor="let seasonNum of seasonNumList">Season {{seasonNum}}</option>
+              @for (seasonNum of seasonNumList; track seasonNum) {
+                <option [value]="seasonNum">Season {{seasonNum}}</option>
+              }
             </select>
             <button [class.text-gray-400]="seasonUnSeen[selectedSeasonNum]==0" class="inline-flex justify-center my-auto focus:outline-none" type="button" (click)="menuAllSeen.openMenu()">
-                <!-- Tick -->
-                <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
+              <!-- Tick -->
+              <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
             </button>
-        </div>
-        <div class="flex justify-end w-2/12">
+          </div>
+          <div class="flex justify-end w-2/12">
             <button class="inline-flex justify-center my-auto focus:outline-none" type="button" (click)="menu.openMenu()">
-                <!-- More -->
-                <tvq-svg-icon icon="dots-vertical" size="6"></tvq-svg-icon>
+              <!-- More -->
+              <tvq-svg-icon icon="dots-vertical" size="6"></tvq-svg-icon>
             </button>
+          </div>
         </div>
-    </div>
-    <div class="flex flex-wrap mb-2 text-gray-800 ">
-        <div class="w-full mb-2" *ngFor="let episode of episodeList[selectedSeasonNum]">
+      }
+      <div class="flex flex-wrap mb-2 text-gray-800 ">
+        @for (episode of episodeList[selectedSeasonNum]; track episode) {
+          <div class="w-full mb-2">
             <tvq-episode
-            [episodeId]="episode.episodeId"
-            [seenToggled]="episode.seen"
-            (seenToggledChanged)="episodeToggled($event)"
+              [episodeId]="episode.episodeId"
+              [seenToggled]="episode.seen"
+              (seenToggledChanged)="episodeToggled($event)"
             [latestEpisodeId]="latestEpisodeId" ></tvq-episode>
-        </div>
-        <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700" *ngIf="!episodeList[selectedSeasonNum]?.length">
+          </div>
+        }
+        @if (!episodeList[selectedSeasonNum]?.length) {
+          <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700">
             <tvq-svg-icon icon="exclamation-circle" size="12" classes="mx-auto text-gray-500 stroke-current" ></tvq-svg-icon>
-            <span *ngIf="showModel.totalEpisodes > 0">No unseen episodes!</span>
-            <span *ngIf="showModel.totalEpisodes === 0">No episodes released yet!</span>
-        </div>
-        <div class="w-full mt-4 text-center" *ngIf="seasonUnSeen[selectedSeasonNum] !== seasonTotal[selectedSeasonNum]">
+            @if (showModel.totalEpisodes > 0) {
+              <span>No unseen episodes!</span>
+            }
+            @if (showModel.totalEpisodes === 0) {
+              <span>No episodes released yet!</span>
+            }
+          </div>
+        }
+        @if (seasonUnSeen[selectedSeasonNum] !== seasonTotal[selectedSeasonNum]) {
+          <div class="w-full mt-4 text-center">
             <span class="inline-block px-4 py-2 border border-gray-500 rounded-lg focus:outline-none" (click)="displayHidden()">
-                {{hideSeen ? 'Show Hidden':'Hide Seen'}}
+              {{hideSeen ? 'Show Hidden':'Hide Seen'}}
             </span>
-        </div>
+          </div>
+        }
+      </div>
     </div>
-</div>
-<ng-template #showElseTmpl>
+  } @else {
     <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700">
-        <tvq-svg-icon icon="exclamation-circle" size="12" classes="mx-auto text-gray-500 stroke-current" ></tvq-svg-icon>
-        <span>Show not found!</span>
+      <tvq-svg-icon icon="exclamation-circle" size="12" classes="mx-auto text-gray-500 stroke-current" ></tvq-svg-icon>
+      <span>Show not found!</span>
     </div>
-</ng-template>
-<tvq-options-menu #menu (action)="onMenuSelect($event)" [default]="defaultMenuOption" [options]="menuOptions"></tvq-options-menu>
-<tvq-options-menu #menuRemove (action)="removeShow()" [options]="['Yes']" header="This will delete the show with your watched history. Are you sure?"></tvq-options-menu>
-<tvq-options-menu #menuAllSeen (action)="setSeasonAsSeen()" [options]="['Yes']" header="This will mark all episodes in selected season as seen. Are you sure?"></tvq-options-menu>
+  }
+  <tvq-options-menu #menu (action)="onMenuSelect($event)" [default]="defaultMenuOption" [options]="menuOptions"></tvq-options-menu>
+  <tvq-options-menu #menuRemove (action)="removeShow()" [options]="['Yes']" header="This will delete the show with your watched history. Are you sure?"></tvq-options-menu>
+  <tvq-options-menu #menuAllSeen (action)="setSeasonAsSeen()" [options]="['Yes']" header="This will mark all episodes in selected season as seen. Are you sure?"></tvq-options-menu>

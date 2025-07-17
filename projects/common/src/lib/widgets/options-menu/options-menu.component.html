@@ -1,22 +1,32 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div>
-    <div *ngIf="visible" class="fixed inset-0 z-20 transition-opacity" aria-hidden="true">
-        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+  @if (visible) {
+    <div class="fixed inset-0 z-20 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
     </div>
-    <div *ngIf="visible" class="fixed inset-0 z-20" [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave]>
-        <div class="absolute left-0 right-0 m-2 text-center bg-white rounded-lg standalone:mb-safe-bottom bottom-16">
-            <ul class="flex flex-col justify-center">
-                <li *ngIf="!!header" class="px-1 py-2 text-sm font-semibold border-b" [innerHTML]="header"></li>
-                <li *ngFor="let option of options;let last = last" class="px-1 py-4 cursor-pointer"
-                    (click)="clicked(option)"
-                    [ngClass]="{'border-b':!last}">
-                    <span class="inline-flex text-blue-500">
-                        <tvq-svg-icon icon="check" size="6" classes="mr-2" *ngIf="getKey(default) === getKey(option)"></tvq-svg-icon>
-                        {{getLabel(option)}}
-                    </span>
-                </li>
-            </ul>
-        </div>
-        <div (click)="closeMenu()"  class="absolute bottom-0 left-0 right-0 p-4 m-2 text-center text-red-500 bg-white rounded-lg cursor-pointer standalone:mb-safe-bottom">Cancel</div>
+  }
+  @if (visible) {
+    <div class="fixed inset-0 z-20" [@slideInUpOnEnter] [@slideOutDownOnLeave] [@fadeOutOnLeave]>
+      <div class="absolute left-0 right-0 m-2 text-center bg-white rounded-lg standalone:mb-safe-bottom bottom-16">
+        <ul class="flex flex-col justify-center">
+          @if (!!header) {
+            <li class="px-1 py-2 text-sm font-semibold border-b" [innerHTML]="header"></li>
+          }
+          @for (option of options; track option; let last = $last) {
+            <li class="px-1 py-4 cursor-pointer"
+              (click)="clicked(option)"
+              [ngClass]="{'border-b':!last}">
+              <span class="inline-flex text-blue-500">
+                @if (getKey(default) === getKey(option)) {
+                  <tvq-svg-icon icon="check" size="6" classes="mr-2"></tvq-svg-icon>
+                }
+                {{getLabel(option)}}
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
+      <div (click)="closeMenu()"  class="absolute bottom-0 left-0 right-0 p-4 m-2 text-center text-red-500 bg-white rounded-lg cursor-pointer standalone:mb-safe-bottom">Cancel</div>
     </div>
-  </div>
+  }
+</div>

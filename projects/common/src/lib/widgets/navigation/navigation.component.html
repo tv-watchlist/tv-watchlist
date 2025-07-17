@@ -1,14 +1,20 @@
 <div>
-    <div *ngIf="visible" (click)="closeMenu()" class="fixed inset-0 z-20 transition-opacity" aria-hidden="true">
-        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+  @if (visible) {
+    <div (click)="closeMenu()" class="fixed inset-0 z-20 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
     </div>
-    <nav *ngIf="visible" [@slideOutRightOnLeave] [@fadeOutOnLeave] [@slideInRightOnEnter]
-        class="fixed top-0 right-0 z-20 w-1/4 min-h-screen text-white bg-orange-600 border border-orange-600 shadow-inner">
-        <ul class="flex flex-col text-center standalone:pt-safe-top standalone:h-safe-top-1">
-            <li *ngFor="let item of options" class="mx-auto my-4 focus:outline-none" [ngClass]="{'text-gray-400': item.disabled,'cursor-pointer':!item.disabled}" (click)="clicked(item)">
-               <tvq-svg-icon [icon]="item.icon" size="12" [classes]="'mx-auto'"></tvq-svg-icon>
-               <div>{{item.name}}</div>
-            </li>
-        </ul>
+  }
+  @if (visible) {
+    <nav [@slideOutRightOnLeave] [@fadeOutOnLeave] [@slideInRightOnEnter]
+      class="fixed top-0 right-0 z-20 w-1/4 min-h-screen text-white bg-orange-600 border border-orange-600 shadow-inner">
+      <ul class="flex flex-col text-center standalone:pt-safe-top standalone:h-safe-top-1">
+        @for (item of options; track item) {
+          <li class="mx-auto my-4 focus:outline-none" [ngClass]="{'text-gray-400': item.disabled,'cursor-pointer':!item.disabled}" (click)="clicked(item)">
+            <tvq-svg-icon [icon]="item.icon" size="12" [classes]="'mx-auto'"></tvq-svg-icon>
+            <div>{{item.name}}</div>
+          </li>
+        }
+      </ul>
     </nav>
+  }
 </div>

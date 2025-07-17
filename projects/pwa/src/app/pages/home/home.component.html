@@ -1,54 +1,64 @@
-<div *ngIf="!!showIdList.length">
-    <tvq-show-banner-card [showId]="showId" *ngFor="let showId of showIdList"></tvq-show-banner-card>
-</div>
-<div *ngIf="!showIdList.length">
+@if (!!showIdList.length) {
+  <div>
+    @for (showId of showIdList; track showId) {
+      <tvq-show-banner-card [showId]="showId"></tvq-show-banner-card>
+    }
+  </div>
+}
+@if (!showIdList.length) {
+  <div>
     <ul class="flex flex-col">
-        <li class="w-full mb-4"><img src="assets/myTvQ.png" alt="" class="mx-auto h-[115px]"></li>
-        <li class="text-center">Do you watch lot of TV Shows?</li>
-        <li class="text-center">Forgot the last seen episode?</li>
-        <li class="my-2 text-center">If "YES", then you are at the right place!</li>
-        <li class="my-4 text-center">Track your favorite TV Shows and episodes by creating your personal TV WatchList for Free.</li>
-        <li class="mb-2 text-center">No need to setup user account or email.</li>
-        <li class="mb-4 text-center">Data is stored in your device.</li>
-        <li class="hidden text-center">Also as a bonus, it will alert you of Today's Show.</li>
-        <li class="text-xl text-center">Get started</li>
-        <li class="flex justify-around mb-8 text-orange-600">
-            <span class="flex flex-col my-4 cursor-pointer focus:outline-none" [routerLink]="['/popular']">
-                <tvq-svg-icon icon="sparkles" size="12" classes="mx-auto"></tvq-svg-icon>
-                Popular
-             </span>
-             <span class="flex flex-col my-4 cursor-pointer focus:outline-none" [routerLink]="['/search']">
-                <tvq-svg-icon icon="search" size="12" classes="mx-auto"></tvq-svg-icon>
-                Search
-             </span>
-         </li>
-        <li class="text-center" *ngIf="!isInStandaloneMode">
-            <tvq-button *ngIf="!isIOS && showInstall" (clicked)="install()">Install Web App</tvq-button>
-            <span *ngIf="isIOS">Install this web app on your device. Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to Home Screen.</span>
+      <li class="w-full mb-4"><img src="assets/myTvQ.png" alt="" class="mx-auto h-[115px]"></li>
+      <li class="text-center">Do you watch lot of TV Shows?</li>
+      <li class="text-center">Forgot the last seen episode?</li>
+      <li class="my-2 text-center">If "YES", then you are at the right place!</li>
+      <li class="my-4 text-center">Track your favorite TV Shows and episodes by creating your personal TV WatchList for Free.</li>
+      <li class="mb-2 text-center">No need to setup user account or email.</li>
+      <li class="mb-4 text-center">Data is stored in your device.</li>
+      <li class="hidden text-center">Also as a bonus, it will alert you of Today's Show.</li>
+      <li class="text-xl text-center">Get started</li>
+      <li class="flex justify-around mb-8 text-orange-600">
+        <span class="flex flex-col my-4 cursor-pointer focus:outline-none" [routerLink]="['/popular']">
+          <tvq-svg-icon icon="sparkles" size="12" classes="mx-auto"></tvq-svg-icon>
+          Popular
+        </span>
+        <span class="flex flex-col my-4 cursor-pointer focus:outline-none" [routerLink]="['/search']">
+          <tvq-svg-icon icon="search" size="12" classes="mx-auto"></tvq-svg-icon>
+          Search
+        </span>
+      </li>
+      @if (!isInStandaloneMode) {
+        <li class="text-center">
+          @if (!isIOS && showInstall) {
+            <tvq-button (clicked)="install()">Install Web App</tvq-button>
+          }
+          @if (isIOS) {
+            <span>Install this web app on your device. Tap <tvq-svg-icon icon="ios-share" classes="mx-auto text-blue-500"></tvq-svg-icon> then Add to Home Screen.</span>
+          }
         </li>
+      }
     </ul>
-
     <pre class="hidden">
-        Features:
-        * Simple design with easily manageable listing.
-        * Displays TV shows with all its episode names and air dates.
-        * Quick peek previous and next episode name and air date.
-        * Next show days and unseen episodes counter.
-        * Follow Running, TBA and Completed Shows.
-        * Search Series and add them to your watchlist.
-        * Show list updated daily.
-        * Data saved using HTML5's IndexedDB.
-        * Notification popup alert for current new shows.
-        * One click episode summary
-        * Ability to customize summary link and color scheme
-        * Each TV Show displays its banner in the background (courtesy of thetvdb.com).
-        * Ability to Share your show list with others
-        * Added facebook Status Page
-        * Shows can be sorted by date, name, unseen or arrange the list of the shows to your preference
-        * Icon count can now be unseen shows, episodes or blank TV icon for seen
-        * Compact view, Now can fit more shows on screen.
-        * Cloud syncing of data using Dropbox
-        * Shows and episode listing courtesy of TVmaze.com.
+      Features:
+      * Simple design with easily manageable listing.
+      * Displays TV shows with all its episode names and air dates.
+      * Quick peek previous and next episode name and air date.
+      * Next show days and unseen episodes counter.
+      * Follow Running, TBA and Completed Shows.
+      * Search Series and add them to your watchlist.
+      * Show list updated daily.
+      * Data saved using HTML5's IndexedDB.
+      * Notification popup alert for current new shows.
+      * One click episode summary
+      * Ability to customize summary link and color scheme
+      * Each TV Show displays its banner in the background (courtesy of thetvdb.com).
+      * Ability to Share your show list with others
+      * Added facebook Status Page
+      * Shows can be sorted by date, name, unseen or arrange the list of the shows to your preference
+      * Icon count can now be unseen shows, episodes or blank TV icon for seen
+      * Compact view, Now can fit more shows on screen.
+      * Cloud syncing of data using Dropbox
+      * Shows and episode listing courtesy of TVmaze.com.
     </pre>
-
-</div>
+  </div>
+}

@@ -1,23 +1,29 @@
 
-<div class="flex mb-2" *ngFor="let show of result">
+@for (show of result; track show) {
+  <div class="flex mb-2">
     <div class="relative flex-none w-3/12 mr-2">
-        <img tvqDefault [src]="show.poster_path" alt="" class="relative inset-0 object-cover w-full border" />
+      <img tvqDefault [src]="show.poster_path" alt="" class="relative inset-0 object-cover w-full border" />
     </div>
     <div class="w-8/12">
+      <div>
+        <h3 class="inline text-lg font-bold">{{show.name}}</h3>
+        <span class="ml-2 text-sm font-semibold text-gray-500">({{show.first_air_date}})</span>
+        @if (!includes(show.name)) {
+          <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(show.id, show.name)" classes="float-right text-right text-green-500 cursor-pointer"></tvq-svg-icon>
+        }
+      </div>
+      @if (show.original_language !== 'en') {
         <div>
-            <h3 class="inline text-lg font-bold">{{show.name}}</h3>
-            <span class="ml-2 text-sm font-semibold text-gray-500">({{show.first_air_date}})</span>
-            <tvq-svg-icon icon="solid-plus-circle" size="6" (click)="addShow(show.id, show.name)" *ngIf="!includes(show.name)" classes="float-right text-right text-green-500 cursor-pointer"></tvq-svg-icon>
+          {{show.original_name}}
         </div>
-        <div *ngIf="show.original_language !== 'en'">
-            {{show.original_name}}
-        </div>
-        <div>
-           {{show.origin_country}} - {{show.genres}}
-        </div>
-        <div>
-           User Score: {{show.vote_average}}/10 <span class="text-sm text-gray-500">Total Votes: {{show.vote_count}}</span>
-        </div>
-        <div class="text-sm" [innerHTML]="show.overview"></div>
+      }
+      <div>
+        {{show.origin_country}} - {{show.genres}}
+      </div>
+      <div>
+        User Score: {{show.vote_average}}/10 <span class="text-sm text-gray-500">Total Votes: {{show.vote_count}}</span>
+      </div>
+      <div class="text-sm" [innerHTML]="show.overview"></div>
     </div>
-</div>
+  </div>
+}

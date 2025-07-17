@@ -1,27 +1,30 @@
-<div *ngIf="!!model" class="py-2">
+@if (!!model) {
+  <div class="py-2">
     <img tvqDefault [src]="model.image" alt="" class="float-left aspect-[41/26] h-[78px] mr-2" />
     <div [class.text-gray-400]="seenToggled">
-        <div [innerHTML]="model.episodeName"></div>
-        <span class="inline-block px-1 my-auto mr-2 text-sm text-white"
+      <div [innerHTML]="model.episodeName"></div>
+      <span class="inline-block px-1 my-auto mr-2 text-sm text-white"
         [class.bg-blue-500]="model.isUnaired && model.id != latestEpisodeId"
         [class.bg-green-500]="model.isUnaired && model.id == latestEpisodeId"
         [class.bg-red-500]="!model.isUnaired"
-        [innerHTML]="model.dateFormatted"></span>
-        <div class="flex justify-around my-1 text-xs">
-            <button class="block focus:outline-none" [disabled]="!model.summary" [ngClass]="{'text-gray-400': !model.summary}" (click)="expand()">
-                <!-- Expand -->
-                <tvq-svg-icon icon="information-circle" size="6"></tvq-svg-icon>
-            </button>
-            <button class="block focus:outline-none" title="External" (click)="goToUrl(model.url)">
-                <!--Link-->
-                <tvq-svg-icon icon="external-link" size="6"></tvq-svg-icon>
-            </button>
-            <button class="block focus:outline-none" (click)="toggleSeen()">
-                <!-- Tick -->
-                <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
-            </button>
-        </div>
-        <span *ngIf="model.expand && model.summary" class="" [innerHTML]="model.summary"></span>
+      [innerHTML]="model.dateFormatted"></span>
+      <div class="flex justify-around my-1 text-xs">
+        <button class="block focus:outline-none" [disabled]="!model.summary" [ngClass]="{'text-gray-400': !model.summary}" (click)="expand()">
+          <!-- Expand -->
+          <tvq-svg-icon icon="information-circle" size="6"></tvq-svg-icon>
+        </button>
+        <button class="block focus:outline-none" title="External" (click)="goToUrl(model.url)">
+          <!--Link-->
+          <tvq-svg-icon icon="external-link" size="6"></tvq-svg-icon>
+        </button>
+        <button class="block focus:outline-none" (click)="toggleSeen()">
+          <!-- Tick -->
+          <tvq-svg-icon icon="check-circle" size="6"></tvq-svg-icon>
+        </button>
+      </div>
+      @if (model.expand && model.summary) {
+        <span class="" [innerHTML]="model.summary"></span>
+      }
     </div>
-
-</div>
+  </div>
+}

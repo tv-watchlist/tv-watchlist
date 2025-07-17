@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ButtonComponent, SvgIconComponent } from 'common';
@@ -8,7 +8,7 @@ import { TvWatchlistService } from '../../services/tv-watchlist.service';
 @Component({
     selector: 'tvq-about',
     templateUrl: 'about.component.html',
-    imports: [CommonModule, ButtonComponent, SvgIconComponent]
+    imports: [ButtonComponent, SvgIconComponent]
 })
 export class AboutComponent implements OnInit {
     constructor(
