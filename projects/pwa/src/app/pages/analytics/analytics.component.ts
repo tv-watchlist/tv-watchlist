@@ -42,9 +42,8 @@ export interface IGaQueryResult {
 
 @Component({
     selector: 'tvq-analytics',
-    standalone: true,
     templateUrl: 'analytics.component.html',
-    imports:[CommonModule]
+    imports: [CommonModule]
 })
 export class AnalyticsComponent implements OnInit {
     constructor(private http: HttpClient, private commonSvc: CommonService) { }

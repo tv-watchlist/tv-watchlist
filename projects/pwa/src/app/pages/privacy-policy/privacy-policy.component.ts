@@ -4,7 +4,6 @@ import { SvgIconComponent } from "common";
 
 @Component({
     selector: 'tvq-privacy-policy',
-    standalone: true,
     templateUrl: 'privacy-policy.component.html',
     imports: [SvgIconComponent]
 })

@@ -6,7 +6,6 @@ import { CloudDropboxService, MigrationService, ActiveRequestService, ToastServi
 
 @Component({
     selector: 'tvq-setting-dropbox',
-    standalone: true,
     templateUrl: 'dropbox.component.html',
     imports: [CommonModule, OptionsMenuComponent]
 })

@@ -12,7 +12,6 @@ export interface INavigation {
 
 @Component({
     selector: 'tvq-navigation',
-    standalone: true,
     templateUrl: 'navigation.component.html',
     animations: [slideInRightOnEnterAnimation({ duration: 400 }),
         slideOutRightOnLeaveAnimation({ duration: 400 }),

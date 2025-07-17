@@ -6,7 +6,6 @@ import { ShowService, GoogleAnalyticsService, UiShowModel, SvgIconComponent } fr
 
 @Component({
     selector: 'tvq-show-banner-card',
-    standalone: true,
     templateUrl: 'show-banner-card.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, SvgIconComponent]

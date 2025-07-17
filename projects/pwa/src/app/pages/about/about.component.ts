@@ -7,7 +7,6 @@ import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-about',
-    standalone: true,
     templateUrl: 'about.component.html',
     imports: [CommonModule, ButtonComponent, SvgIconComponent]
 })

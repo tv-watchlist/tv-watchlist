@@ -8,7 +8,6 @@ import { LoaderScreenService } from './loader-screen.service';
  */
 @Component({
     selector: 'tvq-loader-screen',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: 'loader-screen.component.html',
     animations: [fadeOutOnLeaveAnimation({ duration: 400 })]

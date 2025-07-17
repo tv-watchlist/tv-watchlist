@@ -5,7 +5,6 @@ import { SvgIconComponent } from "../svg-icon/svg-icon.component";
 
 @Component({
     selector: 'tvq-options-menu',
-    standalone: true,
     templateUrl: 'options-menu.component.html',
     animations: [slideInUpOnEnterAnimation({ duration: 400 }),
         slideOutDownOnLeaveAnimation({ duration: 400 }),

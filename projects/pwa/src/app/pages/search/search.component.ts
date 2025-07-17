@@ -6,7 +6,6 @@ import { Observable, tap } from 'rxjs';
 
 @Component({
     selector: 'tvq-search',
-    standalone: true,
     templateUrl: 'search.component.html',
     imports: [CommonModule, FormsModule, SvgIconComponent]
 })

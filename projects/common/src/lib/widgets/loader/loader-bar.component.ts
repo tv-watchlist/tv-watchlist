@@ -5,7 +5,6 @@ import { concat, first, interval, Subscription } from 'rxjs';
 
 @Component({
     selector: 'tvq-loader-bar',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: 'loader-bar.component.html',
     animations: [fadeOutOnLeaveAnimation({ duration: 400 })]

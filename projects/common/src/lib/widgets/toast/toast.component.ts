@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
  */
 @Component({
     selector: 'tvq-toast',
-    standalone: true,
     templateUrl: 'toast.component.html',
     animations: [slideInUpOnEnterAnimation({ duration: 400 }),
         slideOutDownOnLeaveAnimation({ duration: 400 }),

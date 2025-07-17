@@ -8,7 +8,6 @@ import { SettingsResetComponent } from "./reset.component";
 
 @Component({
     selector: 'tvq-setting',
-    standalone: true,
     templateUrl: 'setting.component.html',
     imports: [SwitchComponent, SvgIconComponent, SettingImportExportComponent, SettingDropboxComponent, SettingsResetComponent, OptionsMenuComponent]
 })

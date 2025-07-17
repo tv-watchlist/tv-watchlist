@@ -4,7 +4,6 @@ import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IM
 
 @Component({
     selector: 'tvq-episode',
-    standalone: true,
     templateUrl: 'episode.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, SvgIconComponent]

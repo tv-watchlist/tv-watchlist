@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'tvq-home',
-    standalone: true,
     templateUrl: 'home.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
@@ -18,7 +17,7 @@ import { CommonModule } from '@angular/common';
         slideOutLeftOnLeaveAnimation({ anchor: 'leaveLeft', duration: 400 }),
         slideOutRightOnLeaveAnimation({ anchor: 'leaveRight', duration: 400 }),
     ],
-    imports: [RouterModule,CommonModule, ShowBannerCardComponent, SvgIconComponent, ButtonComponent]
+    imports: [RouterModule, CommonModule, ShowBannerCardComponent, SvgIconComponent, ButtonComponent]
 })
 export class HomeComponent implements OnInit {
     constructor(

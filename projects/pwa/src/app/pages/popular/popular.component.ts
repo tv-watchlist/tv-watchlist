@@ -21,7 +21,6 @@ export interface IUITheMovieDbShow {
 
 @Component({
     selector: 'tvq-popular',
-    standalone: true,
     templateUrl: 'popular.component.html',
     imports: [CommonModule, SvgIconComponent]
 })

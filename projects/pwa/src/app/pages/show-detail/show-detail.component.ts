@@ -11,7 +11,6 @@ import { EpisodeComponent } from '../../layouts/episode/episode.component';
 
 @Component({
     selector: 'tvq-show-detail',
-    standalone: true,
     templateUrl: 'show-detail.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, FormsModule, DatePipe, SvgIconComponent, EpisodeComponent, OptionsMenuComponent]

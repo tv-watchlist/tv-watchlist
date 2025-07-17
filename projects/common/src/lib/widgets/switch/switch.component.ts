@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'tvq-switch',
-    standalone: true,
     templateUrl: 'switch.component.html',
     imports: [CommonModule, FormsModule]
 })

@@ -13,7 +13,6 @@ import { TvWatchlistService } from './services/tv-watchlist.service';
 
 @Component({
     selector: 'tvq-app',
-    standalone: true,
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     animations: [

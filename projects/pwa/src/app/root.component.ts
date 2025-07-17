@@ -3,11 +3,10 @@ import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'tvq-root',
-    standalone: true,
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     imports: [RouterModule],
     template: `<router-outlet></router-outlet>`,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RootComponent implements OnInit {
     ngOnInit() {

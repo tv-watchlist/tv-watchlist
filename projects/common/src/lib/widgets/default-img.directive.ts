@@ -2,6 +2,7 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
     selector: 'img[tvqDefault]',
+    standalone: false
 })
 export class DefaultImageDirective {
     constructor(private elem: ElementRef) {

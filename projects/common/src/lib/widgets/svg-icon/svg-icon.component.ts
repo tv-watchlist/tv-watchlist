@@ -12,7 +12,6 @@ export type SvgIconType = 'home' | 'search'| 'sparkles' |
 
 @Component({
     selector: 'tvq-svg-icon',
-    standalone: true,
     templateUrl: 'svg-icon.component.html',
     imports: [CommonModule]
 })

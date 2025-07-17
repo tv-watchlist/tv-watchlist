@@ -4,7 +4,6 @@ import { SettingService, WebDatabaseService, ActiveRequestService, MyTvQDbSettin
 
 @Component({
     selector: 'tvq-setting-reset',
-    standalone: true,
     templateUrl: 'reset.component.html',
     imports: [OptionsMenuComponent]
 })
