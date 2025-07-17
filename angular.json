@@ -83,18 +83,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pwa:build"
+            "buildTarget": "pwa:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "pwa:build:production"
+              "buildTarget": "pwa:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pwa:build"
+            "buildTarget": "pwa:build"
           }
         },
         "test": {
@@ -208,18 +208,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "webextension:build"
+            "buildTarget": "webextension:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "webextension:build:production"
+              "buildTarget": "webextension:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "webextension:build"
+            "buildTarget": "webextension:build"
           }
         },
         "test": {
