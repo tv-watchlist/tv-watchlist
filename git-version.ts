@@ -30,7 +30,7 @@ const version = `${git.branch()} ${git.short()} ${formattedDate}`;
 
 console.log(version);
 
-fs.writeFile('./projects/pwa/src/assets/version.txt', version, (err: any) => {
+fs.writeFile('./projects/pwa/public/version.txt', version, (err: any) => {
   if (err) {
     console.error(err)
     return

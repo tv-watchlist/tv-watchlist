@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Input, Inject, EventEmitter, Output } from '@angular/core';
-import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IMyTvQDbShow,SvgIconComponent } from 'common';
+import { ShowService, EpisodeService, GoogleAnalyticsService, UiEpisodeModel, IMyTvQDbShow,SvgIconComponent, WINDOW } from 'common';
 
 @Component({
     selector: 'tvq-episode',
@@ -14,6 +14,7 @@ export class EpisodeComponent implements OnInit {
         private episodeSvc: EpisodeService,
         private gaSvc: GoogleAnalyticsService,
         private cdRef: ChangeDetectorRef,
+        @Inject(WINDOW) private window: Window,
         ) {
             this.today = new Date().getTime();
     }
@@ -59,6 +60,6 @@ export class EpisodeComponent implements OnInit {
 
     goToUrl(url: string): void {
         // this.document.location.href = this.model.url;
-        window.open(url, '_blank');
+        this.window.open(url, '_blank');
     }
 }

@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BackgroundComponent } from './background/background.component';
 import { OptionsComponent } from './options/options.component';
 import { PopupComponent } from './popup/popup.component';
+import { PageNotFoundComponent } from './not-found/not-found.component';
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: '', // default path
         component: AppComponent,
@@ -16,9 +16,8 @@ const routes: Routes = [
             { path: '', pathMatch: 'full', redirectTo: '/popup' },
         ]
     },
-    // {
-    //     path: '**', // wildcard path for 404
-    //     component: PageNotFoundComponent,
-    // }
+    {
+        path: '**', // wildcard path for 404
+        component: PageNotFoundComponent,
+    }
 ];
-

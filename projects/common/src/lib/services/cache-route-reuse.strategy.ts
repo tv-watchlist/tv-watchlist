@@ -11,12 +11,12 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
     storedRoutes: { [key: string]: RouteStorageObject } = {};
 
     shouldDetach(route: ActivatedRouteSnapshot): boolean {
-        return route.data.reuseRoute || false;
+        return route.data['reuseRoute'] || false;
     }
 
     store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
         const id = this.createIdentifier(route);
-        if (route.data.reuseRoute && id.length > 0) {
+        if (route.data['reuseRoute'] && id.length > 0) {
             this.storedRoutes[id] = { handle, snapshot: route };
         }
     }
@@ -65,7 +65,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
         // loop through all properties
         for (const baseProperty in { ...base, ...compare }) {
 
-            // determine if comparrison object has that property, if not: return false
+            // determine if comparison object has that property, if not: return false
             if (compare.hasOwnProperty(baseProperty)) {
                 switch (typeof base[baseProperty]) {
                     // if one is object and other is not: return false

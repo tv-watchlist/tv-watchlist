@@ -5,9 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
+    "serve:ssr:pwa": "node dist/pwa/server/server.mjs",
+    "serve:ssr:webextension": "node dist/webextension/server/server.mjs",
     "git:version": "ts-node git-version.ts",
     "build:pwa:prod": "yarn run git:version && ng build --configuration production",
     "build:pwa:prod:watch": "ng build pwa --configuration production --watch",
@@ -17,42 +18,62 @@
     "dev:pwa": "run-p build:pwa:prod:watch run:pwa",
     "deploy": "npx gh-pages -d dist/pwa"
   },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.1.1",
-    "@angular/common": "^20.1.1",
-    "@angular/compiler": "^20.1.1",
-    "@angular/core": "^20.1.1",
-    "@angular/forms": "^20.1.1",
-    "@angular/platform-browser": "^20.1.1",
-    "@angular/platform-browser-dynamic": "^20.1.1",
-    "@angular/router": "^20.1.1",
-    "@angular/service-worker": "^20.1.1",
+    "@angular/animations": "20.1.1",
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/platform-server": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "@angular/service-worker": "^20.1.0",
+    "@angular/ssr": "^20.1.1",
     "angular-animations": "^0.11.0",
-    "dotenv": "16.0.3",
+    "express": "^5.1.0",
+    "idb": "^8.0.3",
+    "dotenv": "17.2.0",
     "hammerjs": "^2.0.8",
-    "idb": "7.1.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.4.1",
-    "zone.js": "~0.15.1"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.1.1",
+    "@angular/build": "^20.1.1",
     "@angular/cli": "^20.1.1",
-    "@angular/compiler-cli": "^20.1.1",
+    "@angular/compiler-cli": "^20.1.0",
+    "@types/express": "^5.0.1",
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.17.19",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^20.1.0",
+    "typescript": "~5.8.3",
+
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.8",
-    "@types/node": "^18.11.16",
     "autoprefixer": "^10.4.13",
     "git-rev-sync": "3.0.2",
     "http-server": "14.1.1",
-    "ng-packagr": "^20.1.0",
     "npm-run-all": "4.1.5",
     "postcss": "^8.4.20",
     "protractor": "~7.0.0",
     "tailwindcss": "^3.2.4",
     "ts-node": "~10.9.1",
-    "typescript": "~5.8.3",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.12.0"
   }
 }

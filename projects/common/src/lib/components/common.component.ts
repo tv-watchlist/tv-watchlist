@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'lib-common',
-  standalone: true,
   template: `
     <p>
       common works!

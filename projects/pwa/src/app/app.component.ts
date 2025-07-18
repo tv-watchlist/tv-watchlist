@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet,RouterModule } from '@angular/router';
 import {
     routeSliderStatePlusMinus, NavigationService, ActiveRequestService,
     ToastService, ErrorService, MigrationService, CloudDropboxService,
@@ -14,11 +14,10 @@ import { TvWatchlistService } from './services/tv-watchlist.service';
 @Component({
     selector: 'tvq-app',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
     animations: [
         routeSliderStatePlusMinus,
     ],
-    imports: [RouterModule, ButtonComponent, SvgIconComponent, ToastComponent, NavigationComponent, LoaderBarComponent, LoaderScreenComponent]
+    imports: [RouterModule, SvgIconComponent, ToastComponent, NavigationComponent, LoaderBarComponent, LoaderScreenComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
     constructor(
@@ -175,7 +174,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     prepareRoute(outlet: RouterOutlet): any {
-        return outlet?.activatedRouteData?.index;
+        return outlet?.activatedRouteData['index'];
     }
 
     ngOnDestroy(): void {

@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 // https://github.com/jakearchibald/idb#typescript
 // examples https://hackernoon.com/use-indexeddb-with-idb-a-1kb-library-that-makes-it-easy-8p1f3yqq
 import { IDBPDatabase, IDBPTransaction, IndexNames, openDB, unwrap } from 'idb';
 import { IMyTvQDbSetting, IMyTvQDBv2, MyTvQDbSetting, MyTvQStoreName } from './db.model';
+import { WINDOW } from '../window.service';
 
 @Injectable({ providedIn: 'root' })
 export class WebDatabaseService {
     private dbPromise!: Promise<IDBPDatabase<IMyTvQDBv2>>;
-    constructor() {
+    constructor(@Inject(WINDOW) private window: Window) {
         // check for support
         if (!('indexedDB' in window)) {
             console.warn('This browser doesn\'t support IndexedDB');

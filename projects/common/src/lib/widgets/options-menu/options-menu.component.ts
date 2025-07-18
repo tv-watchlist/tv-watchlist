@@ -47,7 +47,7 @@ export class OptionsMenuComponent<T> implements OnInit {
     }
 
     getKey(option?: T) {
-        if(!!this.optionsKey && !!option && this.optionsKey in option){
+        if(!!this.optionsKey && !!option && option[this.optionsKey]){
             return option[this.optionsKey];
         }
 

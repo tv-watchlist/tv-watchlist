@@ -3,7 +3,6 @@ import { NavigationService } from '../services/navigation.service';
 
 @Directive({
     selector: '[tvqBackButton]',
-    standalone: false
 })
 export class BackButtonDirective {
     constructor(

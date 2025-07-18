@@ -1,11 +1,12 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectorRef, SimpleChange, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Inject, SimpleChange, ViewChild } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShowService, CommonService, SettingService, EpisodeService, GoogleAnalyticsService,
     LoaderScreenService, ToastService, OptionsMenuComponent, IMyTvQDbEpisode, UiShowModel ,
-    SvgIconComponent
+    SvgIconComponent,
+    WINDOW
 } from 'common';
 import { EpisodeComponent } from '../../layouts/episode/episode.component';
 
@@ -27,6 +28,7 @@ export class ShowDetailComponent implements OnInit {
         private loaderSvc: LoaderScreenService,
         private activatedRoute: ActivatedRoute,
         private toastSvc: ToastService,
+        @Inject(WINDOW) private window: Window,
     ) { }
 
     @ViewChild('menu') menu!: OptionsMenuComponent<string>;
@@ -71,7 +73,7 @@ export class ShowDetailComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.loaderSvc.show();
         this.activatedRoute.params.subscribe(async (p) => {
-            this.showId = p.showId;
+            this.showId = p['showId'];
             this.pHideSeen = await this.settingSvc.get('hideSeen');
             const defaultMenuOption = await this.settingSvc.get('episodesOrder');
             this.defaultMenuOption = defaultMenuOption === 'latest'? 'Latest': 'Seen'
@@ -141,7 +143,7 @@ export class ShowDetailComponent implements OnInit {
 
     goToUrl(): void {
         if (this.showModel) {
-            window.open(this.showModel.url, '_blank');
+            this.window.open(this.showModel.url, '_blank');
         }
     }
 

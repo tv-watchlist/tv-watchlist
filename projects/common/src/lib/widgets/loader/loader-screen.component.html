@@ -1,8 +1,8 @@
 @if (visible) {
   <div class="fixed top-0 bottom-0 left-0 right-0 z-50 flex flex-col items-center justify-center bg-orange-300"
     [@fadeOutOnLeave]>
-    <img src="assets/myTvQ.png" alt="" class="scale-[.50] relative -top-10">
-    <img src="assets/ajax-loader.gif" alt="" class="scale-[2] relative -top-14">
+    <img src="myTvQ.png" alt="" class="scale-[.50] relative -top-10">
+    <img src="ajax-loader.gif" alt="" class="scale-[2] relative -top-14">
     <div class="relative mt-2 font-bold text-white -top-10">{{message}}</div>
     @if (showClose) {
       <div (click)="close()" class="relative mt-2 font-bold text-red-500 cursor-pointer -top-10">Close</div>

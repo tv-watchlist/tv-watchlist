@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <div>
         <span [innerHTML]="showModel.name" class="mr-2 text-2xl font-bold"></span>
-        <span [innerHTML]="showModel.premiered | date:'MMM dd, y' || 'n/a'" class="text-sm"></span>
+        <span [innerHTML]="(showModel.premiered | date:'MMM dd, y') || 'n/a'" class="text-sm"></span>
       </div>
       <button (click)="showDetails=!showDetails" class="ml-2 focus:outline-none">
         <!-- Info -->
@@ -117,7 +117,7 @@
             [latestEpisodeId]="latestEpisodeId" ></tvq-episode>
           </div>
         }
-        @if (!episodeList[selectedSeasonNum]?.length) {
+        @if (!episodeList[selectedSeasonNum].length) {
           <div class="flex flex-col pt-4 mx-auto text-lg text-center text-gray-700">
             <tvq-svg-icon icon="exclamation-circle" size="12" classes="mx-auto text-gray-500 stroke-current" ></tvq-svg-icon>
             @if (showModel.totalEpisodes > 0) {

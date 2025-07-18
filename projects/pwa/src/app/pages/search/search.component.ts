@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ApiTvMazeService, LoaderScreenService, GoogleAnalyticsService, ShowService, ITvMazeSearch,SvgIconComponent } from 'common';
+import { ApiTvMazeService, LoaderScreenService, GoogleAnalyticsService, ShowService, ITvMazeSearch,SvgIconComponent, WINDOW } from 'common';
 import { Observable, tap } from 'rxjs';
 
 @Component({
@@ -14,6 +14,7 @@ export class SearchComponent implements OnInit {
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
         private gaSvc: GoogleAnalyticsService,
+        @Inject(WINDOW) private window: Window,
         private showSvc: ShowService) { }
 
     showIds: string[] = [];
@@ -46,7 +47,7 @@ export class SearchComponent implements OnInit {
     }
 
     goToUrl(url: string): void {
-        window.open(url, '_blank');
+        this.window.open(url, '_blank');
     }
 
     includes(tvmazeId: number) {

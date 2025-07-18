@@ -318,9 +318,9 @@ export class ShowService {
         show.apiSource = 'tvmaze';
         show.apiId = show.apiId || {};
         show.apiId[apiType] = apiId;
-        show.apiId.tvmaze = tvmShow.id;
-        show.apiId.thetvdb = tvmShow.externals.thetvdb;
-        show.apiId.imdb = tvmShow.externals.imdb;
+        show.apiId['tvmaze'] = tvmShow.id;
+        show.apiId['thetvdb'] = tvmShow.externals.thetvdb;
+        show.apiId['imdb'] = tvmShow.externals.imdb;
 
         const channel = tvmShow.network || tvmShow.webChannel;
         if (!!channel) {

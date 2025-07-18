@@ -1,7 +1,7 @@
 
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ButtonComponent, SvgIconComponent } from 'common';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ButtonComponent, SvgIconComponent, WINDOW } from 'common';
 import { CheckForUpdateService } from '../../service-workers/check-for-update.service';
 import { TvWatchlistService } from '../../services/tv-watchlist.service';
 
@@ -15,6 +15,7 @@ export class AboutComponent implements OnInit {
         private updateSvc: CheckForUpdateService,
         private http: HttpClient,
         private tvqSvc: TvWatchlistService,
+        @Inject(WINDOW) private window: Window,
         private cdRef: ChangeDetectorRef) { }
     version: string = 'v3.0';
 
@@ -22,7 +23,7 @@ export class AboutComponent implements OnInit {
     @ViewChild('btnInstall' ) btnInstall!: ButtonComponent;
 
     ngOnInit(): void {
-        this.http.get<string>('../../assets/version.txt',{responseType: 'text' as 'json'} ).subscribe(ver => {
+        this.http.get<string>('./version.txt',{responseType: 'text' as 'json'} ).subscribe(ver => {
             this.version = ver;
         });
     }
@@ -69,7 +70,7 @@ export class AboutComponent implements OnInit {
     }
 
     goToUrl(url: string): void {
-        window.open(url, '_blank');
+        this.window.open(url, '_blank');
     }
 
     async checkforUpdate() {

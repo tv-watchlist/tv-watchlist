@@ -1,13 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'tvq-root',
-    template: `<router-outlet></router-outlet>`,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'tvq-root',
+  imports: [RouterOutlet],
+  template: `<h1>Hello, {{ title() }}</h1>
+  <router-outlet></router-outlet>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RootComponent implements OnInit {
-    ngOnInit() {
-        console.log('The Root Component');
-    }
+  protected readonly title = signal('webextension');
+  ngOnInit() {
+      console.log('The Root Component');
+  }
 }
+

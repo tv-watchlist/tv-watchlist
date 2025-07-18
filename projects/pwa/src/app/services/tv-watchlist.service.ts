@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { NAVIGATOR, WINDOW } from 'common';
 
 // import { IMyTvQFlatV5 } from './flat-file-v5.model';
 @Injectable({ providedIn: 'root' })
 export class TvWatchlistService {
-    constructor(
+    constructor(@Inject(WINDOW) private window: Window,
+    @Inject(NAVIGATOR) private navigator: Navigator
     ) {
         this.now = new Date().getTime();
     }
@@ -27,42 +29,42 @@ export class TvWatchlistService {
 
     // Detects if device is on iOS
     get IsIos() {
-        return navigator.userAgent.match(/Mac/) && navigator.maxTouchPoints && navigator.maxTouchPoints > 2;
+        return this.navigator.userAgent.match(/Mac/) && this.navigator.maxTouchPoints && this.navigator.maxTouchPoints > 2;
     }
 
     // Detects if device is in standalone mode
     get IsInStandaloneMode() {
-        if ('standalone' in window.navigator) {
-            return (window.navigator as any).standalone;
+        if ('standalone' in this.navigator) {
+            return (this.navigator as any).standalone;
         }
-        return (window.matchMedia('(display-mode: standalone)').matches);
+        return (this.window.matchMedia && this.window.matchMedia('(display-mode: standalone)').matches);
     }
 
     get Browser() {
         // Opera 8.0+
-        const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        const isOpera = (!!this.window.opr && !!opr.addons) || !!this.window.opera || this.navigator.userAgent.indexOf(' OPR/') >= 0;
 
         // Firefox 1.0+
         const isFirefox = typeof InstallTrigger !== 'undefined';
 
         // Safari 3.0+ "[object HTMLElementConstructor]"
-        const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })
-            (!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+        const isSafari = /constructor/i.test(this.window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })
+            (!this.window['safari'] || (typeof safari !== 'undefined' && this.window['safari'].pushNotification));
 
         // Internet Explorer 6-11
         const isIE = /*@cc_on!@*/false || !!document.documentMode;
 
         // Edge 20+
-        const isEdge = !isIE && !!window.StyleMedia;
+        const isEdge = !isIE && !!this.window.StyleMedia;
 
         // Chrome 1 - 79
-        const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+        const isChrome = !!this.window.chrome && (!!this.window.chrome.webstore || !!this.window.chrome.runtime);
 
         // Edge (based on chromium) detection
-        const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
+        const isEdgeChromium = isChrome && (this.navigator.userAgent.indexOf("Edg") != -1);
 
         // Blink engine detection
-        const isBlink = (isChrome || isOpera) && !!window.CSS;
+        const isBlink = (isChrome || isOpera) && !!('CSS' in this.window);
 
         let output = '';
         output += 'isFirefox: ' + isFirefox ;

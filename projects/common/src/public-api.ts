@@ -32,6 +32,7 @@ export * from './lib/services/cache-route-reuse.strategy';
 export * from './lib/services/google-analytics.service';
 export * from './lib/services/navigation.service';
 export * from './lib/services/online.service';
+export * from './lib/services/window.service';
 
 export * from './lib/widgets/loader/loader-screen.service';
 export * from './lib/widgets/toast/toast.service';

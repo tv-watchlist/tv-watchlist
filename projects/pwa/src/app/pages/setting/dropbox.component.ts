@@ -1,7 +1,8 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CloudDropboxService, MigrationService, ActiveRequestService, ToastService, IMyTvQFlatV6,
-    OptionsMenuComponent
+    OptionsMenuComponent,
+    WINDOW
  } from 'common';
 
 @Component({
@@ -15,6 +16,7 @@ export class SettingDropboxComponent implements OnInit {
         private dropboxSvc: CloudDropboxService,
         private migrateSvc: MigrationService,
         private barSvc: ActiveRequestService,
+        @Inject(WINDOW) private window: Window,
         private toastSvc: ToastService,) { }
 
     get IsDropboxAuthenticated() {
@@ -26,7 +28,7 @@ export class SettingDropboxComponent implements OnInit {
     dropboxLogin() {
         console.log('dropboxLogin');
         if (!this.dropboxSvc.IsAuthenticated) {
-            window.open(this.dropboxSvc.getAuthenticationUrl(), "dropboxWindow");
+            this.window.open(this.dropboxSvc.getAuthenticationUrl(), "dropboxWindow");
         } else {
             console.log(this.dropboxSvc.AccessToken);
             this.dropboxSvc.getCurrentAccountInfo().subscribe(result => {

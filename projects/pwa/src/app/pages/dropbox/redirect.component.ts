@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { CloudDropboxService } from 'common';
+import { Component, Inject, OnInit } from '@angular/core';
+import { CloudDropboxService, WINDOW } from 'common';
 
 @Component({
     selector: 'tvq-dropbox-redirect',
-    standalone: true,
     templateUrl: 'redirect.component.html'
 })
 export class DropboxRedirectComponent implements OnInit {
-    constructor() { }
+    constructor(@Inject(WINDOW) private window: Window) { }
     ngOnInit() {
-        CloudDropboxService.captureResponse(window.location);
+        CloudDropboxService.captureResponse(this.window);
     }
 
     goHome(){

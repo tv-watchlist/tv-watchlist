@@ -1,6 +1,6 @@
 
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ApiTheMovieDbService, LoaderScreenService, GoogleAnalyticsService, ShowService, SvgIconComponent } from 'common';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ApiTheMovieDbService, LoaderScreenService, GoogleAnalyticsService, ShowService, SvgIconComponent, WINDOW } from 'common';
 import { lastValueFrom, map } from 'rxjs';
 
 export interface IUITheMovieDbShow {
@@ -29,6 +29,7 @@ export class PopularComponent implements OnInit {
         private cdRef: ChangeDetectorRef,
         private loaderSvc: LoaderScreenService,
         private gaSvc: GoogleAnalyticsService,
+        @Inject(WINDOW) private window: Window,
         private showSvc: ShowService) { }
 
     showNames: string[] = [];
@@ -50,7 +51,7 @@ export class PopularComponent implements OnInit {
                 if(!!o.poster_path) {
                     newO.poster_path = baseUrl + 'w220_and_h330_face' + o.poster_path;
                 } else {
-                    newO.poster_path = 'assets/icons/apple-icon-180.png';
+                    newO.poster_path = 'icons/apple-icon-180.png';
                 }
 
                 newO.genres = o.genre_ids.map(m => genreDict[m]).join(', ');
@@ -77,7 +78,7 @@ export class PopularComponent implements OnInit {
     }
 
     goToUrl(url: string): void {
-        window.open(url, '_blank');
+        this.window.open(url, '_blank');
     }
 
     includes(name: string) {

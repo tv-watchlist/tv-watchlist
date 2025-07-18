@@ -1,4 +1,5 @@
-import { RouterModule, Routes } from '@angular/router';
+
+import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { ShowDetailComponent } from './pages/show-detail/show-detail.component';
 import { SettingComponent } from './pages/setting/setting.component';
@@ -10,7 +11,6 @@ import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './pages/not-found/not-found.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
-import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
     {
@@ -41,15 +41,3 @@ export const routes: Routes = [
         component: PageNotFoundComponent,
     }
 ];
-
-@NgModule({
-    imports: [RouterModule.forRoot(routes, {
-        scrollPositionRestoration: 'enabled'
-    })],
-    // providers:[{
-    //     provide: RouteReuseStrategy,
-    //     useClass: CustomReuseStrategy
-    // }],
-    exports: [RouterModule]
-})
-export class AppRoutingModule { }

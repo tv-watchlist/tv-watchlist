@@ -2,13 +2,12 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
     selector: 'img[tvqDefault]',
-    standalone: false
 })
 export class DefaultImageDirective {
     constructor(private elem: ElementRef) {
     }
 
-    @Input() default = 'assets/icons/apple-icon-180.png';
+    @Input() default = 'icons/apple-icon-180.png';
 
     @HostListener('error') onError(): void {
         console.log('error fetching image, using default');

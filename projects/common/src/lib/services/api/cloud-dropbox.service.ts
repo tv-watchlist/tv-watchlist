@@ -1,5 +1,5 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Injectable, isDevMode } from "@angular/core";
 import { tap } from "rxjs";
 
 /**
@@ -7,21 +7,22 @@ import { tap } from "rxjs";
  */
 @Injectable({ providedIn: 'root' })
 export class CloudDropboxService {
-    constructor(private http: HttpClient, @Inject('environment') environment: {production:boolean}) {
-        if (environment.production) {
+    constructor(private http: HttpClient) {
+        if (!isDevMode()) {
             this.redirectUrl = 'https://tv-watchlist.github.io/dropbox-redirect';
         } else {
             this.redirectUrl = 'http://localhost:4200/dropbox-redirect';
         }
         this.appKey = CloudDropboxService.decodeKey('pp!(u:/640pu(!5'); // tied to https://tv-watchlist.github.io
     }
+
     private appKey = '';
     private redirectUrl = '';
 
-    static captureResponse(location: Location) {
+    static captureResponse(window: Window) {
         // https://www.example.com/mycallback#access_token=<access token>&token_type=Bearer&uid=<user ID>&state=<CSRF token>
 
-        if (location.hash) {
+        if (window.location.hash) {
             let hash = window.location.hash.substring(1);
             let json = CloudDropboxService.getJsonFromUrl(hash);
             if (localStorage["dropbox_csrf_token"] == json["state"]) {

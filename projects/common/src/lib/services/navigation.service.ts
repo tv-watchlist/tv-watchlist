@@ -15,7 +15,7 @@ export class NavigationService {
     constructor(private router: Router, private location: Location) {
         this.router.events.subscribe((event) => {
             if (event instanceof Scroll) {
-                const history = {url: event.routerEvent.urlAfterRedirects, position: event.position, anchor: event.anchor};
+                const history = {url: event.routerEvent.url, position: event.position, anchor: event.anchor};
                 this.historyList.push(history);
                 this.backSubject.next(history);
             }

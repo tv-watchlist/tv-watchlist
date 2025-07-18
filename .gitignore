@@ -48,4 +48,4 @@ package-lock.json
 
 .angular/*
 workspace.code-workspace
-projects/pwa/src/assets/version.txt
+projects/pwa/public/version.txt
